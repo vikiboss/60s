@@ -16,7 +16,7 @@ const responseWithBaseRes = (
 
     return new Response(res, {
         headers: {
-            'Content-Type': 'application/json',
+            'Content-Type': 'application/json; charset=utf8',
         },
     })
 }
