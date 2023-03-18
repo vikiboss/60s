@@ -1,56 +1,58 @@
-import { serve } from "https://deno.land/std@0.155.0/http/server.ts";
+import { serve } from 'https://deno.land/std@0.180.0/http/server.ts'
 
-const responseWithBaseRes = (
-    obj: Record<number | string | symbol, any>
-        | string | number | boolean | null | undefined,
-    status = 200,
-    message = 'OK'
-) => {
-    let res = ''
-
-    try {
-        res = JSON.stringify({ status, message, data: obj ?? {} })
-    } catch {
-        res = JSON.stringify({ status: 500, message: 'Oops', data: {} })
-    }
-
-    return new Response(res, {
-        headers: {
-            'Content-Type': 'application/json; charset=utf8',
-        },
-    })
-}
-
-function Utf82Ascii(str: string) {
-    return str.split("").map(e => `#&${e.charCodeAt(0)};`).join("")
-}
-
-function Ascii2Utf8(str: string) {
-    return str.replace(/&#(\d+);/g, (_, $1) => String.fromCharCode(Number($1)))
-}
-
-const api = "https://www.zhihu.com/api/v4/columns/c_1261258401923026944/items?limit=1";
+const timeZoneOffset = 8
 const oneHourMs = 60 * 60 * 1000
-const cache: Record<number, string[]> = {}
+const cache: Map<number, string[]> = new Map()
+const defaultTips = '数据来自 zhihu, 接口开源地址: https://github.com/vikiboss/60s'
+const api = 'https://www.zhihu.com/api/v4/columns/c_1261258401923026944/items?limit=1'
+
+function responseWithBaseRes(obj: any, status = 200, message = defaultTips): Response {
+  const headers = {
+    'Content-Type': 'application/json; charset=utf8'
+  }
+
+  const body = JSON.stringify({
+    status,
+    message,
+    data: obj || {}
+  })
+
+  return new Response(body, { headers })
+}
+
+function transfer(str: string, mode: 'u2a' | 'a2u') {
+  if (mode === 'a2u') {
+    return str.replace(/&#(\d+);/g, (_, $1) => String.fromCharCode(Number($1)))
+  } else {
+    return str.replace(/./, _ => `&#${_.charCodeAt(0)};`)
+  }
+}
 
 async function handler(req: Request) {
-    const url = new URL(req.url)
-    const isText = url.searchParams.get('encoding') === 'text'
+  const url = new URL(req.url)
+  const isText = url.searchParams.get('encoding') === 'text'
 
-    const today = Math.floor((Date.now() + 8 * oneHourMs) / (24 * oneHourMs))
+  const today = Math.trunc((Date.now() + timeZoneOffset * oneHourMs) / (24 * oneHourMs))
 
-    if (!cache[today]) {
-        const { data } = await (await fetch(api)).json()
-        const contents = data[0].content.match(/<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g)
-        cache[today] = contents.map((e: string) => Ascii2Utf8(e.replace(/<[^<>]+>/g, '')))
-        cache[today].splice(1, 1)
-    }
+  if (!cache.get(today)) {
+    const { data = [] } = await (await fetch(api)).json()
 
-    if (isText) {
-        return new Response(cache[today].join("\n"))
-    } else {
-        return responseWithBaseRes(cache[today])
-    }
+    const contents = data[0]?.content.match(/<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g) ?? []
+
+    const result = contents.map((e: string) => {
+      return transfer(e.replace(/<[^<>]+>/g, '').trim(), 'a2u')
+    })
+
+    result.splice(1, 1)
+
+    cache.set(today, result)
+  }
+
+  if (isText) {
+    return new Response(cache.get(today)!.join('\n'))
+  } else {
+    return responseWithBaseRes(cache.get(today))
+  }
 }
 
-serve(handler);
+serve(handler)
