@@ -12,4 +12,4 @@
 
 API 支持 `json` 和 `text` 两种返回格式，默认为 `json`，通过 URL 的 `encoding` 参数指定。
 
-如 60s 的 `text` 格式的 API 为: **60s.viki.moe/60s?encoding=text**
+> 如: 60s API 的 `text` 格式为: **60s.viki.moe/60s?encoding=text**
