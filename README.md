@@ -10,6 +10,6 @@
 - 哔哩哔哩实时热搜榜: [60s.viki.moe/bili](https://60s.viki.moe/bili)
 - 微博实时热搜榜: [60s.viki.moe/weibo](https://60s.viki.moe/weibo)
 
-API 支持 `json` 和 `text` 两种返回格式，默认为 `json`，通过 URL 的 `encoding` 参数指定。
+API 支持 `json` 和 `text` 两种返回格式，默认为 `json`，可以通过 URL 里的 `encoding` 参数指定。
 
-> 如: 60s API 的 `text` 格式为: **60s.viki.moe/60s?encoding=text**
+> 如: 60s API 的 `text` 格式为: [https://60s.viki.moe/60s?encoding=text](https://60s.viki.moe/60s?encoding=text)
