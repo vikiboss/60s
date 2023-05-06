@@ -2,7 +2,7 @@
 
 60s API，不仅是每天 60s 读懂世界。
 
-> 60s 数据来源于这个[知乎专栏](https://www.zhihu.com/column/c_1261258401923026944)，详情参考[这篇文章](https://viki.moe/60s/)。
+> 60s 数据来源于这个[知乎专栏](https://www.zhihu.com/column/c_1261258401923026944)，详情参考[这篇文章](https://blog.viki.moe/60s/)。
 
 ### API 列表
 
