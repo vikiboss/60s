@@ -21,7 +21,7 @@
 
 **4. 汇率查询（每天更新，支持 160+ 货币）**
 
-- [60s.viki.moe/ex-rates?c=USD](https://60s.viki.moe/ex-rate?c=USD)
+- [60s.viki.moe/ex-rates?c=USD](https://60s.viki.moe/ex-rates?c=USD)
 
 参数说明：使用 `c` 参数指定[货币代码](https://coinyep.com/zh/currencies)，不指定默认 CNY，货币代码可在[这里](https://coinyep.com/zh/currencies)查询。
 
