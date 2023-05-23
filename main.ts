@@ -4,8 +4,14 @@ import router from './router.ts'
 const app = new Application()
 
 app.use(async (ctx, next) => {
-  const url = new URL(ctx.request.url)
-  const isText = url.searchParams.get('encoding') === 'text'
+  const { searchParams } = new URL(ctx.request.url)
+
+  const isText = [
+    searchParams.get('e')?.toLowerCase(),
+    searchParams.get('encode')?.toLowerCase(),
+    searchParams.get('encoding')?.toLowerCase()
+  ].includes('text')
+
   ctx.state.isText = isText
   await next()
 })

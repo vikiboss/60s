@@ -1,6 +1,7 @@
 import { Router } from './deps.ts'
 import { fetch60s } from './services/60s.ts'
 import { fetchBili } from './services/bili.ts'
+import { fetchRatesByCurrency } from './services/ext-rates.ts'
 import { fetchWeibo } from './services/weibo.ts'
 
 const router = new Router()
@@ -27,6 +28,14 @@ router.get('/bili', async ctx => {
 router.get('/weibo', async ctx => {
   const isText = ctx.state.isText
   ctx.response.body = await fetchWeibo(isText)
+})
+
+// exchange rates
+router.get('/ex-rates', async ctx => {
+  const isText = ctx.state.isText
+  const url = new URL(ctx.request.url)
+  const currency = url.searchParams.get('c') || 'CNY'
+  ctx.response.body = await fetchRatesByCurrency(currency, isText)
 })
 
 export default router

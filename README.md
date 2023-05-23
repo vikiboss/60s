@@ -2,14 +2,34 @@
 
 60s API，不仅是每天 60s 读懂世界。
 
-> 60s 数据来源于这个[知乎专栏](https://www.zhihu.com/column/c_1261258401923026944)，详情参考[这篇文章](https://blog.viki.moe/60s/)。
+> 60s 数据来源于[知乎专栏](https://www.zhihu.com/column/c_1261258401923026944)，详情参考[这篇文章](https://xlog.viki.moe/60s)。
 
 ### API 列表
 
-- 每天 60s 读懂世界: [60s.viki.moe/60s](https://60s.viki.moe/60s)（或 [60s.viki.moe](https://60s.viki.moe)）
-- 哔哩哔哩实时热搜榜: [60s.viki.moe/bili](https://60s.viki.moe/bili)
-- 微博实时热搜榜: [60s.viki.moe/weibo](https://60s.viki.moe/weibo)
+**1. 每天 60s 读懂世界**
 
-API 支持 `json` 和 `text` 两种返回格式，默认为 `json`，可以通过 URL 里的 `encoding` 参数指定。
+- [60s.viki.moe](https://60s.viki.moe)
+- [60s.viki.moe/60s](https://60s.viki.moe/60s)
 
-> 如: 60s API 的 `text` 格式为: [https://60s.viki.moe/60s?encoding=text](https://60s.viki.moe/60s?encoding=text)
+**2. 哔哩哔哩实时热搜榜**
+
+- [60s.viki.moe/bili](https://60s.viki.moe/bili)
+
+**3. 微博实时热搜榜**
+
+- [60s.viki.moe/weibo](https://60s.viki.moe/weibo)
+
+**4. 汇率查询（每天更新，支持 160+ 货币）**
+
+- [60s.viki.moe/ex-rates?c=USD](https://60s.viki.moe/ex-rate?c=USD)
+
+参数说明：使用 `c` 参数指定[货币代码](https://coinyep.com/zh/currencies)，不指定默认 CNY，货币代码可在[这里](https://coinyep.com/zh/currencies)查询。
+
+### 返回格式
+
+所有 API 均支持返回以下两种格式：
+
+- `json`（默认）
+- `text`
+
+将 URL 的 `encoding`/`encode`/`e` 参数设置为 `text` 以返回纯文本。如：[https://60s.viki.moe/60s?e=text](https://60s.viki.moe/60s?e=text)
