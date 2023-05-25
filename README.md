@@ -30,13 +30,15 @@
 - [60s.viki.moe/bing](https://60s.viki.moe/bing)（默认 JSON 数据）
 - [60s.viki.moe/bing?e=image](https://60s.viki.moe/bing?e=image) （重定向到原图直链）
 
-壁纸支持 `json` 和 `image` 两种返回形式。
+壁纸支持 `text`, `json` 和 `image` 三种返回形式。
 
 ### 返回格式
 
-所有 API 均支持返回以下两种格式：
+除特殊说明外，所有 API 均支持返回以下格式：
 
 - `json`（默认）
 - `text`
 
-将 URL 的 `encoding`/`encode`/`e` 参数设置为 `text` 以返回纯文本。如：[https://60s.viki.moe/60s?e=text](https://60s.viki.moe/60s?e=text)
+通过 URL 的 `e`/`encode`/`encoding` 参数进行指定。
+
+比如：[https://60s.viki.moe/60s?e=text](https://60s.viki.moe/60s?e=text)
