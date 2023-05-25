@@ -2,10 +2,11 @@ import { responseWithBaseRes } from '../utils.ts'
 
 const api = 'https://weibo.com/ajax/side/hotSearch'
 
-export async function fetchWeibo(isText = false) {
+export async function fetchWeibo(type = 'json') {
   const { data = {} } = await (await fetch(api)).json()
   const list: any[] = data?.realtime?.filter((e: any) => !e.is_ad) ?? []
-  return isText ? list.map((e, i) => `${i + 1}. ${e?.word}`).join('\n') : responseWithBaseRes(list)
+  const rawRes = list.map((e, i) => `${i + 1}. ${e?.word}`).join('\n')
+  return type === 'json' ? responseWithBaseRes(list) : rawRes
 }
 
 // 另一个可选的官方接口：

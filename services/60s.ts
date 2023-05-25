@@ -6,7 +6,7 @@ const cache: Map<number, string[]> = new Map()
 
 const api = 'https://www.zhihu.com/api/v4/columns/c_1261258401923026944/items?limit=1'
 
-export async function fetch60s(isText = false) {
+export async function fetch60s(type = 'json') {
   const today = Math.trunc((Date.now() + timeZoneOffset * oneHourMs) / (24 * oneHourMs))
 
   if (!cache.get(today)) {
@@ -21,9 +21,9 @@ export async function fetch60s(isText = false) {
     cache.set(today, result)
   }
 
-  if (isText) {
-    return cache.get(today)!.join('\n')
-  } else {
+  if (type === 'json') {
     return responseWithBaseRes(cache.get(today))
+  } else {
+    return cache.get(today)!.join('\n')
   }
 }
