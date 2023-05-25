@@ -1,6 +1,6 @@
 import { responseWithBaseRes } from '../utils.ts'
 
-const api = 'https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1'
+const api = 'https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=1'
 const caches = new Map()
 
 export async function fetchBing(type = 'json') {
@@ -15,15 +15,13 @@ export async function fetchBing(type = 'json') {
     const { images = [] } = await (await fetch(api)).json()
 
     if (images.length) {
-      const { urlbase, copyright, title, copyrightlink, startdate } = images[0] || {}
+      const { urlbase, copyright, title, startdate } = images[0] || {}
 
       data = {
-        date: startdate?.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
         title,
         url: `https://cn.bing.com${urlbase}_1920x1080.jpg`,
-        from: copyrightlink,
-        copyright,
-        __tip: '每天 16 点更新'
+        date: startdate?.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
+        copyright
       }
 
       caches.set(dailyUniqueKey, data)

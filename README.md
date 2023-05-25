@@ -30,7 +30,7 @@
 - [60s.viki.moe/bing](https://60s.viki.moe/bing)（默认 JSON 数据）
 - [60s.viki.moe/bing?e=image](https://60s.viki.moe/bing?e=image) （重定向到原图直链）
 
-壁纸支持 `text`, `json` 和 `image` 三种返回形式。
+每天 16 点更新，壁纸支持 `text`, `json` 和 `image` 三种返回形式。
 
 ### 返回格式
 
