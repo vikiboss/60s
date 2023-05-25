@@ -1,6 +1,6 @@
 import { responseWithBaseRes } from '../utils.ts'
 
-const api = 'https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=1'
+const api = 'https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN'
 const caches = new Map()
 
 export async function fetchBing(type = 'json') {
