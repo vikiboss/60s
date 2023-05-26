@@ -1,6 +1,7 @@
 import { responseWithBaseRes } from '../utils.ts'
 
-const api = 'https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN'
+const api = 'https://cn.bing.com'
+// const api = 'https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN'
 const caches = new Map()
 
 export async function fetchBing(type = 'json') {
@@ -12,16 +13,24 @@ export async function fetchBing(type = 'json') {
   if (cache) {
     data = cache
   } else {
-    const { images = [] } = await (await fetch(api)).json()
+    // const { images = [] } = await (await fetch(api)).json()
+    const rawContent = await (await fetch(api)).text()
+    const rawJson = /var _model =([^;]+);/.exec(rawContent)![1]
+    const images = JSON.parse(rawJson)?.MediaContents ?? []
 
     if (images.length) {
-      const { urlbase, copyright, title, startdate } = images[0] || {}
+      const { ImageContent } = images[0] || {}
+      const { Description, Image, Headline, Title, Copyright, QuickFact } = ImageContent || {}
+      const today = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')
 
       data = {
-        title,
-        url: `https://cn.bing.com${urlbase}_1920x1080.jpg`,
-        date: startdate?.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
-        copyright
+        date: today,
+        headline: Headline,
+        title: Title,
+        description: Description,
+        image_url: `https://cn.bing.com${Image?.Wallpaper}`,
+        main_text: QuickFact?.MainText,
+        copyright: Copyright
       }
 
       caches.set(dailyUniqueKey, data)
@@ -31,7 +40,7 @@ export async function fetchBing(type = 'json') {
   }
 
   if (type === 'image' || type === 'text') {
-    return data.url
+    return data.image_url
   } else {
     return responseWithBaseRes(data)
   }
