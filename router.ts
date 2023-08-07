@@ -3,7 +3,9 @@ import { fetch60s } from './services/60s.ts'
 import { fetchBili } from './services/bili.ts'
 import { fetchBing } from './services/bing.ts'
 import { fetchRatesByCurrency } from './services/ext-rates.ts'
+import { fetchToutiao } from './services/toutiao.ts'
 import { fetchWeibo } from './services/weibo.ts'
+import { fetchZhihu } from './services/zhihu.ts'
 
 const router = new Router()
 
@@ -25,6 +27,16 @@ router.get('/bili', async ctx => {
 // weibo
 router.get('/weibo', async ctx => {
   ctx.response.body = await fetchWeibo(ctx.state.type)
+})
+
+// zhihu
+router.get('/zhihu', async ctx => {
+  ctx.response.body = await fetchZhihu(ctx.state.type)
+})
+
+// toutiao
+router.get('/toutiao', async ctx => {
+  ctx.response.body = await fetchToutiao(ctx.state.type)
 })
 
 // exchange rates

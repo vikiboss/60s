@@ -9,6 +9,8 @@
 - [60s 读懂世界](https://60s.viki.moe/60s)
 - [哔哩哔哩实时热搜榜](https://60s.viki.moe/bili)
 - [微博实时热搜榜](https://60s.viki.moe/weibo)
+- [知乎实时热搜](https://60s.viki.moe/zhihu)
+- [头条实时热搜](https://60s.viki.moe/toutiao)
 - [汇率查询（支持 160+ 货币）](https://60s.viki.moe/ex-rates?c=USD)
 - [Bing 每日壁纸](https://60s.viki.moe/bing)
 
@@ -37,6 +39,14 @@
 **3. 微博实时热搜榜**
 
 - [60s.viki.moe/weibo](https://60s.viki.moe/weibo)
+
+**3. 知乎实时热搜榜**
+
+- [60s.viki.moe/zhihu](https://60s.viki.moe/zhihu)
+
+**3. 头条实时热搜榜**
+
+- [60s.viki.moe/toutiao](https://60s.viki.moe/toutiao)
 
 **4. 汇率查询（每天更新，支持 160+ 货币）**
 
