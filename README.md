@@ -36,12 +36,12 @@
 **2.小爱同学**
 
 - [60s.viki.moe/xiaoai?text=hello](https://60s.viki.moe/xiaoai?text=hello)
-- [60s.viki.moe/xiaoai?text=hello&text-only](https://60s.viki.moe/xiaoai?text=hello&text-only)
+- [60s.viki.moe/xiaoai?text=hello&text-only=1](https://60s.viki.moe/xiaoai?text=hello&text-only=1)
 - [60s.viki.moe/xiaoai?text=hello&e=text](https://60s.viki.moe/xiaoai?text=hello&e=text)
 
 - 参数说明
   - 使用参数 `text` 指定对话内容，同时返回文本和音频链接（音频链接非常长）
-  - 使用参数 `text-only` 指定**仅仅返回文本**，去除音频链接，大大减小返回的文本内容
+  - 设置参数 `text-only` 为 1，指定**仅仅返回文本**，去除音频链接，大大减小返回的文本内容
 
 **3. Bing 每日壁纸**
 

@@ -62,7 +62,7 @@ router.get('/bing', async ctx => {
 router.get('/xiaoai', async ctx => {
   const url = new URL(ctx.request.url)
   const text = url.searchParams.get('text') || '你好'
-  const textOnly = url.searchParams.get('text-only') !== undefined
+  const textOnly = url.searchParams.get('text-only') === '1'
   ctx.response.body = await fetchXiaoai(text, textOnly, ctx.state.type)
 })
 
