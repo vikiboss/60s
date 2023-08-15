@@ -5,6 +5,7 @@ import { fetchBing } from './services/bing.ts'
 import { fetchRatesByCurrency } from './services/ext-rates.ts'
 import { fetchToutiao } from './services/toutiao.ts'
 import { fetchWeibo } from './services/weibo.ts'
+import { fetchXiaoai } from './services/xiaoai.ts'
 import { fetchZhihu } from './services/zhihu.ts'
 
 const router = new Router()
@@ -55,6 +56,14 @@ router.get('/bing', async ctx => {
   } else {
     ctx.response.body = await fetchBing(ctx.state.type)
   }
+})
+
+// 小爱
+router.get('/xiaoai', async ctx => {
+  const url = new URL(ctx.request.url)
+  const text = url.searchParams.get('text') || '你好'
+  const textOnly = url.searchParams.get('text-only') !== undefined
+  ctx.response.body = await fetchXiaoai(text, textOnly, ctx.state.type)
 })
 
 export default router
