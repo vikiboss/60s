@@ -71,3 +71,8 @@
 **8. 头条实时热搜榜**
 
 - [60s.viki.moe/toutiao](https://60s.viki.moe/toutiao)
+
+## License
+
+[MIT](LICENSE) License © 2022-PRESENT Viki
+
