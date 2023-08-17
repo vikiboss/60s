@@ -1,19 +1,19 @@
-# 60s
+# ⏰ 60s API
 
-60s API，不仅是每天 60s 读懂世界。
+60s API，不仅仅是每天 60s 读懂世界～
 
 > 60s 数据来源于[知乎专栏](https://www.zhihu.com/column/c_1261258401923026944)，详情参考[这篇文章](https://xlog.viki.moe/60s)。
 
 ## API 目录
 
-- [60s 读懂世界](https://60s.viki.moe/60s)
-- [小爱同学](https://60s.viki.moe/xiaoai)
-- [Bing 每日壁纸](https://60s.viki.moe/bing)
-- [汇率查询（支持 160+ 货币）](https://60s.viki.moe/ex-rates?c=USD)
-- [哔哩哔哩实时热搜榜](https://60s.viki.moe/bili)
-- [微博实时热搜榜](https://60s.viki.moe/weibo)
-- [知乎实时热搜](https://60s.viki.moe/zhihu)
-- [头条实时热搜](https://60s.viki.moe/toutiao)
+- [🌍 60s 读懂世界](https://60s.viki.moe/60s)
+- [🤖️ 小爱同学](https://60s.viki.moe/xiaoai)
+- [🏞️ Bing 每日壁纸](https://60s.viki.moe/bing)
+- [🪙 汇率查询（支持 160+ 货币）](https://60s.viki.moe/ex-rates?c=USD)
+- [📺 哔哩哔哩实时热搜榜](https://60s.viki.moe/bili)
+- [🦊 微博实时热搜榜](https://60s.viki.moe/weibo)
+- [❓ 知乎实时热搜](https://60s.viki.moe/zhihu)
+- [📰 头条实时热搜](https://60s.viki.moe/toutiao)
 
 ## 返回格式
 
@@ -75,4 +75,3 @@
 ## License
 
 [MIT](LICENSE) License © 2022-PRESENT Viki
-
