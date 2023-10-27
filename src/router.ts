@@ -10,35 +10,20 @@ import { fetchZhihu } from './services/zhihu.ts'
 
 const router = new Router()
 
-// default is 60s
-router.get('/', async ctx => {
-  ctx.response.body = await fetch60s(ctx.state.type)
-})
+const routerMap = {
+  '/': fetch60s,
+  '/60s': fetch60s,
+  '/bili': fetchBili,
+  '/weibo': fetchWeibo,
+  '/zhihu': fetchZhihu,
+  '/toutiao': fetchToutiao
+}
 
-// 60s
-router.get('/60s', async ctx => {
-  ctx.response.body = await fetch60s(ctx.state.type)
-})
-
-// bilibili
-router.get('/bili', async ctx => {
-  ctx.response.body = await fetchBili(ctx.state.type)
-})
-
-// weibo
-router.get('/weibo', async ctx => {
-  ctx.response.body = await fetchWeibo(ctx.state.type)
-})
-
-// zhihu
-router.get('/zhihu', async ctx => {
-  ctx.response.body = await fetchZhihu(ctx.state.type)
-})
-
-// toutiao
-router.get('/toutiao', async ctx => {
-  ctx.response.body = await fetchToutiao(ctx.state.type)
-})
+for (const [path, handler] of Object.entries(routerMap)) {
+  router.get(path, async ctx => {
+    ctx.response.body = await handler(ctx.state.type)
+  })
+}
 
 // exchange rates
 router.get('/ex-rates', async ctx => {

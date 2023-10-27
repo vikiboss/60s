@@ -1,6 +1,6 @@
 # ⏰ 60s API
 
-60s API，不仅仅是每天 60s 读懂世界～
+60s API，不仅仅是每天 60s 读懂世界～ 这是一个使用 [Deno](https://deno.com/) 构建的简单 API 项目列表。
 
 > 60s 数据来源于[知乎专栏](https://www.zhihu.com/column/c_1261258401923026944)，详情参考[这篇文章](https://xlog.viki.moe/60s)。
 
