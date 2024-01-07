@@ -2,6 +2,7 @@ import { Router } from './deps.ts'
 import { fetch60s } from './services/60s.ts'
 import { fetchBili } from './services/bili.ts'
 import { fetchBing } from './services/bing.ts'
+import { fetchDouyin } from './services/douyin.ts'
 import { fetchRatesByCurrency } from './services/ext-rates.ts'
 import { fetchToutiao } from './services/toutiao.ts'
 import { fetchWeibo } from './services/weibo.ts'
@@ -16,7 +17,8 @@ const routerMap = {
   '/bili': fetchBili,
   '/weibo': fetchWeibo,
   '/zhihu': fetchZhihu,
-  '/toutiao': fetchToutiao
+  '/toutiao': fetchToutiao,
+  '/douyin': fetchDouyin
 }
 
 for (const [path, handler] of Object.entries(routerMap)) {
