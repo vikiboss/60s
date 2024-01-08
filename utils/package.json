@@ -1,0 +1,11 @@
+{
+  "name": "utils",
+  "type": "module",
+  "private": true,
+  "main": "index.mjs",
+  "author": "Viki <hi@viki.moe> (https://github.com/vikiboss)",
+  "devDependencies": {
+    "got": "^14.0.0",
+    "xlsx": "^0.18.5"
+  }
+}
