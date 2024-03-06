@@ -1,3 +1,4 @@
+import { Context } from 'https://deno.land/x/oak@v12.1.0/mod.ts'
 import { responseWithBaseRes, transferText } from '../utils.ts'
 
 const timeZoneOffset = 8
@@ -9,7 +10,8 @@ const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?li
 const reg = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
 const tagReg = /<[^<>]+>/g
 
-export async function fetch60s(type = 'json') {
+export async function fetch60s(type = 'json', ctx: Context) {
+  const isV2 = !!ctx.request.url.searchParams.get('v2')
   const today = Math.trunc((Date.now() + timeZoneOffset * oneHourMs) / (24 * oneHourMs))
 
   if (!cache.get(today)) {
@@ -18,13 +20,29 @@ export async function fetch60s(type = 'json') {
     const mapFn = (e: string) => transferText(e.replace(tagReg, '').trim(), 'a2u')
     const result = contents.map(mapFn)
 
-    result.splice(1, 1)
     cache.set(today, result)
   }
 
-  if (type === 'json') {
-    return responseWithBaseRes(cache.get(today))
+  if (!isV2) {
+    if (type === 'json') {
+      return responseWithBaseRes(cache.get(today))
+    } else {
+      return cache.get(today)!.join('\n')
+    }
   } else {
-    return cache.get(today)!.join('\n')
+    const news = (cache.get(today) || []).map(e => {
+      return e
+        .replace(/^\d+、\s*/g, '')
+        .replace(/。$/, '')
+        .trim()
+    })
+
+    const tip = news.pop()?.replace(/【微语】/, '') || ''
+
+    if (type === 'json') {
+      return responseWithBaseRes({ news, tip })
+    } else {
+      return [...news, tip].join('\n')
+    }
   }
 }

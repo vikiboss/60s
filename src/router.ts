@@ -25,7 +25,7 @@ const routerMap = {
 
 for (const [path, handler] of Object.entries(routerMap)) {
   router.get(path, async ctx => {
-    ctx.response.body = await handler(ctx.state.type)
+    ctx.response.body = await handler(ctx.state.type, ctx)
   })
 }
 
