@@ -1,11 +1,19 @@
 import { Context } from 'https://deno.land/x/oak@v12.1.0/mod.ts'
 import { responseWithBaseRes, transferText } from '../utils.ts'
 
+interface Item {
+  result: string[]
+  title_image: string
+  updated: number
+  url: string
+}
+
+const cache: Map<number, Item> = new Map()
+
 const timeZoneOffset = 8
 const oneHourMs = 60 * 60 * 1000
-const cache: Map<number, string[]> = new Map()
 
-const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=1'
+const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
 
 const reg = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
 const tagReg = /<[^<>]+>/g
@@ -16,21 +24,26 @@ export async function fetch60s(type = 'json', ctx: Context) {
 
   if (!cache.get(today)) {
     const { data = [] } = await (await fetch(api)).json()
-    const contents = data[0]?.content.match(reg) ?? []
+    const { content = '', url = '', title_image = '', updated = 0 } = data[0]
+    const contents: string[] = content.match(reg) ?? []
     const mapFn = (e: string) => transferText(e.replace(tagReg, '').trim(), 'a2u')
     const result = contents.map(mapFn)
 
-    cache.set(today, result)
+    if (result.length) {
+      cache.set(today, { url, result, title_image, updated: updated * 1000 })
+    }
   }
+
+  const finalData = cache.get(today)
 
   if (!isV2) {
     if (type === 'json') {
-      return responseWithBaseRes(cache.get(today))
+      return responseWithBaseRes(finalData?.result || [])
     } else {
-      return cache.get(today)!.join('\n')
+      return finalData?.result.join('\n')
     }
   } else {
-    const news = (cache.get(today) || []).map(e => {
+    const news = (finalData?.result || []).map(e => {
       return e
         .replace(/^\d+、\s*/g, '')
         .replace(/。$/, '')
@@ -40,7 +53,13 @@ export async function fetch60s(type = 'json', ctx: Context) {
     const tip = news.pop()?.replace(/【微语】/, '') || ''
 
     if (type === 'json') {
-      return responseWithBaseRes({ news, tip })
+      return responseWithBaseRes({
+        news,
+        tip,
+        updated: finalData?.updated ?? 0,
+        url: finalData?.url ?? '',
+        cover: finalData?.title_image ?? ''
+      })
     } else {
       return [...news, tip].join('\n')
     }
