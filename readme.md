@@ -31,12 +31,12 @@
 
 ## 🧭 使用说明
 
-**1. 🌍 每天 60s 读懂世界**
+**1. 🌍 每天 60s 读懂世界（建议使用 v2 格式）**
+
+> 此 API 已发布 v2 格式，规范 JSON 返回，通过 `v2=1` 参数开启，如：[https://60s.viki.moe/60s?v2=1](https://60s.viki.moe/60s?v2=1)
 
 - [https://60s.viki.moe](https://60s.viki.moe)
 - [https://60s.viki.moe/60s](https://60s.viki.moe/60s)
-
-> 此 API 已发布 v2 格式，规范 JSON 返回，通过 `?v2=1` 参数开启，如：[https://60s.viki.moe/60s?v2=1](https://60s.viki.moe/60s?v2=1)
 
 **2. 🤖️ 小爱同学（由于官方接口问题，已失效）**
 
