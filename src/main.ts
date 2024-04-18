@@ -6,6 +6,8 @@ const app = new Application()
 const encodes = ['e', 'encode', 'encoding']
 
 app.use(async (ctx, next) => {
+  console.log(ctx.request.url) // for debug
+
   const { searchParams } = new URL(ctx.request.url)
 
   const isJson = encodes.some(e => {
