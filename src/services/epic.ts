@@ -4,7 +4,7 @@ const epicApi =
   'https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=zh-CN&country=CN&allowCountries=CN'
 
 function isPass7DaysAgo(date: string) {
-  return new Date(date).getTime() >= Date.now() - 7 * 24 * 60 * 60 * 100
+  return new Date(date).getTime() >= Date.now() - 7 * 24 * 60 * 60 * 1000
 }
 
 export async function fetchEpicFreeGames(type: string = 'json') {
