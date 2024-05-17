@@ -6,24 +6,24 @@ export async function fetchXiaoai(text = '你好', textOnly = false, type = 'jso
   const params = {
     requestId: '',
     token: '',
-    userId: `${randomId(8)}-${randomId(6)}-${randomId(6)}-${randomId(6)}-${randomId(8)}`
+    userId: `${randomId(8)}-${randomId(6)}-${randomId(6)}-${randomId(6)}-${randomId(8)}`,
   }
 
   const queryString = new URLSearchParams(params).toString()
 
   const config = {
     headers: {
-      'content-type': 'application/json; charset=utf-8'
+      'content-type': 'application/json; charset=utf-8',
     },
     method: 'POST',
-    body: JSON.stringify({ requestText: text })
+    body: JSON.stringify({ requestText: text }),
   }
 
   const { directive } = await (await fetch(`${api}?${queryString}`, config)).json()
 
   const res = {
     text: directive.displayText,
-    audio: directive.url
+    audio: directive.url,
   }
 
   if (textOnly) {

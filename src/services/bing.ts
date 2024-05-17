@@ -30,7 +30,7 @@ export async function fetchBing(type = 'json') {
         description: Description,
         image_url: `https://cn.bing.com${Image?.Wallpaper}`,
         main_text: QuickFact?.MainText,
-        copyright: Copyright
+        copyright: Copyright,
       }
 
       caches.set(dailyUniqueKey, data)

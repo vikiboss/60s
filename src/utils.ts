@@ -9,7 +9,7 @@ export function responseWithBaseRes(obj: any, message = defaultTips, status = 20
   return {
     status,
     message,
-    data: obj || {}
+    data: obj || {},
   }
 }
 
@@ -17,6 +17,6 @@ export function transferText(str: string, mode: 'u2a' | 'a2u') {
   if (mode === 'a2u') {
     return str.replace(/&#(\d+);/g, (_, $1) => String.fromCharCode(Number($1)))
   } else {
-    return str.replace(/./, _ => `&#${_.charCodeAt(0)};`)
+    return str.replace(/./, (_) => `&#${_.charCodeAt(0)};`)
   }
 }

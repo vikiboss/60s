@@ -1,4 +1,4 @@
-import { Context } from 'https://deno.land/x/oak@v12.1.0/mod.ts'
+import { Context } from '@oak/oak'
 import { responseWithBaseRes, transferText } from '../utils.ts'
 
 interface Item {
@@ -43,7 +43,7 @@ export async function fetch60s(type = 'json', ctx: Context) {
       return finalData?.result.join('\n')
     }
   } else {
-    const news = (finalData?.result || []).map(e => {
+    const news = (finalData?.result || []).map((e) => {
       return e
         .replace(/^\d+、\s*/g, '')
         .replace(/。$/, '')
@@ -58,7 +58,7 @@ export async function fetch60s(type = 'json', ctx: Context) {
         tip,
         updated: finalData?.updated ?? 0,
         url: finalData?.url ?? '',
-        cover: finalData?.title_image ?? ''
+        cover: finalData?.title_image ?? '',
       })
     } else {
       return [...news, tip].join('\n')

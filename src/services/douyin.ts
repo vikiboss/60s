@@ -10,7 +10,7 @@ export async function fetchDouyin(type = 'json') {
 
   return type === 'json'
     ? responseWithBaseRes(
-        list.map(e => ({
+        list.map((e: any) => ({
           word: e?.word,
           // word_cover: e?.word_cover,
           url: e?.word_cover?.url,
@@ -20,8 +20,8 @@ export async function fetchDouyin(type = 'json') {
           label: e?.label,
           position: e?.position,
           word_type: e?.word_type,
-          active_time
-        }))
+          active_time,
+        })),
       )
     : rawRes
 }

@@ -1,4 +1,5 @@
-import { Router } from './deps.ts'
+import { Router } from '@oak/oak'
+
 import { fetch60s } from './services/60s.ts'
 import { fetchBili } from './services/bili.ts'
 import { fetchBing } from './services/bing.ts'
@@ -18,24 +19,24 @@ const routerMap = {
   '/weibo': fetchWeibo,
   '/zhihu': fetchZhihu,
   '/toutiao': fetchToutiao,
-  '/douyin': fetchDouyin
+  '/douyin': fetchDouyin,
 }
 
 for (const [path, handler] of Object.entries(routerMap)) {
-  router.get(path, async ctx => {
+  router.get(path, async (ctx) => {
     ctx.response.body = await handler(ctx.state.type, ctx)
   })
 }
 
 // exchange rates
-router.get('/ex-rates', async ctx => {
+router.get('/ex-rates', async (ctx) => {
   const url = new URL(ctx.request.url)
   const currency = url.searchParams.get('c') || 'CNY'
   ctx.response.body = await fetchRatesByCurrency(currency, ctx.state.type)
 })
 
 // bing wallpaper
-router.get('/bing', async ctx => {
+router.get('/bing', async (ctx) => {
   const isImage = ctx.state.type === 'image'
 
   if (isImage) {
@@ -46,7 +47,7 @@ router.get('/bing', async ctx => {
 })
 
 // 小爱
-router.get('/xiaoai', async ctx => {
+router.get('/xiaoai', async (ctx) => {
   const url = new URL(ctx.request.url)
   const text = url.searchParams.get('text') || '你好'
   const textOnly = url.searchParams.get('text-only') === '1'
