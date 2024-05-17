@@ -18,6 +18,7 @@
 - 📰 头条实时热搜
 - 🎵 抖音实时热搜
 - 🎮 Epic 免费游戏
+- ☁️ 全球天气
 
 ## 🎨 返回格式
 
@@ -85,6 +86,12 @@
 **9. 🎮 Epic 免费游戏**
 
 - [https://60s.viki.moe/epic](https://60s.viki.moe/epic)
+
+**9. ☁️ 全球天气（参数支持多语言）**
+
+- [https://60s.viki.moe/weather/北京](https://60s.viki.moe/weather/北京)
+- [https://60s.viki.moe/weather/beijing](https://60s.viki.moe/weather/%E5%8C%97%E4%BA%AC)
+- [https://60s.viki.moe/weather/beijing?e=text](https://60s.viki.moe/weather/%E5%8C%97%E4%BA%AC?e=text)
 
 ## ❤️ License
 

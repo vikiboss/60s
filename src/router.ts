@@ -10,6 +10,7 @@ import { fetchWeibo } from './services/weibo.ts'
 import { fetchXiaoai } from './legacy-services/xiaoai.ts'
 import { fetchZhihu } from './services/zhihu.ts'
 import { fetchEpicFreeGames } from './services/epic.ts'
+import { fetchWeather } from './services/weather.ts'
 
 const router = new Router()
 
@@ -23,6 +24,11 @@ const routerMap = {
   '/douyin': fetchDouyin,
   '/epic': fetchEpicFreeGames,
 }
+
+// weather rates
+router.get('/weather/:city', async (ctx) => {
+  ctx.response.body = await fetchWeather(ctx.params.city, ctx.state.type, ctx)
+})
 
 for (const [path, handler] of Object.entries(routerMap)) {
   router.get(path, async (ctx) => {
