@@ -1,4 +1,4 @@
-import { Context } from '@oak/oak'
+import { Context } from 'oak'
 import { responseWithBaseRes, transferText } from '../utils.ts'
 
 interface Item {

@@ -2,7 +2,15 @@ import { randomId, responseWithBaseRes } from '../utils.ts'
 
 const api = 'https://ai-voice.api.xiaomi.net/aivs/v2.2/text'
 
+const deprecated = true
+
 export async function fetchXiaoai(text = '你好', textOnly = false, type = 'json') {
+  if (deprecated) {
+    return {
+      msg: '小爱同学接口已失效，请考虑使用其他接口或者 GPT',
+    }
+  }
+
   const params = {
     requestId: '',
     token: '',

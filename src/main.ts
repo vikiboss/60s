@@ -1,17 +1,16 @@
+import { Application } from 'oak'
+
 import router from './router.ts'
-import encodings from './middlewares/encodings.ts'
-import { Application } from '@oak/oak'
+import favicon from './middlewares/favicon.ts'
+import notFound from './middlewares/not-found.ts'
+import formatEncodingParam from './middlewares/encodings.ts'
+import debug from './middlewares/debug.ts'
 
 const app = new Application()
 
-app.use(encodings)
-app.use(router.routes())
-app.use(router.allowedMethods())
-
-// middleware for handling 404 errors
-app.use(async (ctx) => {
-  ctx.response.redirect('https://github.com/vikiboss/60s')
-})
+app.use(debug, favicon, formatEncodingParam)
+app.use(router.routes(), router.allowedMethods())
+app.use(notFound)
 
 console.log('service is running at http://localhost:8000')
 

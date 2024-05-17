@@ -1,11 +1,10 @@
-import { customAlphabet } from './deps.ts'
+import { customAlphabet } from 'nanoid'
 
-const defaultTips = '数据来自官方，实时更新, 代码开源地址: https://github.com/vikiboss/60s'
-const alphabet = '1234567890abcdefghijklmnopqrstuvwxyz'
+const defaultTips = '所有数据均来自官方，确保稳定与实时。代码开源地址: https://github.com/vikiboss/60s'
 
-export const randomId = (size: number) => customAlphabet(alphabet, size)
+export const randomId = (size: number) => customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', size)
 
-export function responseWithBaseRes(obj: any, message = defaultTips, status = 200) {
+export function responseWithBaseRes(obj: object, message = defaultTips, status = 200) {
   return {
     status,
     message,

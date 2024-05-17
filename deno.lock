@@ -21,6 +21,7 @@
       "jsr:@std/media-types@0.222": "jsr:@std/media-types@0.222.1",
       "jsr:@std/media-types@0.223": "jsr:@std/media-types@0.223.0",
       "jsr:@std/path@0.223": "jsr:@std/path@0.223.0",
+      "jsr:@viki/nanoid@^3.0.0": "jsr:@viki/nanoid@3.0.0",
       "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:path-to-regexp@6.2.1": "npm:path-to-regexp@6.2.1"
     },
@@ -110,6 +111,9 @@
         "dependencies": [
           "jsr:@std/assert@^0.223.0"
         ]
+      },
+      "@viki/nanoid@3.0.0": {
+        "integrity": "a21e85c3a7bacce19becc4aa3ddfbbaf2a19435b2596198713c8422ec128ca34"
       }
     },
     "npm": {
@@ -127,7 +131,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@oak/oak@^16.0.0",
-      "jsr:nanoid@^3.0.0"
+      "jsr:@viki/nanoid@^3.0.0"
     ]
   }
 }

@@ -1,4 +1,4 @@
-import { Router } from '@oak/oak'
+import { Router } from 'oak'
 
 import { fetch60s } from './services/60s.ts'
 import { fetchBili } from './services/bili.ts'
@@ -7,7 +7,7 @@ import { fetchDouyin } from './services/douyin.ts'
 import { fetchRatesByCurrency } from './services/ext-rates.ts'
 import { fetchToutiao } from './services/toutiao.ts'
 import { fetchWeibo } from './services/weibo.ts'
-import { fetchXiaoai } from './services/xiaoai.ts'
+import { fetchXiaoai } from './legacy-services/xiaoai.ts'
 import { fetchZhihu } from './services/zhihu.ts'
 
 const router = new Router()
@@ -37,20 +37,17 @@ router.get('/ex-rates', async (ctx) => {
 
 // bing wallpaper
 router.get('/bing', async (ctx) => {
-  const isImage = ctx.state.type === 'image'
-
-  if (isImage) {
+  if (ctx.state.type === 'image') {
     ctx.response.redirect(await fetchBing(ctx.state.type))
   } else {
     ctx.response.body = await fetchBing(ctx.state.type)
   }
 })
 
-// 小爱
+// 小爱，已失效
 router.get('/xiaoai', async (ctx) => {
-  const url = new URL(ctx.request.url)
-  const text = url.searchParams.get('text') || '你好'
-  const textOnly = url.searchParams.get('text-only') === '1'
+  const text = ctx.request.url.searchParams.get('text') || '你好'
+  const textOnly = ctx.request.url.searchParams.get('text-only') === '1'
   ctx.response.body = await fetchXiaoai(text, textOnly, ctx.state.type)
 })
 

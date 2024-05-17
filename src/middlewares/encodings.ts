@@ -1,28 +1,27 @@
-import { Context, Next } from '@oak/oak'
+import { Context, Next } from 'oak'
 
-const encodes = ['e', 'encode', 'encoding']
+const encodesMap = {
+  json: ['json', 'JSON', 'Json'] as string[],
+  image: ['image', 'img'] as string[],
+  text: ['text', 'txt', 'raw'] as string[],
+} as const
 
-export default async function encodings(ctx: Context, next: Next) {
-  console.log(ctx.request.url) // for debug
+type EncodeType = keyof typeof encodesMap
 
+const encodeParamNames = ['e', 'encode', 'encoding']
+const encodesTypes = Object.keys(encodesMap) as EncodeType[]
+
+export default async function formatEncodingParam(ctx: Context, next: Next) {
   const { searchParams } = new URL(ctx.request.url)
 
-  const isJson = encodes.some((e) => {
-    const value = searchParams.get(e)?.toLowerCase() || ''
-    return value && ['json', 'JSON', 'Json'].includes(value)
-  })
+  const encode = encodeParamNames.find((key) => searchParams.has(key))
+  const encodeValue = encode && searchParams.get(encode)
 
-  const isImage = encodes.some((e) => {
-    const value = searchParams.get(e)?.toLowerCase() || ''
-    return value && ['image', 'img'].includes(value)
-  })
-
-  const isText = encodes.some((e) => {
-    const value = searchParams.get(e)?.toLowerCase() || ''
-    return value && ['text', 'txt', 'raw'].includes(value)
-  })
-
-  ctx.state.type = isImage ? 'image' : isJson ? 'json' : isText ? 'text' : 'json'
+  if (!encodeValue) {
+    ctx.state.type = 'json'
+  } else {
+    ctx.state.type = encodesTypes.find((key) => encodesMap[key].includes(encodeValue)) || 'json'
+  }
 
   await next()
 }
