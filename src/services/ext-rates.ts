@@ -1,4 +1,4 @@
-import { responseWithBaseRes } from '../utils.ts'
+import { wrapperBaseRes } from '../utils.ts'
 
 const api = 'https://open.er-api.com/v6/latest/'
 const caches = new Map()
@@ -18,7 +18,7 @@ export async function fetchRatesByCurrency(currency = 'CNY', type = 'json') {
   }
 
   if (type === 'json') {
-    return responseWithBaseRes(data)
+    return wrapperBaseRes(data)
   } else {
     return Object.entries(data)
       .map(([k, v]) => `${k}: ${v}`)

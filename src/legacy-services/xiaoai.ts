@@ -1,4 +1,4 @@
-import { randomId, responseWithBaseRes } from '../utils.ts'
+import { randomId, wrapperBaseRes } from '../utils.ts'
 
 const api = 'https://ai-voice.api.xiaomi.net/aivs/v2.2/text'
 
@@ -39,7 +39,7 @@ export async function fetchXiaoai(text = '你好', textOnly = false, type = 'jso
   }
 
   if (type === 'json') {
-    return responseWithBaseRes(res)
+    return wrapperBaseRes(res)
   } else {
     return directive.displayText
   }

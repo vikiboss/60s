@@ -9,6 +9,7 @@ import { fetchToutiao } from './services/toutiao.ts'
 import { fetchWeibo } from './services/weibo.ts'
 import { fetchXiaoai } from './legacy-services/xiaoai.ts'
 import { fetchZhihu } from './services/zhihu.ts'
+import { fetchEpicFreeGames } from './services/epic.ts'
 
 const router = new Router()
 
@@ -20,6 +21,7 @@ const routerMap = {
   '/zhihu': fetchZhihu,
   '/toutiao': fetchToutiao,
   '/douyin': fetchDouyin,
+  '/epic': fetchEpicFreeGames,
 }
 
 for (const [path, handler] of Object.entries(routerMap)) {

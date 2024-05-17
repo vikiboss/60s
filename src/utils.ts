@@ -4,7 +4,7 @@ const defaultTips = '所有数据均来自官方，确保稳定与实时。代�
 
 export const randomId = (size: number) => customAlphabet('1234567890abcdefghijklmnopqrstuvwxyz', size)
 
-export function responseWithBaseRes(obj: object, message = defaultTips, status = 200) {
+export function wrapperBaseRes(obj: object, message = defaultTips, status = 200) {
   return {
     status,
     message,

@@ -1,5 +1,5 @@
 import { Context } from 'oak'
-import { responseWithBaseRes, transferText } from '../utils.ts'
+import { wrapperBaseRes, transferText } from '../utils.ts'
 
 interface Item {
   result: string[]
@@ -38,7 +38,7 @@ export async function fetch60s(type = 'json', ctx: Context) {
 
   if (!isV2) {
     if (type === 'json') {
-      return responseWithBaseRes(finalData?.result || [])
+      return wrapperBaseRes(finalData?.result || [])
     } else {
       return finalData?.result.join('\n')
     }
@@ -53,7 +53,7 @@ export async function fetch60s(type = 'json', ctx: Context) {
     const tip = news.pop()?.replace(/【微语】/, '') || ''
 
     if (type === 'json') {
-      return responseWithBaseRes({
+      return wrapperBaseRes({
         news,
         tip,
         updated: finalData?.updated ?? 0,

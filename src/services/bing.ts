@@ -1,4 +1,4 @@
-import { responseWithBaseRes } from '../utils.ts'
+import { wrapperBaseRes } from '../utils.ts'
 
 const api = 'https://cn.bing.com'
 // const api = 'https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN'
@@ -42,6 +42,6 @@ export async function fetchBing(type = 'json') {
   if (type === 'image' || type === 'text') {
     return data.image_url
   } else {
-    return responseWithBaseRes(data)
+    return wrapperBaseRes(data)
   }
 }
