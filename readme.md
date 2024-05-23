@@ -116,17 +116,10 @@
 
 > 赞赏采取**自愿**原则, 收到的赞赏将用于提高开发者积极性和开发环境。
 
-<style>
-#readme-reward img {
-  border-radius: 8px;
-}
-</style>
-
 <div id='readme-reward' style="display: flex; gap: 8px; flex-wrap: wrap; width: 100%">
   <img src="https://smms.viki.moe/2022/11/16/X2kFMdaxvSc1V5P.jpg" alt="wxpay" height="160px"style="margin: 24px;"/>
   <img src="https://smms.viki.moe/2022/11/16/vZ4xkCopKRmIFVX.jpg" alt="alipay" height="160px" style="margin:24px;"/>
 </div>
-
 
 ## ❤️ License
 
