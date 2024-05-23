@@ -79,15 +79,15 @@
 
 - [https://60s.viki.moe/toutiao](https://60s.viki.moe/toutiao)
 
-**8. 🎵 抖音实时热搜榜**
+**9. 🎵 抖音实时热搜榜**
 
 - [https://60s.viki.moe/douyin](https://60s.viki.moe/douyin)
 
-**9. 🎮 Epic 免费游戏**
+**10. 🎮 Epic 免费游戏**
 
 - [https://60s.viki.moe/epic](https://60s.viki.moe/epic)
 
-**9. ☁️ 全球实时天气预报（参数支持多语言）**
+**11. ☁️ 全球实时天气预报（参数支持多语言）**
 
 - [https://60s.viki.moe/weather/北京](https://60s.viki.moe/weather/北京)
 - [https://60s.viki.moe/weather/beijing](https://60s.viki.moe/weather/%E5%8C%97%E4%BA%AC)
