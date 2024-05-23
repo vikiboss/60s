@@ -8,6 +8,8 @@
 
 ## 🪵 API 目录
 
+> 按添加时间排序。
+
 - 🌍 60s 读懂世界
 - 🤖️ 小爱同学（支持音频/文字回复，由于官方接口问题，已失效）
 - 🏞️ Bing 每日壁纸
@@ -19,6 +21,8 @@
 - 🎵 抖音实时热搜
 - 🎮 Epic 免费游戏
 - ☁️ 全球实时天气预报
+- 🔍 百度百科
+- 📅 历史上的今天
 
 ## 🎨 返回格式
 
@@ -92,6 +96,15 @@
 - [https://60s.viki.moe/weather/北京](https://60s.viki.moe/weather/北京)
 - [https://60s.viki.moe/weather/beijing](https://60s.viki.moe/weather/%E5%8C%97%E4%BA%AC)
 - [https://60s.viki.moe/weather/beijing?e=text](https://60s.viki.moe/weather/%E5%8C%97%E4%BA%AC?e=text)
+
+**12. 🔍 百度百科（支持模糊搜索）**
+
+- [https://60s.viki.moe/baike/北京](https://60s.viki.moe/baike/北京)
+- [https://60s.viki.moe/baike/beijing](https://60s.viki.moe/baike/%E5%8C%97%E4%BA%AC)
+
+**13. 📅 历史上的今天（百度百科数据）**
+
+- [https://60s.viki.moe/today_in_history](https://60s.viki.moe/today_in_history)
 
 ## ❤️ License
 

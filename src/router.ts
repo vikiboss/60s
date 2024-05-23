@@ -1,16 +1,18 @@
 import { Router } from 'oak'
 
 import { fetch60s } from './services/60s.ts'
+import { fetchBaike } from './services/baike.ts'
 import { fetchBili } from './services/bili.ts'
 import { fetchBing } from './services/bing.ts'
 import { fetchDouyin } from './services/douyin.ts'
+import { fetchEpicFreeGames } from './services/epic.ts'
 import { fetchRatesByCurrency } from './services/ext-rates.ts'
+import { fetchTodayInHistory } from './services/today-in-history.ts'
 import { fetchToutiao } from './services/toutiao.ts'
+import { fetchWeather } from './services/weather.ts'
 import { fetchWeibo } from './services/weibo.ts'
 import { fetchXiaoai } from './legacy-services/xiaoai.ts'
 import { fetchZhihu } from './services/zhihu.ts'
-import { fetchEpicFreeGames } from './services/epic.ts'
-import { fetchWeather } from './services/weather.ts'
 
 const router = new Router()
 
@@ -23,18 +25,24 @@ const routerMap = {
   '/toutiao': fetchToutiao,
   '/douyin': fetchDouyin,
   '/epic': fetchEpicFreeGames,
+  '/today_in_history': fetchTodayInHistory,
 }
-
-// weather rates
-router.get('/weather/:city', async (ctx) => {
-  ctx.response.body = await fetchWeather(ctx.params.city, ctx.state.type, ctx)
-})
 
 for (const [path, handler] of Object.entries(routerMap)) {
   router.get(path, async (ctx) => {
     ctx.response.body = await handler(ctx.state.type, ctx)
   })
 }
+
+// weather
+router.get('/weather/:city', async (ctx) => {
+  ctx.response.body = await fetchWeather(ctx.params.city, ctx.state.type, ctx)
+})
+
+// baike
+router.get('/baike/:item', async (ctx) => {
+  ctx.response.body = await fetchBaike(ctx.params.item, ctx.state.type)
+})
 
 // exchange rates
 router.get('/ex-rates', async (ctx) => {
