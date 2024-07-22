@@ -112,9 +112,9 @@
 
 ## 💰 赞赏
 
-如果觉得这个项目对你有帮助，不管是学习、工作还是生活，欢迎请我吃冰淇淋～
+如果觉得这个项目对你有帮助，欢迎请我喝咖啡 ☕️～
 
-> 赞赏采取**自愿**原则, 收到的赞赏将用于提高开发者积极性和开发环境。
+> 采取**自愿**原则, 收到的赞赏将用于提高开发者积极性和开发环境。
 
 <div id='readme-reward' style="display: flex; gap: 8px; flex-wrap: wrap; width: 100%">
   <img src="https://smms.viki.moe/2022/11/16/X2kFMdaxvSc1V5P.jpg" alt="wxpay" height="160px"style="margin: 24px;"/>
