@@ -1,7 +1,7 @@
 {
   "tasks": {
-    "start": "deno run --allow-all --unstable ./src/main.ts",
-    "dev": "deno run --allow-all --unstable --watch ./src/main.ts"
+    "start": "deno run --allow-all ./src/main.ts",
+    "dev": "deno run --allow-all --watch ./src/main.ts"
   },
   "imports": {
     "oak": "jsr:@oak/oak@^16.0.0",
