@@ -37,16 +37,23 @@
 
 通过 URL 的 `e`/`encode`/`encoding` 参数进行指定。
 
-比如：[https://60s.viki.moe/60s?e=text](https://60s.viki.moe/60s?e=text)
+比如：[https://60s.viki.moe/60s?v2=1&e=text](https://60s.viki.moe/60s?v2=1&e=text)
 
 ## 🧭 使用说明
 
-**1. 🌍 每天 60s 读懂世界（建议使用 v2 格式）**
+**1. 🌍 每天 60s 读懂世界**
 
 > 此 API 已发布 v2 格式，规范 JSON 返回，通过 `v2=1` 参数开启，如：[https://60s.viki.moe/60s?v2=1](https://60s.viki.moe/60s?v2=1)
 
-- [https://60s.viki.moe](https://60s.viki.moe)
-- [https://60s.viki.moe/60s](https://60s.viki.moe/60s)
+**v2**
+
+- v2 版本 1: [https://60s.viki.moe?v2=1](https://60s.viki.moe?v2=1)
+- v2 版本 2: [https://60s.viki.moe/60s?v2=1](https://60s.viki.moe/60s?v2=1)
+
+**v1**
+
+- v1 版本 1: [https://60s.viki.moe](https://60s.viki.moe)
+- v1 版本 2: [https://60s.viki.moe/60s](https://60s.viki.moe/60s)
 
 **2. 🤖️ 小爱同学（由于官方接口问题，已失效）**
 
