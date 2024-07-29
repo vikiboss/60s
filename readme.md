@@ -2,8 +2,6 @@
 
 不仅仅是每天 60 秒读懂世界～
 
-
-
 这是一个使用 [Deno](https://deno.com/) 构建的简单 API 列表项目，动机请参考[这篇文章](https://xlog.viki.moe/60s)。你也可以参考[这里](https://github.com/vikiboss/60s/issues/2#issuecomment-1765769220)自行部署。
 
 如果需要自己部署，推荐使用 [Deno Deploy](https://deno.com/deploy)，不仅免费、全球加速，还支持绑定自定义域名～
@@ -27,6 +25,7 @@
 - ☁️ 全球实时天气预报
 - 🔍 百度百科
 - 📅 历史上的今天
+- 🏅️ 2024 巴黎奥运会奖牌榜
 
 ## 🎨 返回格式
 
@@ -117,9 +116,14 @@
 
 - [https://60s.viki.moe/today_in_history](https://60s.viki.moe/today_in_history)
 
+**14. 🏅️ 2024 巴黎奥运会奖牌榜**
+
+- [https://60s.viki.moe/olympic](https://60s.viki.moe/olympic)
+- [https://60s.viki.moe/olympic?e=text](https://60s.viki.moe/olympic?e=text)
+
 ## 💰 赞赏
 
-如果觉得这个项目对你有帮助，欢迎请我喝咖啡 ☕️～
+如果觉得这个项目对你有帮助，欢迎请我喝咖啡 ☕️ ～
 
 > 采取**自愿**原则, 收到的赞赏将用于提高开发者积极性和开发环境。
 
