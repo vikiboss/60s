@@ -58,7 +58,7 @@ export async function fetchOlympics(type = "json") {
 		: list
 				.map((e, idx) => {
 					const { gold, silver, bronze, total } = e;
-					return `${idx + 1}. ${e.description} - 🏅️: ${gold}, 🥈: ${silver}, 🥉: ${bronze}, 共 ${total} 枚`;
+					return `${idx + 1}. ${e.description} 🏅️${gold} 🥈${silver} 🥉${bronze} (${total})`;
 				})
 				.join("\n");
 }
