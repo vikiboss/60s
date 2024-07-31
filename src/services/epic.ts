@@ -11,11 +11,9 @@ export async function fetchEpicFreeGames(type: string = 'json') {
   const data = (await (await fetch(epicApi)).json()) || {}
   const games = data?.data?.Catalog?.searchStore?.elements || []
 
-  // deno-lint-ignore no-explicit-any
   const actualGames = games.filter((e: any) => isPass7DaysAgo(e.effectiveDate))
 
   return type === 'json'
     ? wrapperBaseRes(actualGames)
-    : // deno-lint-ignore no-explicit-any
-      actualGames.map((e: any, idx: number) => `${idx + 1}. ${e.title}`).join('\n')
+    : actualGames.map((e: any, idx: number) => `${idx + 1}. ${e.title}`).join('\n')
 }

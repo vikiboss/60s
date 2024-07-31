@@ -6,5 +6,10 @@
   "imports": {
     "oak": "jsr:@oak/oak@^16.0.0",
     "nanoid": "jsr:@viki/nanoid@^3.0.0"
+  },
+  "lint": {
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
   }
 }

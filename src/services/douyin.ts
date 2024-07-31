@@ -6,12 +6,10 @@ export async function fetchDouyin(type = 'json') {
   const { data = {} } = await (await fetch(api)).json()
   const { word_list: list = [], active_time = '' } = data
 
-  // deno-lint-ignore no-explicit-any
   const rawRes = list.map((e: any, i: number) => `${i + 1}. ${e?.word}`).join('\n')
 
   return type === 'json'
     ? wrapperBaseRes(
-        // deno-lint-ignore no-explicit-any
         list.map((e: any) => ({
           word: e?.word,
           // word_cover: e?.word_cover,

@@ -7,7 +7,7 @@ export async function fetchRatesByCurrency(currency = 'CNY', type = 'json') {
   const dailyUniqueKey = `${currency.toUpperCase()}-${new Date().toLocaleDateString()}`
   const cache = caches.get(dailyUniqueKey)
 
-  let data
+  let data: any
 
   if (cache) {
     data = cache
@@ -19,9 +19,9 @@ export async function fetchRatesByCurrency(currency = 'CNY', type = 'json') {
 
   if (type === 'json') {
     return wrapperBaseRes(data)
-  } else {
-    return Object.entries(data)
-      .map(([k, v]) => `${k}: ${v}`)
-      .join('\n')
   }
+
+  return Object.entries(data)
+    .map(([k, v]) => `${k}: ${v}`)
+    .join('\n')
 }

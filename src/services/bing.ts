@@ -8,7 +8,7 @@ export async function fetchBing(type = 'json') {
   const dailyUniqueKey = new Date().toLocaleDateString()
   const cache = caches.get(dailyUniqueKey)
 
-  let data
+  let data: any
 
   if (cache) {
     data = cache
@@ -41,7 +41,7 @@ export async function fetchBing(type = 'json') {
 
   if (type === 'image' || type === 'text') {
     return data.image_url
-  } else {
-    return wrapperBaseRes(data)
   }
+
+  return wrapperBaseRes(data)
 }
