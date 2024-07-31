@@ -1,12 +1,16 @@
 # ⏰ 60s API
 
-不仅仅是每天 60 秒读懂世界～
+使用 [Deno](https://deno.com/) 构建的简单 API 列表项目，不仅仅是每天 60 秒读懂世界～
 
-这是一个使用 [Deno](https://deno.com/) 构建的简单 API 列表项目，动机请参考[这篇文章](https://xlog.viki.moe/60s)。你也可以参考[这里](https://github.com/vikiboss/60s/issues/2#issuecomment-1765769220)自行部署。
+请参考 [这篇文章](https://xlog.viki.moe/60s) 了解更多，可以参考 [这里](https://github.com/vikiboss/60s/issues/2#issuecomment-1765769220) 自行部署。
 
-如果需要自己部署，推荐使用 [Deno Deploy](https://deno.com/deploy)，不仅免费、全球加速，还支持绑定自定义域名～
+> 60s 接口数据目前来源于 [这个](https://www.zhihu.com/column/c_1715391799055720448) 知乎专栏，原专栏在 [这里](https://www.zhihu.com/column/c_1261258401923026944) （已停更）。
+>
+> 其他接口的数据均来源于对应官方、权威平台的数据接口，确保数据的实时与稳定。
 
-> 每天 60 秒读懂世界 API 的数据目前来源于[这个](https://www.zhihu.com/column/c_1715391799055720448)知乎专栏，原专栏在[这里](https://www.zhihu.com/column/c_1261258401923026944)，但是原专栏已不在知乎更新，这个新的专栏貌似是搬运的，希望它能坚持更新下去吧 🙏。
+## 用户群
+
+使用过程中有任何问题或建议，欢迎加入企鹅群反馈: [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)。
 
 ## 🪵 API 目录
 
