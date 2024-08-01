@@ -25,7 +25,7 @@ let lastFetchTime = Date.now()
 let cache = [] as NationItem[]
 
 export async function fetchOlympics(type = 'json') {
-  if (!cache.length || Date.now() - lastFetchTime >= 1000 * 30) {
+  if (!cache.length || Date.now() - lastFetchTime >= 1000) {
     lastFetchTime = Date.now()
 
     const [enData, zhData] = await Promise.all([
