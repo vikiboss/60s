@@ -9,10 +9,7 @@ interface Item {
   url: string
 }
 
-const cache: Map<number, Item> = new Map()
-
-const timeZoneOffset = 8
-const oneHourMs = 60 * 60 * 1000
+const cache: Map<string, Item> = new Map()
 
 const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
 
@@ -21,9 +18,22 @@ const tagReg = /<[^<>]+>/g
 
 const zseCk = Deno.env.get('ZSE_CK') ?? ''
 
+function getLocaleTodayString(locale = 'zh-CN', timeZone = 'Asia/Shanghai') {
+  const today = new Date()
+
+  const formatter = new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    timeZone: timeZone,
+  })
+
+  return formatter.format(today)
+}
+
 export async function fetch60s(type: string, ctx: Context) {
   const isV2 = !!ctx.request.url.searchParams.get('v2')
-  const today = Math.trunc((Date.now() + timeZoneOffset * oneHourMs) / (24 * oneHourMs))
+  const today = getLocaleTodayString()
 
   if (!cache.get(today)) {
     const { data = [] } = await (await fetch(api, { headers: { cookie: `__zse_ck=${zseCk};` } })).json()
@@ -38,23 +48,33 @@ export async function fetch60s(type: string, ctx: Context) {
   }
 
   const finalData = cache.get(today)
+  const finalList = (finalData?.result || []).filter((e) => e.length > 3)
 
   if (!isV2) {
     if (type === 'json') {
-      return wrapperBaseRes(finalData?.result || [])
+      return wrapperBaseRes(finalList)
     }
 
-    return finalData?.result.join('\n')
+    return finalList.join('\n')
   }
 
-  const news = (finalData?.result || []).map((e) => {
-    return e
-      .replace(/^\d+、\s*/g, '')
-      .replace(/。$/, '')
-      .trim()
-  })
+  const news = finalList
+    .map((e) => {
+      return e
+        .replace(/^\d+、\s*/g, '')
+        .replace(/。$/, '')
+        .trim()
+    })
+    .filter(Boolean)
 
-  const tip = news.pop()?.replace(/【微语】/, '') || ''
+  let tip = ''
+
+  const tipIdx = news.findIndex((e) => e.includes('微语'))
+
+  if (tipIdx !== -1) {
+    tip = news[tipIdx].replace(/【微语】/, '')
+    news.splice(tipIdx, 1)
+  }
 
   if (type === 'json') {
     return wrapperBaseRes({
@@ -66,5 +86,5 @@ export async function fetch60s(type: string, ctx: Context) {
     })
   }
 
-  return [...news, tip].join('\n')
+  return news.map((e, idx) => `${idx + 1}. ${e}`).join('\n') + (tip ? `\n\n微语：${tip}` : '')
 }

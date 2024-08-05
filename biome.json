@@ -20,6 +20,9 @@
       "suspicious": {
         "noExplicitAny": "off"
       },
+      "performance": {
+        "noDelete": "off"
+      },
       "style": {
         "noInferrableTypes": "off",
         "noNonNullAssertion": "off"

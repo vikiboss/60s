@@ -40,7 +40,7 @@ export async function fetchXiaoai(text = '你好', textOnly = false, type = 'jso
 
   if (type === 'json') {
     return wrapperBaseRes(res)
-  } else {
-    return directive.displayText
   }
+
+  return directive.displayText
 }
