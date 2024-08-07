@@ -16,7 +16,7 @@ const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?li
 const reg = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
 const tagReg = /<[^<>]+>/g
 
-const zseCk = Deno.env.get('ZSE_CK') ?? ''
+const ZHIHU_CK = Deno.env.get('ZHIHU_CK') ?? ''
 
 function getLocaleTodayString(locale = 'zh-CN', timeZone = 'Asia/Shanghai') {
   const today = new Date()
@@ -36,7 +36,7 @@ export async function fetch60s(type: string, ctx: Context) {
   const today = getLocaleTodayString()
 
   if (!cache.get(today)) {
-    const { data = [] } = await (await fetch(api, { headers: { cookie: `__zse_ck=${zseCk};` } })).json()
+    const { data = [] } = await (await fetch(api, { headers: { cookie: ZHIHU_CK } })).json()
     const { content = '', url = '', title_image = '', updated = 0 } = data[0]
     const contents: string[] = content.match(reg) ?? []
     const mapFn = (e: string) => transferText(e.replace(tagReg, '').trim(), 'a2u')
