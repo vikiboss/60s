@@ -30,6 +30,7 @@
 1. 🔍 百度百科
 1. 📅 历史上的今天
 1. 🏅️ 2024 巴黎奥运会奖牌榜
+1. ❓ 知乎实时热门问题
 
 ## 🎨 返回格式
 
@@ -123,6 +124,11 @@
 
 - [https://60s.viki.moe/olympic](https://60s.viki.moe/olympic)
 - [https://60s.viki.moe/olympic?e=text](https://60s.viki.moe/olympic?e=text)
+
+### 15. ❓ 知乎实时热门问题
+
+- [https://60s.viki.moe/zhihu-hot](https://60s.viki.moe/zhihu-hot)
+- [https://60s.viki.moe/zhihu-hot?e=text](https://60s.viki.moe/zhihu-hot?e=text)
 
 ## 💰 赞赏
 
