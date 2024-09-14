@@ -10,6 +10,7 @@ export async function fetchZhihuHot(type = 'json') {
   const data = JSON.parse(html.match(jsonReg)?.[0].replace(jsonReg, '$1') || '{}')
   const list = (data?.initialState?.topstory?.hotList || []).map((e: any) => ({
     title: e.target.titleArea.text,
+    detail: e.target.excerptArea.text,
     cover: e.target.imageArea.url,
     metrics: e.target.metricsArea.text,
     link: e.target.link.url,
