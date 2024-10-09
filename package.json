@@ -1,0 +1,15 @@
+{
+  "name": "60s",
+  "type": "module",
+  "scripts": {
+    "dev": "esno ./src/main.ts"
+  },
+  "dependencies": {
+    "@oakserver/oak": "^14.1.0",
+    "nanoid": "^5.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.7.5",
+    "esno": "^4.8.0"
+  }
+}

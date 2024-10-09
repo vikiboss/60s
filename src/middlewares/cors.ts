@@ -1,4 +1,4 @@
-import type { Context, Next } from "oak";
+import type { Context, Next } from "@oakserver/oak";
 
 export default async function cors(ctx: Context, next: Next) {
 	ctx.response.headers.set("Access-Control-Allow-Origin", "*");
