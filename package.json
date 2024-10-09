@@ -1,6 +1,7 @@
 {
   "name": "60s",
   "type": "module",
+  "packageManager":"pnpm@9.12.1",
   "scripts": {
     "dev": "esno ./src/main.ts"
   },
