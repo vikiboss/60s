@@ -1,4 +1,4 @@
-import type { Context, Next } from '@oakserver/oak'
+import type { Context, Next } from '@oak/oak'
 
 export default async function favicon(ctx: Context, next: Next) {
   if (ctx.request.url.pathname === '/favicon.ico') {

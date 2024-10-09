@@ -1,6 +1,6 @@
 import { wrapperBaseRes, transferText } from '../utils.ts'
 
-import type { Context } from '@oakserver/oak'
+import type { Context } from '@oak/oak'
 
 interface Item {
   result: string[]

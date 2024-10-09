@@ -5,11 +5,12 @@
     "dev": "esno ./src/main.ts"
   },
   "dependencies": {
-    "@oakserver/oak": "^14.1.0",
-    "nanoid": "^5.0.7"
+    "@oak/oak": "npm:@jsr/oak__oak@14",
+    "@viki/nanoid": "npm:@jsr/viki__nanoid@^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
-    "esno": "^4.8.0"
+    "esno": "^4.8.0",
+    "wrangler": "^3.80.2"
   }
 }

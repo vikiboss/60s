@@ -22,7 +22,6 @@
       "jsr:@std/media-types@0.224": "jsr:@std/media-types@0.224.1",
       "jsr:@std/path@0.223": "jsr:@std/path@0.223.0",
       "jsr:@viki/nanoid@^3.0.0": "jsr:@viki/nanoid@3.0.0",
-      "npm:@oakserver/oak@^14.1.0": "npm:@oakserver/oak@14.1.0",
       "npm:esno@^4.8.0": "npm:esno@4.8.0",
       "npm:nanoid@^5.0.7": "npm:nanoid@5.0.7",
       "npm:path-to-regexp@6.2.1": "npm:path-to-regexp@6.2.1"
@@ -122,21 +121,6 @@
       }
     },
     "npm": {
-      "@deno/shim-crypto@0.3.1": {
-        "integrity": "sha512-ed4pNnfur6UbASEgF34gVxR9p7Mc3qF+Ygbmjiil8ws5IhNFhPDFy5vE5hQAUA9JmVsSxXPcVLM5Rf8LOZqQ5Q==",
-        "dependencies": {}
-      },
-      "@deno/shim-deno-test@0.5.0": {
-        "integrity": "sha512-4nMhecpGlPi0cSzT67L+Tm+GOJqvuk8gqHBziqcUQOarnuIax1z96/gJHCSIz2Z0zhxE6Rzwb3IZXPtFh51j+w==",
-        "dependencies": {}
-      },
-      "@deno/shim-deno@0.18.2": {
-        "integrity": "sha512-oQ0CVmOio63wlhwQF75zA4ioolPvOwAoK0yuzcS5bDC1JUvH3y1GS8xPh8EOpcoDQRU4FTG8OQfxhpR+c6DrzA==",
-        "dependencies": {
-          "@deno/shim-deno-test": "@deno/shim-deno-test@0.5.0",
-          "which": "which@4.0.0"
-        }
-      },
       "@esbuild/aix-ppc64@0.23.1": {
         "integrity": "sha512-6VhYk1diRqrhBAqpJEdjASR/+WVRtfjpqKuNw11cLiaWpAT/Uu+nokB+UJnevzy/P9C/ty6AOe0dwueMrGh/iQ==",
         "dependencies": {}
@@ -233,15 +217,6 @@
         "integrity": "sha512-BHpFFeslkWrXWyUPnbKm+xYYVYruCinGcftSBaa8zoF9hZO4BcSCFUvHVTtzpIY6YzUnYtuEhZ+C9iEXjxnasg==",
         "dependencies": {}
       },
-      "@oakserver/oak@14.1.0": {
-        "integrity": "sha512-lA2o9dW0Oi2NG6/Mp2a9W4eCnj7Ab6utP4XZc/13Dlg+fhVdDcxqq0qOgtHW6JyMg1ORJIfj1nKUy5XQm2pshw==",
-        "dependencies": {
-          "@deno/shim-crypto": "@deno/shim-crypto@0.3.1",
-          "@deno/shim-deno": "@deno/shim-deno@0.18.2",
-          "tslib": "tslib@2.6.3",
-          "undici": "undici@6.19.8"
-        }
-      },
       "esbuild@0.23.1": {
         "integrity": "sha512-VVNz/9Sa0bs5SELtn3f7qhJCDPCF5oMEl5cO9/SSinpE9hbPVvxbd572HH5AKiP7WD8INO53GgfDDhRjkylHEg==",
         "dependencies": {
@@ -287,10 +262,6 @@
           "resolve-pkg-maps": "resolve-pkg-maps@1.0.0"
         }
       },
-      "isexe@3.1.1": {
-        "integrity": "sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==",
-        "dependencies": {}
-      },
       "nanoid@5.0.7": {
         "integrity": "sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==",
         "dependencies": {}
@@ -303,26 +274,12 @@
         "integrity": "sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==",
         "dependencies": {}
       },
-      "tslib@2.6.3": {
-        "integrity": "sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==",
-        "dependencies": {}
-      },
       "tsx@4.19.1": {
         "integrity": "sha512-0flMz1lh74BR4wOvBjuh9olbnwqCPc35OOlfyzHba0Dc+QNUeWX/Gq2YTbnwcWPO3BMd8fkzRVrHcsR+a7z7rA==",
         "dependencies": {
           "esbuild": "esbuild@0.23.1",
           "fsevents": "fsevents@2.3.3",
           "get-tsconfig": "get-tsconfig@4.8.1"
-        }
-      },
-      "undici@6.19.8": {
-        "integrity": "sha512-U8uCCl2x9TK3WANvmBavymRzxbfFYG+tAu+fgx3zxQy3qdagQqBLwJVrdyO1TBfUXvfKveMKJZhpvUYoOjM+4g==",
-        "dependencies": {}
-      },
-      "which@4.0.0": {
-        "integrity": "sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg==",
-        "dependencies": {
-          "isexe": "isexe@3.1.1"
         }
       }
     }
@@ -335,10 +292,11 @@
     ],
     "packageJson": {
       "dependencies": [
-        "npm:@oakserver/oak@^14.1.0",
+        "npm:@jsr/oak__oak@14",
         "npm:@types/node@^22.7.5",
         "npm:esno@^4.8.0",
-        "npm:nanoid@^5.0.7"
+        "npm:nanoid@^5.0.7",
+        "npm:wrangler@^3.80.2"
       ]
     }
   }

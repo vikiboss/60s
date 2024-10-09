@@ -1,10 +1,10 @@
 {
   "tasks": {
-    "start": "deno run --unstable-cron --allow-all ./src/main.ts",
-    "dev": "deno run --unstable-cron --allow-all --watch ./src/main.ts"
+    "start": "deno run --unstable-cron --allow-all ./deno.ts",
+    "dev": "deno run --unstable-cron --allow-all --watch ./deno.ts"
   },
   "imports": {
-    "@oakserver/oak": "jsr:@oak/oak@^16.0.0",
+    "@oak/oak": "jsr:@oak/oak@^16.0.0",
     "nanoid": "jsr:@viki/nanoid@^3.0.0"
   },
   "lint": {

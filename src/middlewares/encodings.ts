@@ -1,4 +1,4 @@
-import type { Context, Next } from '@oakserver/oak'
+import type { Context, Next } from '@oak/oak'
 
 const encodesMap = {
   json: ['json', 'JSON', 'Json'] as string[],

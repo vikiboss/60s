@@ -1,4 +1,4 @@
-import { Router } from '@oakserver/oak'
+import { Router } from '@oak/oak'
 
 import { fetch60s } from './services/60s.ts'
 import { fetchBaike } from './services/baike.ts'
