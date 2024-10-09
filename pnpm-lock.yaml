@@ -11,7 +11,7 @@ importers:
       '@oak/oak':
         specifier: npm:@jsr/oak__oak@14
         version: '@jsr/oak__oak@14.2.0'
-      '@viki/nanoid':
+      nanoid:
         specifier: npm:@jsr/viki__nanoid@^3.0.0
         version: '@jsr/viki__nanoid@3.0.0'
     devDependencies:
