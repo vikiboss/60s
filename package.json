@@ -6,7 +6,7 @@
   },
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@14",
-    "@viki/nanoid": "npm:@jsr/viki__nanoid@^3.0.0"
+    "nanoid": "npm:@jsr/viki__nanoid@^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.7.5",
