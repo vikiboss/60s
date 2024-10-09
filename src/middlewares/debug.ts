@@ -1,4 +1,4 @@
-import type { Context, Next } from "oak";
+import type { Context, Next } from "@oakserver/oak";
 
 export default async function debug(ctx: Context, next: Next) {
 	// for debug

@@ -1,4 +1,4 @@
-import type { Context } from 'oak'
+import type { Context } from '@oakserver/oak'
 
 const cacheMap = new Map<string, [number, object]>()
 const cacheInterval = 10 * 60_1000 // 10 分钟缓存

@@ -4,7 +4,7 @@
     "dev": "deno run --unstable-cron --allow-all --watch ./src/main.ts"
   },
   "imports": {
-    "oak": "jsr:@oak/oak@^16.0.0",
+    "@oakserver/oak": "jsr:@oak/oak@^16.0.0",
     "nanoid": "jsr:@viki/nanoid@^3.0.0"
   },
   "lint": {

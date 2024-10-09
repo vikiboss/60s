@@ -1,6 +1,6 @@
 import { wrapperBaseRes, transferText } from '../utils.ts'
 
-import type { Context } from 'oak'
+import type { Context } from '@oakserver/oak'
 
 interface Item {
   result: string[]
@@ -11,15 +11,10 @@ interface Item {
 
 const cache: Map<string, Item> = new Map()
 
-// 每天 4 点清空缓存，此时知乎的数据应该还没更新
-Deno.cron('clear cache', { hour: { exact: 4 } }, () => cache.clear())
-
 const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
 
 const itemReg = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
 const tagReg = /<[^<>]+>/g
-
-const ZHIHU_CK = Deno.env.get('ZHIHU_CK') ?? ''
 
 function getLocaleTodayString(timestamp = Date.now(), locale = 'zh-CN', timeZone = 'Asia/Shanghai') {
   const today = new Date(timestamp)
@@ -41,6 +36,7 @@ export async function fetch60s(type: string, ctx: Context) {
   let returnData: Item | undefined = cache.get(today)
 
   if (!returnData) {
+    const ZHIHU_CK = globalThis.env?.ZHIHU_CK ?? ''
     const { data = [] } = await (await fetch(api, { headers: { cookie: ZHIHU_CK } })).json()
     const { content = '', url = '', title_image = '', updated = 0 } = data[0] || {}
 
