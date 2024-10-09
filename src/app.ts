@@ -1,4 +1,4 @@
-import { Application } from '@oak/oak'
+import { Application } from '@oak/oak/application'
 
 import cors from './middlewares/cors.ts'
 import debug from './middlewares/debug.ts'
