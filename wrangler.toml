@@ -1,0 +1,2 @@
+name = "60s"
+main = "cf-worker.ts"
