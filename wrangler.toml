@@ -2,6 +2,3 @@ name = "60s"
 main = "cf-worker.ts"
 compatibility_date = "2024-10-09"
 compatibility_flags = [ "nodejs_compat" ]
-
-[vars]
-ZHIHU_CK = ""
