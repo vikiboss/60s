@@ -33,6 +33,10 @@ export async function fetch60s(type: string, ctx: Context) {
   const isV2 = !!ctx.request.url.searchParams.get('v2')
   const today = getLocaleTodayString()
 
+  const ZHIHU_CK = globalThis.env?.ZHIHU_CK ?? ''
+
+  console.log('ZHIHU_CK', ZHIHU_CK)
+
   let returnData: Item | undefined = cache.get(today)
 
   if (!returnData) {
