@@ -15,7 +15,7 @@ export async function fetchBing(type = 'json') {
   } else {
     // const { images = [] } = await (await fetch(api)).json()
     const rawContent = await (await fetch(api)).text()
-    const rawJson = /var _model =([^;]+);/.exec(rawContent)![1]
+    const rawJson = /var _model =([^;]+);/.exec(rawContent)?.[1] || '{}'
     const images = JSON.parse(rawJson)?.MediaContents ?? []
 
     if (images.length) {

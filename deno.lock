@@ -23,7 +23,6 @@
       "jsr:@std/path@0.223": "jsr:@std/path@0.223.0",
       "jsr:@viki/nanoid@^3.0.0": "jsr:@viki/nanoid@3.0.0",
       "npm:esno@^4.8.0": "npm:esno@4.8.0",
-      "npm:nanoid@^5.0.7": "npm:nanoid@5.0.7",
       "npm:path-to-regexp@6.2.1": "npm:path-to-regexp@6.2.1"
     },
     "jsr": {
@@ -262,10 +261,6 @@
           "resolve-pkg-maps": "resolve-pkg-maps@1.0.0"
         }
       },
-      "nanoid@5.0.7": {
-        "integrity": "sha512-oLxFY2gd2IqnjcYyOXD8XGCftpGtZP2AbHbOkthDkvRywH5ayNtPVy9YlOPcHckXzbLTCHpkb7FB+yuxKV13pQ==",
-        "dependencies": {}
-      },
       "path-to-regexp@6.2.1": {
         "integrity": "sha512-JLyh7xT1kizaEvcaXOQwOc2/Yhw6KZOvPf1S8401UyLk86CU79LN3vl7ztXGm/pZ+YjoyAJ4rxmHwbkBXJX+yw==",
         "dependencies": {}
@@ -293,9 +288,9 @@
     "packageJson": {
       "dependencies": [
         "npm:@jsr/oak__oak@14",
+        "npm:@jsr/viki__nanoid@^3.0.0",
         "npm:@types/node@^22.7.5",
         "npm:esno@^4.8.0",
-        "npm:nanoid@^5.0.7",
         "npm:wrangler@^3.80.2"
       ]
     }
