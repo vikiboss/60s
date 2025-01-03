@@ -29,6 +29,22 @@ function getLocaleTodayString(timestamp = Date.now(), locale = 'zh-CN', timeZone
   return formatter.format(today)
 }
 
+function getLocaleTimeString(timestamp = Date.now(), locale = 'zh-CN', timeZone = 'Asia/Shanghai') {
+  const today = new Date(timestamp)
+
+  const formatter = new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    timeZone,
+  })
+
+  return formatter.format(today)
+}
+
 export async function fetch60s(type: string, ctx: Context) {
   const isV2 = !!ctx.request.url.searchParams.get('v2')
   const today = getLocaleTodayString()
@@ -93,6 +109,9 @@ export async function fetch60s(type: string, ctx: Context) {
       news,
       tip,
       updated: returnData?.updated ?? 0,
+      updatedAt: (returnData?.updated ?? 0) / 1000,
+      sourceUpdatedDate: getLocaleTimeString(returnData?.updated ?? new Date().getTime()),
+      apiUpdateDate: getLocaleTimeString(new Date().getTime()),
       url: returnData?.url ?? '',
       cover: returnData?.title_image ?? '',
     })
