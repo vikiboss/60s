@@ -1,17 +1,16 @@
 {
-  "name": "60s",
+  "name": "60s-api",
   "type": "module",
-  "packageManager":"pnpm@9.12.1",
+  "packageManager": "pnpm@9.12.1",
   "scripts": {
     "dev": "esno ./src/main.ts"
   },
   "dependencies": {
-    "@oak/oak": "npm:@jsr/oak__oak@14",
-    "nanoid": "npm:@jsr/viki__nanoid@^3.0.0"
+    "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
   },
   "devDependencies": {
-    "@types/node": "^22.7.5",
+    "@types/node": "^22.10.5",
     "esno": "^4.8.0",
-    "wrangler": "^3.80.2"
+    "wrangler": "^3.99.0"
   }
 }

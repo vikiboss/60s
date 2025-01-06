@@ -1,9 +1,11 @@
-import type { Context, Next } from '@oak/oak'
+import type { Middleware } from '@oak/oak'
 
-export default async function notFound(ctx: Context, next: Next) {
-  await next()
+export function notFound(): Middleware {
+  return async (ctx, next) => {
+    await next()
 
-  ctx.response.redirect('https://github.com/vikiboss/60s')
+    ctx.response.redirect('https://github.com/vikiboss/60s')
 
-  return
+    return
+  }
 }

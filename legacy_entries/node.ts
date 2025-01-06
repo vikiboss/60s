@@ -1,5 +1,5 @@
 import process from 'node:process'
-import { app } from './src/app.ts'
+import { app } from '../legacy_src/app.ts'
 
 globalThis.env = process.env || {}
 
