@@ -8,11 +8,14 @@ class ServiceBili implements Service<'/bili'> {
 
   handle(): RouterMiddleware<'/bili'> {
     return async ctx => {
-      const data = await this.#fetchBili()
+      const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = data.map((e, i) => `${i + 1}. ${e.show_name}`).join('\n')
+          ctx.response.body = data
+            .slice(0, 20)
+            .map((e, i) => `${i + 1}. ${e.show_name}`)
+            .join('\n')
           break
 
         case 'json':
@@ -23,7 +26,7 @@ class ServiceBili implements Service<'/bili'> {
     }
   }
 
-  async #fetchBili() {
+  async #fetch() {
     const { data = {} } = await (await fetch(this.#API)).json()
 
     return (data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as {

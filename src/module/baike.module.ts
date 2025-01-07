@@ -16,7 +16,7 @@ class ServiceBaike implements Service<'/baike'> {
         return
       }
 
-      const { data } = await this.#fetchBaike(ctx.request.url.searchParams.get('word') ?? '')
+      const { data } = await this.#fetch(ctx.request.url.searchParams.get('word') ?? '')
 
       switch (ctx.state.encoding) {
         case 'text':
@@ -31,7 +31,7 @@ class ServiceBaike implements Service<'/baike'> {
     }
   }
 
-  async #fetchBaike(item: string) {
+  async #fetch(item: string) {
     const response = await fetch(`${this.#API}/item/${encodeURIComponent(item)}`)
 
     return (await response.json()) as {

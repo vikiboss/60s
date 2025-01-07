@@ -3,6 +3,7 @@ import { Router } from '@oak/oak/router'
 import { service60s } from './module/60s.module'
 import { serviceBaike } from './module/baike.module'
 import { serviceBing } from './module/bing.module'
+import { serviceDouyin } from './module/douyin.module'
 
 export const router = new Router({
   prefix: '/api/v1',
@@ -11,3 +12,4 @@ export const router = new Router({
 router.get('/60s', service60s.handle())
 router.get('/baike', serviceBaike.handle())
 router.get('/bing', serviceBing.handle())
+router.get('/douyin', serviceDouyin.handle())

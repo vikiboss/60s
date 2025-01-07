@@ -23,7 +23,7 @@ class Service60s implements Service<'/60s'> {
 
   handle(): RouterMiddleware<'/60s'> {
     return async ctx => {
-      const data = await this.#fetch60s()
+      const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
         case 'text':
@@ -38,7 +38,7 @@ class Service60s implements Service<'/60s'> {
     }
   }
 
-  async #fetch60s() {
+  async #fetch() {
     const today = Common.localeDateStr()
     const cachedItem = this.#cache.get(today)
 

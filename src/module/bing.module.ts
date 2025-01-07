@@ -3,24 +3,23 @@ import { Common } from '../common'
 import type { RouterMiddleware } from '@oak/oak'
 import type { Service } from '../service'
 
+interface BingData {
+  title: string
+  headline: string
+  description: string
+  image_url: string
+  main_text: string
+  copyright: string
+  update_date: string
+}
+
 class ServiceBing implements Service<'/bing'> {
   #API = 'https://cn.bing.com'
-  #cache = new Map<
-    string,
-    {
-      date: string
-      headline: string
-      title: string
-      description: string
-      image_url: string
-      main_text: string
-      copyright: string
-    }
-  >()
+  #cache = new Map<string, BingData>()
 
   handle(): RouterMiddleware<'/bing'> {
     return async ctx => {
-      const data = await this.#fetchBing()
+      const data = await this.#fetch()
 
       if (!data) {
         ctx.response.status = 500
@@ -43,8 +42,8 @@ class ServiceBing implements Service<'/bing'> {
     }
   }
 
-  async #fetchBing() {
-    const dailyUniqueKey = new Date().toLocaleDateString()
+  async #fetch() {
+    const dailyUniqueKey = Common.localeDateStr()
     const cache = this.#cache.get(dailyUniqueKey)
 
     if (cache) {
@@ -84,19 +83,19 @@ class ServiceBing implements Service<'/bing'> {
         TriviaId: string
       }
 
-      const today = new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')
+      const today = Common.localeDateStr()
 
       const data = {
-        date: today,
-        headline: Headline,
         title: Title,
+        headline: Headline,
         description: Description,
         image_url: Image?.Wallpaper ? `https://cn.bing.com${Image.Wallpaper}` : '',
         main_text: QuickFact?.MainText || '',
         copyright: Copyright,
+        update_date: today,
       }
 
-      this.#cache.set(dailyUniqueKey, data)
+      this.#cache.set(today, data)
 
       return data
     }
