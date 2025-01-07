@@ -6,7 +6,7 @@ import { favicon } from './middlewares/favicon'
 import { debug } from './middlewares/debug'
 import { encoding } from './middlewares/encoding'
 
-const app = new Application()
+export const app = new Application()
 
 app.use(
   debug(),
@@ -17,9 +17,3 @@ app.use(
   router.allowedMethods(),
   notFound()
 )
-
-console.log('service is running at http://localhost:8080')
-
-await app.listen({
-  port: 8080,
-})

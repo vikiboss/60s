@@ -1,26 +1,35 @@
 import { Common } from '../common'
 
-import type { Middleware } from '@oak/oak'
-import type { Service } from '../types'
+import type { RouterMiddleware } from '@oak/oak'
+import type { Service } from '../service'
 
 interface DailyNewsItem {
   news: string[]
   link: string
   cover: string
-  updatedAt: number
-  apiUpdatedAt: string
+  extra: {
+    updated_at: number
+    source_updated_at: string
+    api_updated_at: string
+  }
 }
 
-class Service60s implements Service {
-  constructor(private cache: Map<string, DailyNewsItem> = new Map()) {}
+class Service60s implements Service<'/60s'> {
+  #API = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
+  #REG_TAG = /<[^<>]+>/g
+  #REG_ITEM = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
+  #cache = new Map<string, DailyNewsItem>()
+  #TIP_PREFIX = '【微语】'
 
-  handle(): Middleware {
+  handle(): RouterMiddleware<'/60s'> {
     return async ctx => {
       const data = await this.#fetch60s()
+
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = data.news.join('\n')
           break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)
@@ -31,7 +40,7 @@ class Service60s implements Service {
 
   async #fetch60s() {
     const today = Common.localeDateStr()
-    const cachedItem = this.cache.get(today)
+    const cachedItem = this.#cache.get(today)
 
     if (cachedItem) {
       return cachedItem
@@ -39,42 +48,45 @@ class Service60s implements Service {
 
     const ZHIHU_CK = globalThis.env?.ZHIHU_CK ?? ''
 
-    const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
-    const itemReg = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
-    const tagReg = /<[^<>]+>/g
-
-    const response = await fetch(api, { headers: { cookie: ZHIHU_CK } })
+    const response = await fetch(this.#API, { headers: { cookie: ZHIHU_CK } })
     const { data = [] } = (await response.json()) || {}
 
-    const todayData = data.at(0)
+    const { url: link, title_image: cover, updated: updatedAt, content = '' } = data.at(0) || {}
 
-    if (!todayData) {
-      return { news: [], link: '', cover: '', updatedAt: 0, apiUpdatedAt: '' }
-    }
+    const items = ((content.match(this.#REG_ITEM) || []) as string[])
+      .map(e => this.#transferText(e.replace(this.#REG_TAG, '').trim()))
+      .map(e => e.replace(/(^\d+、\s*)|([。！～；]$)/g, ''))
+      .filter(e => e.length > 6)
 
-    const rawNews: string[] = todayData?.content?.match(itemReg) ?? []
-    const news = rawNews.map((e: string) => this.#transferText(e.replace(tagReg, '').trim(), 'a2u'))
-    const todayInData = Common.localeDateStr(todayData?.updated * 1000)
+    const todayInData = Common.localeDateStr(updatedAt * 1000)
+    const news = items.filter(e => !e.includes(this.#TIP_PREFIX))
+    const tip = items.find(e => e.includes(this.#TIP_PREFIX)) || ''
 
     const item = {
+      cover,
       news,
-      link: todayData.url,
-      cover: todayData.title_image,
-      updatedAt: todayData.updated * 1000,
-      apiUpdatedAt: Common.localeTimeStr(),
+      tip: tip.replace(this.#TIP_PREFIX, '').trim(),
+      link,
+      extra: {
+        updated_at: updatedAt * 1000,
+        source_updated_at: Common.localeTimeStr(updatedAt * 1000),
+        api_updated_at: Common.localeTimeStr(),
+      },
     }
 
-    if (news.length && todayInData === today) {
-      this.cache.set(today, item)
+    // 有数据，且是今天的数据
+    if (items.length && todayInData === today) {
+      this.#cache.set(today, item)
     }
 
     return item
   }
 
-  #transferText(str: string, mode: 'u2a' | 'a2u') {
+  #transferText(str: string, mode: 'u2a' | 'a2u' = 'a2u') {
     if (mode === 'a2u') {
       return str.replace(/&#(\d+);/g, (_, $1) => String.fromCharCode(Number($1)))
     }
+
     return str.replace(/./, _ => `&#${_.charCodeAt(0)};`)
   }
 }

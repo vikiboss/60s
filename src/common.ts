@@ -2,14 +2,14 @@ import { config } from './config'
 
 export class Common {
   static buildJson(
-    data: boolean | number | string | object,
+    data: boolean | number | string | object | null,
     code = 200,
     message = config.commonMessage
   ) {
     return {
       code,
-      data,
       message,
+      data,
     }
   }
 
