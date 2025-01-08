@@ -22,7 +22,7 @@ class ServiceBing {
 
       if (!data) {
         ctx.response.status = 500
-        ctx.response.body = 'Failed to fetch Bing daily image.'
+        ctx.response.body = Common.buildJson(null, 500, '获取数据失败')
         return
       }
 

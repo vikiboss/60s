@@ -21,7 +21,7 @@ rootRouter.get('/', ctx => {
 })
 
 export const appRouter = new Router({
-  prefix: '/api/v1',
+  prefix: '/api/v2',
 })
 
 appRouter.get('/', ctx => {
@@ -29,7 +29,7 @@ appRouter.get('/', ctx => {
     author: 'Viki <hi@viki.moe>',
     user_group: config.group,
     github_repo: config.github,
-    api_version: '1.0.0',
+    api_version: '2.0',
   })
 })
 

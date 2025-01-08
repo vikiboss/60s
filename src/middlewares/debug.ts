@@ -6,7 +6,8 @@ export function debug(): Middleware {
     const ip = ctx.request.ip || 'Unknown'
     const date = new Date().toLocaleString('zh-CN')
 
-    console.log(`[${date}] [${ip}] [${ua}] ${ctx.request.url.href}`)
+    console.log(`[${date}] [${ip}] ${ctx.request.url.href}`)
+    console.log(`[UA]: ${ua}`)
 
     await next()
   }

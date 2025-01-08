@@ -11,7 +11,7 @@ import { fetchTodayInHistory } from './services/today-in-history.ts'
 import { fetchToutiao } from './services/toutiao.ts'
 import { fetchWeather } from './services/weather.ts'
 import { fetchWeibo } from './services/weibo.ts'
-import { fetchXiaoai } from './legacy-services/xiaoai.ts'
+import { fetchXiaoai } from './legacy_services/xiaoai.ts'
 import { fetchZhihu } from './services/zhihu.ts'
 import { fetchZhihuHot } from './services/zhihu-hot.ts'
 import { fetchOlympics } from './services/olympics.ts'
@@ -33,30 +33,30 @@ const routerMap = {
 }
 
 for (const [path, handler] of Object.entries(routerMap)) {
-  router.get(path, async (ctx) => {
+  router.get(path, async ctx => {
     ctx.response.body = await handler(ctx.state.type, ctx)
   })
 }
 
 // weather
-router.get('/weather/:city', async (ctx) => {
+router.get('/weather/:city', async ctx => {
   ctx.response.body = await fetchWeather(ctx.params.city, ctx.state.type, ctx)
 })
 
 // baike
-router.get('/baike/:item', async (ctx) => {
+router.get('/baike/:item', async ctx => {
   ctx.response.body = await fetchBaike(ctx.params.item, ctx.state.type)
 })
 
 // exchange rates
-router.get('/ex-rates', async (ctx) => {
+router.get('/ex-rates', async ctx => {
   const url = new URL(ctx.request.url)
   const currency = url.searchParams.get('c') || 'CNY'
   ctx.response.body = await fetchRatesByCurrency(currency, ctx.state.type)
 })
 
 // bing wallpaper
-router.get('/bing', async (ctx) => {
+router.get('/bing', async ctx => {
   if (ctx.state.type === 'image') {
     ctx.response.redirect(await fetchBing(ctx.state.type))
   } else {
@@ -65,7 +65,7 @@ router.get('/bing', async (ctx) => {
 })
 
 // 小爱，已失效
-router.get('/xiaoai', async (ctx) => {
+router.get('/xiaoai', async ctx => {
   const text = ctx.request.url.searchParams.get('text') || '你好'
   const textOnly = ctx.request.url.searchParams.get('text-only') === '1'
   ctx.response.body = await fetchXiaoai(text, textOnly, ctx.state.type)
