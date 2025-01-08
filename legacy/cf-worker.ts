@@ -1,4 +1,4 @@
-import { app } from '../legacy_src/app.ts'
+import { app } from './src/app.ts'
 
 export default {
   fetch: (req: any, env: any, ctx: any) => {

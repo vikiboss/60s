@@ -1,9 +1,8 @@
 import { Common } from '../common'
 
 import type { RouterMiddleware } from '@oak/oak'
-import type { Service } from '../service'
 
-class ServiceBili implements Service<'/bili'> {
+class ServiceBili {
   #API = 'https://app.bilibili.com/x/v2/search/trending/ranking'
 
   handle(): RouterMiddleware<'/bili'> {

@@ -1,9 +1,8 @@
 import { Common } from '../common'
 
 import type { RouterMiddleware } from '@oak/oak'
-import type { Service } from '../service'
 
-class ServiceDouyin implements Service<'/douyin'> {
+class ServiceDouyin {
   #API = 'https://aweme-lq.snssdk.com/aweme/v1/hot/search/list/?aid=1128&version_code=880'
 
   handle(): RouterMiddleware<'/douyin'> {

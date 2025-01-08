@@ -3,7 +3,7 @@
   "type": "module",
   "packageManager": "pnpm@9.15.3",
   "scripts": {
-    "dev": "bun --env-file=.env bun.ts"
+    "dev": "DEV=1 bun --watch --env-file=.env bun.ts"
   },
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"

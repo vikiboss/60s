@@ -1,7 +1,6 @@
 import { Common } from '../common'
 
 import type { RouterMiddleware } from '@oak/oak'
-import type { Service } from '../service'
 
 interface BingData {
   title: string
@@ -13,7 +12,7 @@ interface BingData {
   update_date: string
 }
 
-class ServiceBing implements Service<'/bing'> {
+class ServiceBing {
   #API = 'https://cn.bing.com'
   #cache = new Map<string, BingData>()
 
@@ -43,7 +42,7 @@ class ServiceBing implements Service<'/bing'> {
   }
 
   async #fetch() {
-    const dailyUniqueKey = Common.localeDateStr()
+    const dailyUniqueKey = Common.localeDate()
     const cache = this.#cache.get(dailyUniqueKey)
 
     if (cache) {
@@ -83,7 +82,7 @@ class ServiceBing implements Service<'/bing'> {
         TriviaId: string
       }
 
-      const today = Common.localeDateStr()
+      const today = Common.localeDate()
 
       const data = {
         title: Title,

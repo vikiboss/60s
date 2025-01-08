@@ -1,9 +1,8 @@
 import { Common } from '../common'
 
 import type { RouterMiddleware } from '@oak/oak'
-import type { Service } from '../service'
 
-class ServiceBaike implements Service<'/baike'> {
+class ServiceBaike {
   #API = 'https://baike.deno.dev'
 
   handle(): RouterMiddleware<'/baike'> {

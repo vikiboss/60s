@@ -1,7 +1,6 @@
 import { Common } from '../common'
 
 import type { RouterMiddleware } from '@oak/oak'
-import type { Service } from '../service'
 
 interface DailyNewsItem {
   news: string[]
@@ -14,7 +13,7 @@ interface DailyNewsItem {
   }
 }
 
-class Service60s implements Service<'/60s'> {
+class Service60s {
   #API = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
   #REG_TAG = /<[^<>]+>/g
   #REG_ITEM = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
@@ -39,7 +38,7 @@ class Service60s implements Service<'/60s'> {
   }
 
   async #fetch() {
-    const today = Common.localeDateStr()
+    const today = Common.localeDate()
     const cachedItem = this.#cache.get(today)
 
     if (cachedItem) {
@@ -58,7 +57,7 @@ class Service60s implements Service<'/60s'> {
       .map(e => e.replace(/(^\d+、\s*)|([。！～；]$)/g, ''))
       .filter(e => e.length > 6)
 
-    const todayInData = Common.localeDateStr(updatedAt * 1000)
+    const todayInData = Common.localeDate(updatedAt * 1000)
     const news = items.filter(e => !e.includes(this.#TIP_PREFIX))
     const tip = items.find(e => e.includes(this.#TIP_PREFIX)) || ''
 
@@ -69,8 +68,8 @@ class Service60s implements Service<'/60s'> {
       link,
       extra: {
         updated_at: updatedAt * 1000,
-        source_updated_at: Common.localeTimeStr(updatedAt * 1000),
-        api_updated_at: Common.localeTimeStr(),
+        source_updated_at: Common.localeTime(updatedAt * 1000),
+        api_updated_at: Common.localeTime(),
       },
     }
 
