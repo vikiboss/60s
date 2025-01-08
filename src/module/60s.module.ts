@@ -63,9 +63,9 @@ class Service60s {
 
     const item = {
       cover,
-      news,
       tip: tip.replace(this.#TIP_PREFIX, '').trim(),
       link,
+      news,
       extra: {
         updated_at: updatedAt * 1000,
         source_updated_at: Common.localeTime(updatedAt * 1000),

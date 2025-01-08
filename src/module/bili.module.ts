@@ -13,7 +13,7 @@ class ServiceBili {
         case 'text':
           ctx.response.body = data
             .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.show_name}`)
+            .map((e, i) => `${i + 1}. ${e.keyword}`)
             .join('\n')
           break
 
@@ -28,16 +28,26 @@ class ServiceBili {
   async #fetch() {
     const { data = {} } = await (await fetch(this.#API)).json()
 
-    return (data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as {
-      position: number
-      keyword: string
-      show_name: string
-      word_type: number
-      icon?: string
-      hot_id: number
-      is_commercial: string
-    }[]
+    return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map(
+      item => {
+        const { is_commercial: _, position: __, show_name: ___, hot_id: id, ...rest } = item
+        return {
+          id,
+          ...rest,
+        }
+      }
+    )
   }
 }
 
 export const serviceBili = new ServiceBili()
+
+interface Item {
+  icon?: string
+  hot_id: number
+  keyword: string
+  position: number
+  show_name: string
+  word_type: number
+  is_commercial: string
+}
