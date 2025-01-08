@@ -5,7 +5,7 @@ import type { RouterMiddleware } from '@oak/oak'
 class ServiceZhihuHot {
   #API = 'https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total?limit=1000'
 
-  handle(): RouterMiddleware<'/zhihu-hot'> {
+  handle(): RouterMiddleware<'/zhihu'> {
     return async ctx => {
       const data = await this.#fetch()
 
@@ -26,8 +26,8 @@ class ServiceZhihuHot {
   }
 
   async #fetch() {
-    // const headers = { cookie: globalThis.env.ZHIHU_CK || '' }
-    const { data = [] } = (await (await fetch(this.#API)).json()) || {}
+    const headers = { cookie: globalThis.env.ZHIHU_CK || '' }
+    const { data = [] } = (await (await fetch(this.#API, { headers })).json()) || {}
 
     return (data as Item[]).map(e => ({
       id: e.target.id,
@@ -44,7 +44,7 @@ class ServiceZhihuHot {
   }
 }
 
-export const serviceZhihuHot = new ServiceZhihuHot()
+export const serviceZhihu = new ServiceZhihuHot()
 
 interface Item {
   type: string

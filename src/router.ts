@@ -11,7 +11,7 @@ import { serviceExRate } from './module/ex-rate.module'
 import { serviceTodayInHistory } from './module/today-in-history.module'
 import { serviceToutiao } from './module/toutiao.module'
 import { serviceWeibo } from './module/weibo.module'
-import { serviceZhihuHot } from './module/zhihu.module'
+import { serviceZhihu } from './module/zhihu.module'
 
 export const rootRouter = new Router()
 
@@ -46,4 +46,4 @@ appRouter.get('/ex-rate/:currency', serviceExRate.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
 appRouter.get('/toutiao', serviceToutiao.handle())
 appRouter.get('/weibo', serviceWeibo.handle())
-appRouter.get('/zhihu-hot', serviceZhihuHot.handle())
+appRouter.get('/zhihu', serviceZhihu.handle())
