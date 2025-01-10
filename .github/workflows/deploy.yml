@@ -21,21 +21,17 @@ jobs:
       - name: Install Deno
         uses: denoland/setup-deno@v2
         with:
-          deno-version: v1.x
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: lts/*
+          deno-version: v2.x
+          deno-cache: true
 
       - name: Install step
-        run: "npm install"
+        run: "deno install"
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
           project: "viki-60s"
-          entrypoint: "./deno.ts"
-          root: "."
+          entrypoint: "deno.ts"
+          root: "./"
           
           
