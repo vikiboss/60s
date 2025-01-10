@@ -4,6 +4,7 @@
     "lib": ["esnext", "dom"],
     "target": "esnext",
     "module": "esnext",
+    "noEmit": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true
   }
