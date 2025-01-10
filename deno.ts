@@ -1,3 +1,5 @@
+///<reference lib="deno.ns" />
+
 import { app } from './src/app'
 import { config } from './src/config'
 

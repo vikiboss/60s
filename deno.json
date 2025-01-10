@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["esnext", "dom"]
+  },
+  "exclude": ["./cf-worker.ts", "./bun.ts"],
+  "lint": {
+    "rules": {
+      "exclude": ["no-sloppy-imports"]
+    }
+  },
+  "unstable": ["sloppy-imports"]
+}
