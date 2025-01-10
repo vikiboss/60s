@@ -11,7 +11,7 @@ class ServiceBaike {
 
       if (!word) {
         ctx.response.status = 400
-        ctx.response.body = Common.buildJson({}, 400, '缺少 query 参数 word')
+        ctx.response.body = Common.buildJson(null, 400, '缺少 query 参数 word')
         return
       }
 
