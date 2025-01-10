@@ -19,7 +19,7 @@ export class Common {
   }
 
   static localeDate(ts: number | Date = Date.now(), options: FormatOptions = {}) {
-    const { locale = 'zh-CN', timeZone = 'Asia/Shanghai' } = options
+    const { locale = 'en-US', timeZone = 'Asia/Shanghai' } = options
     const today = ts instanceof Date ? ts : new Date(ts)
 
     const formatter = new Intl.DateTimeFormat(locale, {
@@ -36,7 +36,7 @@ export class Common {
     ts: number | Date = Date.now(),
     options: FormatOptions & { seconds?: boolean } = {}
   ) {
-    const { locale = 'zh-CN', timeZone = 'Asia/Shanghai', seconds = true } = options
+    const { locale = 'en-US', timeZone = 'Asia/Shanghai', seconds = true } = options
     const now = ts instanceof Date ? ts : new Date(ts)
 
     const formatter = new Intl.DateTimeFormat(locale, {
