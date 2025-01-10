@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "lib": ["esnext", "dom"]
+  },
+  "lint": {
+    "exclude": ["./cf-worker.ts", "./bun.ts"]
+  }
+}

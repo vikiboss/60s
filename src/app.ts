@@ -1,5 +1,7 @@
 import { Application } from '@oak/oak/application'
+
 import { appRouter, rootRouter } from './router.ts'
+
 import { cors } from './middlewares/cors.ts'
 import { notFound } from './middlewares/not-found.ts'
 import { favicon } from './middlewares/favicon.ts'
