@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     permissions:
-      id-token: write # Needed for auth with Deno Deploy
-      contents: read # Needed to clone the repository
+      id-token: write
+      contents: read
 
     steps:
       - name: Clone repository
@@ -25,13 +25,10 @@ jobs:
           deno-cache: true
 
       - name: Install step
-        run: "deno install"
+        run: 'deno install'
 
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "viki-60s"
-          entrypoint: "deno.ts"
-          root: "./"
-          
-          
+          project: 'viki-60s'
+          entrypoint: 'deno.ts'
