@@ -1,4 +1,4 @@
-import { Common } from '../common'
+import { Common } from '../common.js'
 
 import type { RouterMiddleware } from '@oak/oak'
 
@@ -15,12 +15,8 @@ class ServiceEpic {
           ctx.response.body = data
             .slice(0, 20)
             .map((e, idx) => {
-              const date = Common.localeTime(new Date(e.free_start_at).getTime(), {
-                seconds: false,
-              })
-              const endDate = Common.localeTime(new Date(e.free_end_at).getTime(), {
-                seconds: false,
-              })
+              const date = Common.localeTime(new Date(e.free_start_at), { seconds: false })
+              const endDate = Common.localeTime(new Date(e.free_end_at), { seconds: false })
               return `${idx + 1}. 《${e.title}》，${
                 e.is_free_now ? `现在免费，截至到 ${endDate}` : `于 ${date} 至 ${endDate} 免费`
               }\n\n${e.description}`
@@ -37,10 +33,17 @@ class ServiceEpic {
   }
 
   async #fetch() {
-    const data = (await (await fetch(Common.useProxiedUrl(this.#API))).json()) || {}
+    const data = ((await (await fetch(Common.useProxiedUrl(this.#API))).json()) || {}) as any
 
     const allGames = (data?.data?.Catalog?.searchStore?.elements || []) as GameItem[]
-    const activeGames = allGames.filter(e => this.#isPass7DaysAgo(e.effectiveDate))
+    const activeGames = allGames
+      .filter(e => e.offerType === 'BASE_GAME' && e.promotions)
+      .toSorted((a, b) => {
+        return (
+          (a.promotions?.upcomingPromotionalOffers?.length || 0) -
+          (b.promotions?.upcomingPromotionalOffers?.length || 0)
+        )
+      })
 
     return activeGames.map(e => {
       const slug =
@@ -50,32 +53,32 @@ class ServiceEpic {
         e.urlSlug ||
         ''
 
-      const promotion =
-        e.promotions?.promotionalOffers || e.promotions?.upcomingPromotionalOffers || []
-      const promotionEnd = promotion[0]?.promotionalOffers?.[0]?.endDate
+      const promotion = e.promotions?.upcomingPromotionalOffers.length
+        ? e.promotions?.upcomingPromotionalOffers
+        : e.promotions?.promotionalOffers || []
 
-      const normalEndAt = promotionEnd
-        ? new Date(promotionEnd).getTime()
-        : new Date(e.effectiveDate).getTime() + 7 * 24 * 60 * 60 * 1000
+      const offer = promotion[0]?.promotionalOffers?.[0]
+      const { startDate, endDate } = offer || {}
+
+      const promotionStartAt = startDate ? new Date(startDate).getTime() : new Date('1970/1/1')
+      const promotionEndAt = endDate ? new Date(endDate).getTime() : new Date('1970/1/1')
 
       return {
         id: e.id || '',
-        title: e.title || '',
-        price: (e.price.totalPrice.originalPrice || 0) / 100,
+        title: e.title || '-',
         cover: e.keyImages?.[0]?.url || '',
-        description: e.description || '',
-        seller: e?.seller?.name || 'Unknown',
+        original_price: (e.price.totalPrice.originalPrice || 0) / 100 || 0,
+        original_price_desc: e.price.totalPrice.fmtPrice.originalPrice || '暂无价格',
+        description: e.description || '暂无描述',
+        seller: e?.seller?.name || '未知发行商',
         is_free_now: !e.price.totalPrice.originalPrice,
-        viewable_at: new Date(e.viewableDate).getTime(),
-        free_start_at: new Date(e.effectiveDate).getTime(),
-        free_end_at: e.expiryDate ? new Date(e.expiryDate).getTime() : normalEndAt,
+        free_start: Common.localeTime(promotionStartAt),
+        free_start_at: promotionStartAt,
+        free_end: Common.localeTime(promotionEndAt),
+        free_end_at: promotionEndAt,
         link: slug ? `https://store.epicgames.com/store/zh-CN/p/${slug}` : '',
       }
     })
-  }
-
-  #isPass7DaysAgo(date: string) {
-    return new Date(date).getTime() >= Date.now() - 7 * 24 * 60 * 60 * 1000
   }
 }
 

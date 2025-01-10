@@ -18,10 +18,9 @@ export class Common {
     }
   }
 
-  static localeDate(ts = Date.now(), options: FormatOptions = {}) {
+  static localeDate(ts: number | Date = Date.now(), options: FormatOptions = {}) {
     const { locale = 'zh-CN', timeZone = 'Asia/Shanghai' } = options
-
-    const today = new Date(ts)
+    const today = ts instanceof Date ? ts : new Date(ts)
 
     const formatter = new Intl.DateTimeFormat(locale, {
       year: 'numeric',
@@ -33,10 +32,12 @@ export class Common {
     return formatter.format(today)
   }
 
-  static localeTime(ts = Date.now(), options: FormatOptions & { seconds?: boolean } = {}) {
+  static localeTime(
+    ts: number | Date = Date.now(),
+    options: FormatOptions & { seconds?: boolean } = {}
+  ) {
     const { locale = 'zh-CN', timeZone = 'Asia/Shanghai', seconds = true } = options
-
-    const today = new Date(ts)
+    const now = ts instanceof Date ? ts : new Date(ts)
 
     const formatter = new Intl.DateTimeFormat(locale, {
       year: 'numeric',
@@ -48,7 +49,7 @@ export class Common {
       timeZone,
     })
 
-    return formatter.format(today)
+    return formatter.format(now)
   }
 
   static useProxiedUrl(link: string) {
