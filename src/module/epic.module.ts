@@ -71,7 +71,7 @@ class ServiceEpic {
         original_price_desc: e.price.totalPrice.fmtPrice.originalPrice || '暂无价格',
         description: e.description || '暂无描述',
         seller: e?.seller?.name || '未知发行商',
-        is_free_now: !e.price.totalPrice.originalPrice,
+        is_free_now: !e.price.totalPrice.discountPrice,
         free_start: Common.localeTime(promotionStartAt),
         free_start_at: promotionStartAt,
         free_end: Common.localeTime(promotionEndAt),
