@@ -3,15 +3,15 @@ import { wrapperBaseRes } from '../utils.ts'
 const epicApi =
   'https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=zh-CN&country=CN&allowCountries=CN'
 
-function isPass7DaysAgo(date: string) {
-  return new Date(date).getTime() >= Date.now() - 7 * 24 * 60 * 60 * 1000
-}
-
 export async function fetchEpicFreeGames(type: string = 'json') {
   const data = (await (await fetch(epicApi)).json()) || {}
   const games = data?.data?.Catalog?.searchStore?.elements || []
 
-  const actualGames = games.filter((e: any) => isPass7DaysAgo(e.effectiveDate))
+  const actualGames = games
+    .filter((e: any) => e.offerType === 'BASE_GAME' && e.promotions)
+    .sort((a: any, b: any) => {
+      return a.promotions.upcomingPromotionalOffers.length - b.promotions.upcomingPromotionalOffers.length
+    })
 
   return type === 'json'
     ? wrapperBaseRes(actualGames)
