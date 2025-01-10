@@ -1,4 +1,4 @@
-import { COMMON_MSG } from './config'
+import { COMMON_MSG } from './config/index.ts'
 
 interface FormatOptions {
   locale?: string

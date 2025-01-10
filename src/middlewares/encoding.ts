@@ -1,4 +1,4 @@
-import { config } from '../config'
+import { config } from '../config/index.ts'
 
 import type { Middleware } from '@oak/oak'
 

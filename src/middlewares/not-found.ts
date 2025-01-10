@@ -1,5 +1,5 @@
-import { Common } from '../common'
-import { COMMON_MSG } from '../config'
+import { Common } from '../common.ts'
+import { COMMON_MSG } from '../config/index.ts'
 
 import type { Middleware } from '@oak/oak'
 

@@ -1,10 +1,10 @@
 import { Application } from '@oak/oak/application'
-import { appRouter, rootRouter } from './router'
-import { cors } from './middlewares/cors'
-import { notFound } from './middlewares/not-found'
-import { favicon } from './middlewares/favicon'
-import { debug } from './middlewares/debug'
-import { encoding } from './middlewares/encoding'
+import { appRouter, rootRouter } from './router.ts'
+import { cors } from './middlewares/cors.ts'
+import { notFound } from './middlewares/not-found.ts'
+import { favicon } from './middlewares/favicon.ts'
+import { debug } from './middlewares/debug.ts'
+import { encoding } from './middlewares/encoding.ts'
 
 export const app = new Application()
 

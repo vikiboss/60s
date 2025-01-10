@@ -1,5 +1,5 @@
-import { app } from './src/app'
-import { config } from './src/config'
+import { app } from './src/app.ts'
+import { config } from './src/config/index.ts'
 
 globalThis.env = process.env
 
