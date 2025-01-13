@@ -13,7 +13,7 @@ class ServiceZhihuHot {
         case 'text':
           ctx.response.body = data
             .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.title} (${e.detail_text})`)
+            .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value_desc})`)
             .join('\n')
           break
 
@@ -30,15 +30,15 @@ class ServiceZhihuHot {
     const { data = [] } = (await (await fetch(this.#API, { headers })).json()) || {}
 
     return (data as Item[]).map(e => ({
-      id: e.target.id,
       title: e.target.title,
       detail: e.target.excerpt,
       cover: e.children?.[0]?.thumbnail || '',
-      detail_text: e.detail_text,
+      hot_value_desc: e.detail_text,
       answer_cnt: e.target.answer_count,
       follower_cnt: e.target.follower_count,
       comment_cnt: e.target.comment_count,
-      created_at: e.target.created,
+      created_at: e.target.created * 1000,
+      created: Common.localeTime(e.target.created * 1000),
       link: e.target.url,
     }))
   }

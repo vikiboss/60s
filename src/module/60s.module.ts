@@ -2,17 +2,6 @@ import { Common } from '../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
-interface DailyNewsItem {
-  news: string[]
-  link: string
-  cover: string
-  extra: {
-    updated_at: number
-    source_updated_at: string
-    api_updated_at: string
-  }
-}
-
 class Service60s {
   #API = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
   #REG_TAG = /<[^<>]+>/g
@@ -26,7 +15,9 @@ class Service60s {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = data.news.join('\n')
+          ctx.response.body = `每天 60s 看世界（${data.date}）\n\n${data.news
+            .map((e, idx) => `${idx + 1}. ${e.title}`)
+            .join('\n')}\n\n${data.tip ? `${this.#TIP_PREFIX}${data.tip}` : ''}`
           break
 
         case 'json':
@@ -62,15 +53,21 @@ class Service60s {
     const tip = items.find(e => e.includes(this.#TIP_PREFIX)) || ''
 
     const item = {
+      date: Common.localeDate(updatedAt * 1000),
       cover,
-      tip: tip.replace(this.#TIP_PREFIX, '').trim(),
+      news: news.map(e => ({
+        title: e,
+        link: `https://www.baidu.com/s?wd=${encodeURIComponent(e)}`,
+      })),
+      tip: tip
+        .replace(this.#TIP_PREFIX, '')
+        .replace(/[。！～]?早安$/, '')
+        .trim(),
       link,
-      news,
-      extra: {
-        updated_at: updatedAt * 1000,
-        source_updated_at: Common.localeTime(updatedAt * 1000),
-        api_updated_at: Common.localeTime(),
-      },
+      updated: Common.localeTime(updatedAt * 1000),
+      updated_at: updatedAt * 1000,
+      api_updated: Common.localeTime(),
+      api_updated_at: Date.now(),
     }
 
     // 有数据，且是今天的数据
@@ -91,3 +88,18 @@ class Service60s {
 }
 
 export const service60s = new Service60s()
+
+interface DailyNewsItem {
+  date: string
+  news: {
+    title: string
+    link: string
+  }[]
+  cover: string
+  tip: string
+  link: string
+  updated: string
+  updated_at: number
+  api_updated: string
+  api_updated_at: number
+}

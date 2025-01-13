@@ -29,12 +29,9 @@ class ServiceToutiao {
     const { data = [] } = await (await fetch(this.#API)).json()
 
     return (data as Item[]).map(e => ({
-      id: e.ClusterId,
       title: e.Title,
-      hot_value: e.HotValue,
+      hot_value: +e.HotValue,
       cover: e.Image.url,
-      label: e.Label,
-      label_desc: e.LabelDesc,
       link: e.Url.split('?')[0].replace(/\/$/, ''),
     }))
   }

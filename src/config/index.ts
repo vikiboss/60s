@@ -1,5 +1,5 @@
 export const config = {
-  port: 8000,
+  port: 4399,
   group: 595941841,
   github: 'https://github.com/vikiboss/60s',
   encodingParamName: 'encoding',

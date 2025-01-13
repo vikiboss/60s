@@ -13,7 +13,7 @@ class ServiceDouyin {
         case 'text':
           ctx.response.body = data
             .slice(0, 20)
-            .map((e, idx) => `${idx + 1}. ${e.word}`)
+            .map((e, idx) => `${idx + 1}. ${e.title}`)
             .join('\n')
           break
 
@@ -56,15 +56,14 @@ class ServiceDouyin {
     }[]
 
     return list.map(e => ({
-      word: e?.word,
-      url: e?.word_cover?.uri,
-      cover: e?.word_cover?.url_list[0],
-      event_time: e?.event_time,
+      title: e?.word,
       hot_value: e?.hot_value,
-      label: e?.label,
-      position: e?.position,
-      word_type: e?.word_type,
+      cover: e?.word_cover?.url_list[0],
+      link: e?.word ? `https://www.douyin.com/search/${encodeURIComponent(e.word)}` : '',
+      event_time: Common.localeTime(e?.event_time * 1000),
+      event_time_at: new Date(e?.event_time).getTime(),
       active_time,
+      active_time_at: new Date(active_time).getTime(),
     }))
   }
 }

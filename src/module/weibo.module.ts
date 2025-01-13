@@ -13,7 +13,7 @@ class ServiceWeibo {
         case 'text':
           ctx.response.body = data
             .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.word} (${e.hot_value})`)
+            .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value})`)
             .join('\n')
           break
 
@@ -28,8 +28,9 @@ class ServiceWeibo {
   async #fetch() {
     const { data = {} } = await (await fetch(this.#API)).json()
     return (((data?.realtime || []) as Item[]).filter(e => !e.is_ad) || []).map(e => ({
-      word: e.word,
+      title: e.word,
       hot_value: e.num,
+      link: `https://s.weibo.com/weibo?q=${encodeURIComponent(e.word)}`,
     }))
   }
 }
@@ -61,7 +62,7 @@ interface Item {
   dot_icon?: number
   id?: number
   monitors?: {
-    app: {}
-    pc: {}
+    app: object
+    pc: object
   }
 }
