@@ -7,7 +7,7 @@ import { serviceBili } from './module/bili.module.ts'
 import { serviceBing } from './module/bing.module.ts'
 import { serviceDouyin } from './module/douyin.module.ts'
 import { serviceEpic } from './module/epic.module.ts'
-import { serviceExRate } from './module/ex-rate.module.ts'
+import { serviceExRate } from './module/exchange-rate.module.ts'
 import { serviceTodayInHistory } from './module/today-in-history.module.ts'
 import { serviceToutiao } from './module/toutiao.module.ts'
 import { serviceWeibo } from './module/weibo.module.ts'
@@ -42,7 +42,7 @@ appRouter.get('/bili', serviceBili.handle())
 appRouter.get('/bing', serviceBing.handle())
 appRouter.get('/douyin', serviceDouyin.handle())
 appRouter.get('/epic', serviceEpic.handle())
-appRouter.get('/ex-rate/:currency', serviceExRate.handle())
+appRouter.get('/exchange_rate', serviceExRate.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
 appRouter.get('/toutiao', serviceToutiao.handle())
 appRouter.get('/weibo', serviceWeibo.handle())

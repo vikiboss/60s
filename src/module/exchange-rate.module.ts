@@ -6,9 +6,10 @@ class ServiceExRate {
   #API = 'https://open.er-api.com/v6/latest'
   #cache = new Map<string, RateItem>()
 
-  handle(): RouterMiddleware<'/ex-rate/:currency'> {
+  handle(): RouterMiddleware<'/exchange_rate'> {
     return async ctx => {
-      const currency = ctx.params.currency || 'CNY'
+      const currency = ctx.request.url.searchParams.get('currency') || 'CNY'
+
       const data = await this.#fetch(currency)
 
       switch (ctx.state.encoding) {
@@ -41,9 +42,14 @@ class ServiceExRate {
 
     const rateItem = {
       base_code,
-      update_at: time_last_update_unix * 1000,
-      next_update_at: time_next_update_unix * 1000,
-      rates,
+      updated: Common.localeTime(time_last_update_unix * 1000),
+      updated_at: time_last_update_unix * 1000,
+      next_updated: Common.localeTime(time_next_update_unix * 1000),
+      next_updated_at: time_next_update_unix * 1000,
+      rates: Object.entries(rates).map(([key, value]) => ({
+        currency: key,
+        rate: value,
+      })),
     }
 
     if (rates.length) {
@@ -58,11 +64,14 @@ export const serviceExRate = new ServiceExRate()
 
 interface RateItem {
   base_code: string
-  update_at: number
-  next_update_at: number
+  updated: string
+  updated_at: number
+  next_updated: string
+  next_updated_at: number
   rates: {
-    [key: string]: number
-  }
+    currency: string
+    rate: number
+  }[]
 }
 
 interface RateResponse {

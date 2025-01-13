@@ -31,9 +31,17 @@ class ServiceTodayInHistory {
     const [month, day] = data[0].date.split('-')
     return {
       date: `${month}月${day}日`,
-      month,
-      day,
-      items,
+      month: +month,
+      day: +day,
+      items: items.map(e => {
+        return {
+          title: e.title,
+          year: e.year,
+          description: e.desc,
+          event_type: e.type,
+          link: e.link,
+        }
+      }),
     }
   }
 }

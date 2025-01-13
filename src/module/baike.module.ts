@@ -15,17 +15,22 @@ class ServiceBaike {
         return
       }
 
-      const { data } = await this.#fetch(ctx.request.url.searchParams.get('word') ?? '')
+      try {
+        const data = await this.#fetch(ctx.request.url.searchParams.get('word') ?? '')
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `${data.item}: ${data.description} (更新于 ${data.update_time}, 详情: ${data.link})`
-          break
+        switch (ctx.state.encoding) {
+          case 'text':
+            ctx.response.body = `${data.name}: ${data.description} (更新于 ${data.update_time}, 详情: ${data.link})`
+            break
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
+          case 'json':
+          default:
+            ctx.response.body = Common.buildJson(data)
+            break
+        }
+      } catch {
+        ctx.response.status = 404
+        ctx.response.body = Common.buildJson(null, 404, '未找到相关词条')
       }
     }
   }
@@ -33,16 +38,27 @@ class ServiceBaike {
   async #fetch(item: string) {
     const response = await fetch(`${this.#API}/item/${encodeURIComponent(item)}`)
 
-    return (await response.json()) as {
-      status: number
-      message: string
+    const res = (await response.json()) as {
       data: {
-        item: string
+        itemName: string
         description: string
         cover: string
         link: string
-        update_time: string
+        updateTime: string
       }
+    }
+
+    if (!res.data.itemName) {
+      throw new Error('未找到相关词条')
+    }
+
+    return {
+      name: res.data.itemName,
+      description: res.data.description,
+      cover: res.data.cover,
+      update_time: res.data.updateTime,
+      update_time_at: new Date(res.data.updateTime).getTime(),
+      link: res.data.link,
     }
   }
 }
