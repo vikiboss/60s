@@ -1,3 +1,13 @@
+# V2 已发布 （2025/1/13）
+
+**v2 将会于近期迁移到 `main` 主分支（目前在 `v2` 分支）。**
+
+v2 有更加规范完善的 API 参数命名、响应，以及未来更多的 API 支持，API 文档已在 [Apifox](https://docs.60s-api.viki.moe) 上统一管理。
+
+v2 将在新域名 `60s-api.viki.moe` 上启用，原域名 `60s.viki.moe` 将继续保持 v1 版本不受影响。
+
+-----
+
 # ⏰ 60s API
 
 使用 [Deno](https://deno.com/) 构建的简单 API 列表项目，不仅仅是每天 60 秒读懂世界～
