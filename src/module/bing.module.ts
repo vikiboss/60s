@@ -6,7 +6,7 @@ interface BingData {
   title: string
   headline: string
   description: string
-  image_url: string
+  cover: string
   main_text: string
   copyright: string
   update_date: string
@@ -28,10 +28,10 @@ class ServiceBing {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = data.image_url || ''
+          ctx.response.body = data.cover || ''
           break
         case 'image':
-          ctx.response.redirect(data.image_url || '')
+          ctx.response.redirect(data.cover || '')
           break
         case 'json':
         default:
@@ -88,10 +88,11 @@ class ServiceBing {
         title: Title,
         headline: Headline,
         description: Description,
-        image_url: Image?.Wallpaper ? `https://cn.bing.com${Image.Wallpaper}` : '',
         main_text: QuickFact?.MainText || '',
+        cover: Image?.Wallpaper ? `https://cn.bing.com${Image.Wallpaper}` : '',
         copyright: Copyright,
         update_date: today,
+        update_date_at: Date.now(),
       }
 
       this.#cache.set(today, data)

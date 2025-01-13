@@ -13,7 +13,7 @@ class ServiceBili {
         case 'text':
           ctx.response.body = data
             .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.keyword}`)
+            .map((e, i) => `${i + 1}. ${e.title}`)
             .join('\n')
           break
 
@@ -28,12 +28,12 @@ class ServiceBili {
   async #fetch() {
     const { data = {} } = await (await fetch(this.#API)).json()
 
+    // deno-lint-ignore no-explicit-any
     return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map(
       item => {
-        const { is_commercial: _, position: __, show_name: ___, hot_id: id, ...rest } = item
         return {
-          id,
-          ...rest,
+          title: item.keyword || item.show_name,
+          link: `https://search.bilibili.com/all?keyword=${encodeURIComponent(item.keyword)}`,
         }
       }
     )
