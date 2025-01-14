@@ -42,24 +42,32 @@ class ServiceChangYa {
 
     const pageData = JSON.parse(mid(data, start, end))
 
-    return (pageData.props.pageProps.pieces as Item[]).map(item => {
-      const audioUrl = item.originAudioUrl || item.audioUrl
-      return {
-        id: item.ugcId,
-        name: item.songname,
-        singer: item.artist,
-        nickname: item.nickname,
-        cover: item.avatarUrl,
-        audio: audioUrl ? decodeURIComponent(audioUrl) : '',
-        gender: item.gender,
-        hotValue: item.hotValue,
-        hotValueStr: item.hotValueStr,
-        likeCount: item.likeCount,
-        audioDuration: item.audioDuration,
-        lyrics: item.lyric,
-        extra: { ...item },
-      }
-    })
+    return Common.randomItem(
+      (pageData.props.pageProps.pieces as Item[]).map(item => {
+        const audioUrl = item.originAudioUrl || item.audioUrl || item.recordUrl
+
+        return {
+          user: {
+            nickname: item.nickname,
+            gender: item.gender,
+            avatar_url: item.user.avatarUrl,
+          },
+          song: {
+            name: item.songName,
+            singer: item.artist,
+            lyrics: item.lyric.split('\n').map(e => e.trim()),
+          },
+          audio: {
+            url: audioUrl ? decodeURIComponent(audioUrl) : '',
+            duration: item.audioDuration,
+            like_count: item.likeCount,
+            link: `https://m.api.singduck.cn/user-piece/${item.ugcId}`,
+            publish: Common.localeTime(new Date(item.publishTime)),
+            publish_at: new Date(item.publishTime).getTime(),
+          },
+        }
+      })
+    )
 
     function mid(str: string, start: string, end: string, greed = false) {
       const front = str.indexOf(start)
