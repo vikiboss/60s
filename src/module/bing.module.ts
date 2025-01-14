@@ -14,6 +14,7 @@ interface BingData {
 
 class ServiceBing {
   #API = 'https://cn.bing.com'
+  // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10
   #cache = new Map<string, BingData>()
 
   handle(): RouterMiddleware<'/bing'> {

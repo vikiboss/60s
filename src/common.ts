@@ -60,4 +60,8 @@ export class Common {
     url.host = 'proxy.viki.moe'
     return url.toString()
   }
+
+  static randomItem<T>(arr: T[]) {
+    return arr[Math.floor(Math.random() * arr.length)]
+  }
 }

@@ -4,6 +4,9 @@
     "lib": ["esnext", "dom"]
   },
   "lint": {
-    "exclude": ["./cf-worker.ts", "./bun.ts"]
+    "exclude": ["./cf-worker.ts", "./bun.ts"],
+    "rules": {
+      "exclude": ["no-explicit-any"]
+    }
   }
 }

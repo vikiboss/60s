@@ -5,7 +5,9 @@
     "target": "esnext",
     "module": "esnext",
     "noEmit": true,
+    "noImplicitAny": false,
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "resolveJsonModule": true
   }
 }

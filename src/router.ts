@@ -12,6 +12,9 @@ import { serviceTodayInHistory } from './module/today-in-history.module.ts'
 import { serviceToutiao } from './module/toutiao.module.ts'
 import { serviceWeibo } from './module/weibo.module.ts'
 import { serviceZhihu } from './module/zhihu.module.ts'
+import { serviceChangYa } from './module/changya.module.ts'
+import { serviceIP } from './module/ip.module.ts'
+import { serviceHitokoto } from './module/hitokoto/hitokoto.module.ts'
 
 export const rootRouter = new Router()
 
@@ -47,3 +50,6 @@ appRouter.get('/today_in_history', serviceTodayInHistory.handle())
 appRouter.get('/toutiao', serviceToutiao.handle())
 appRouter.get('/weibo', serviceWeibo.handle())
 appRouter.get('/zhihu', serviceZhihu.handle())
+appRouter.get('/changya', serviceChangYa.handle())
+appRouter.get('/ip', serviceIP.handle())
+appRouter.get('/hitokoto', serviceHitokoto.handle())

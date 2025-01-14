@@ -4,6 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceBaike {
   #API = 'https://baike.deno.dev'
+  // https://baike.baidu.com/api/openapi/BaikeLemmaCardApi?scope=103&format=json&appid=379020&bk_key=%E8%A5%BF%E6%B8%B8%E8%AE%B0
 
   handle(): RouterMiddleware<'/baike'> {
     return async ctx => {
