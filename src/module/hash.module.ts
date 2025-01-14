@@ -15,15 +15,7 @@ import type { RouterMiddleware } from '@oak/oak'
 class ServiceHash {
   handle(): RouterMiddleware<'/hash'> {
     return async ctx => {
-      let content = ctx.request.url.searchParams.get('content')
-
-      try {
-        if (!content) {
-          content = (await ctx.request.body.json()).content
-        }
-      } catch {
-        // ignored
-      }
+      const content = await Common.getParam('content', ctx.request)
 
       if (!content) {
         ctx.response.status = 400

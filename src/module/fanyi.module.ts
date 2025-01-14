@@ -8,7 +8,7 @@ import type { RouterMiddleware } from '@oak/oak'
 class ServiceFanyi {
   handle(): RouterMiddleware<'/ip'> {
     return async ctx => {
-      const text = ctx.request.url.searchParams.get('text') || ''
+      const text = await Common.getParam('text', ctx.request)
 
       if (!text) {
         ctx.response.status = 400

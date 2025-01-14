@@ -1,5 +1,7 @@
 import { COMMON_MSG } from './config/index.ts'
 
+import type { Request } from '@oak/oak'
+
 interface FormatOptions {
   locale?: string
   timeZone?: string
@@ -63,5 +65,15 @@ export class Common {
 
   static randomItem<T>(arr: T[]) {
     return arr[Math.floor(Math.random() * arr.length)]
+  }
+
+  static async getParam(name: string, request: Request) {
+    let value = request.url.searchParams.get(name) || ''
+    try {
+      value = (await request.body.json())[name] || ''
+    } catch {
+      // ignored
+    }
+    return value
   }
 }
