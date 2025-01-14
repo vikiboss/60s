@@ -3,7 +3,7 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceBaike {
-  #API = 'https://baike.deno.dev'
+  // #API = 'https://baike.deno.dev'
   // https://baike.baidu.com/api/openapi/BaikeLemmaCardApi?scope=103&format=json&appid=379020&bk_key=%E8%A5%BF%E6%B8%B8%E8%AE%B0
 
   handle(): RouterMiddleware<'/baike'> {
@@ -21,7 +21,7 @@ class ServiceBaike {
 
         switch (ctx.state.encoding) {
           case 'text':
-            ctx.response.body = `${data.name}: ${data.description} (更新于 ${data.update_time}, 详情: ${data.link})`
+            ctx.response.body = `${data.title}: ${data.abstract} ( 详情: ${data.link})`
             break
 
           case 'json':
@@ -37,31 +37,61 @@ class ServiceBaike {
   }
 
   async #fetch(item: string) {
-    const response = await fetch(`${this.#API}/item/${encodeURIComponent(item)}`)
+    const api = new URL('https://baike.baidu.com/api/openapi/BaikeLemmaCardApi')
 
-    const res = (await response.json()) as {
-      data: {
-        itemName: string
-        description: string
-        cover: string
-        link: string
-        updateTime: string
-      }
-    }
+    api.searchParams.set('scope', '103')
+    api.searchParams.set('format', 'json')
+    api.searchParams.set('appid', '379020')
+    api.searchParams.set('bk_key', item)
+    api.searchParams.set('bk_length', '100')
 
-    if (!res.data.itemName) {
+    const data = (await (await fetch(api)).json()) as BaikeData
+
+    if (!data?.title) {
       throw new Error('未找到相关词条')
     }
 
     return {
-      name: res.data.itemName,
-      description: res.data.description,
-      cover: res.data.cover,
-      update_time: res.data.updateTime,
-      update_time_at: new Date(res.data.updateTime).getTime(),
-      link: res.data.link,
+      title: data.title,
+      description: data.desc,
+      abstract: data.abstract,
+      cover: data.image,
+      has_other: !!data.hasOther,
+      link: data.url,
     }
   }
 }
 
 export const serviceBaike = new ServiceBaike()
+
+interface BaikeData {
+  id: number
+  subLemmaId: number
+  newLemmaId: number
+  key: string
+  desc: string
+  title: string
+  card: Array<{
+    key: string
+    name: string
+    value: string[]
+    format: string[]
+  }>
+  image: string
+  src: string
+  imageHeight: number
+  imageWidth: number
+  isSummaryPic: string
+  abstract: string
+  moduleIds: number[]
+  url: string
+  wapUrl: string
+  hasOther: number
+  totalUrl: string
+  catalog: string[]
+  wapCatalog: string[]
+  logo: string
+  copyrights: string
+  customImg: string
+  redirect: any[]
+}

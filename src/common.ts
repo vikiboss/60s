@@ -76,4 +76,12 @@ export class Common {
     }
     return value
   }
+
+  static transformEntities(str: string, mode: 'unicode2ascii' | 'ascii2unicode' = 'ascii2unicode') {
+    if (mode === 'ascii2unicode') {
+      return str.replace(/&#(\d+);/g, (_, $1) => String.fromCharCode(Number($1)))
+    }
+
+    return str.replace(/./, _ => `&#${_.charCodeAt(0)};`)
+  }
 }

@@ -65,6 +65,7 @@ appRouter.get('/fabing', serviceFabing.handle())
 appRouter.get('/duanzi', serviceDuanzi.handle())
 appRouter.get('/answer', serviceAnswer.handle())
 appRouter.get('/luck', serviceLuck.handle())
+
 appRouter.all('/hash', serviceHash.handle())
 appRouter.all('/fanyi', serviceFanyi.handle())
 appRouter.all('/og', serviceOG.handle())

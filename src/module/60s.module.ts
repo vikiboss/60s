@@ -44,7 +44,7 @@ class Service60s {
     const { url: link, title_image: cover, updated: updatedAt, content = '' } = data.at(0) || {}
 
     const items = ((content.match(this.#REG_ITEM) || []) as string[])
-      .map(e => this.#transferText(e.replace(this.#REG_TAG, '').trim()))
+      .map(e => Common.transformEntities(e.replace(this.#REG_TAG, '').trim()))
       .map(e => e.replace(/(^\d+、\s*)|([。！～；]$)/g, ''))
       .filter(e => e.length > 6)
 
@@ -76,14 +76,6 @@ class Service60s {
     }
 
     return item
-  }
-
-  #transferText(str: string, mode: 'u2a' | 'a2u' = 'a2u') {
-    if (mode === 'a2u') {
-      return str.replace(/&#(\d+);/g, (_, $1) => String.fromCharCode(Number($1)))
-    }
-
-    return str.replace(/./, _ => `&#${_.charCodeAt(0)};`)
   }
 }
 
