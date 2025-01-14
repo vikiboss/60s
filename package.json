@@ -6,7 +6,7 @@
     "start": "bun --env-file=.env bun.ts"
   },
   "dependencies": {
-    "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
+    "@oak/oak": "npm:@oakserver/oak@^14.1.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.5",

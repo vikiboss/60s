@@ -2,18 +2,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceIP {
   private getClientIP(requestHeaders: Headers): string | undefined {
-    const headerFields = [
-      'x-forwarded-for',
-      'x-client-ip',
-      'x-real-ip',
-      'cf-connecting-ip',
-      'fastly-client-ip',
-      'true-client-ip',
-      'x-cluster-client-ip',
-      'x-forwarded',
-      'forwarded-for',
-      'forwarded',
-    ]
+    const headerFields = ['x-forwarded-for', 'x-client-ip', 'x-real-ip', 'x-real-client-ip']
 
     for (const field of headerFields) {
       const value = requestHeaders.get(field)
@@ -35,7 +24,7 @@ class ServiceIP {
         ctx.response.body = clientIP || ctx.request.ip
       } catch (e) {
         console.error(e)
-        ctx.response.body = '无法检测到客户端 IP 地址'
+        ctx.response.body = ''
       }
     }
   }
