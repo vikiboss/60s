@@ -1,4 +1,4 @@
-import { Router } from '@oak/oak'
+import { Router } from '@oak/oak/router'
 import { Common } from './common.ts'
 import { config } from './config/index.ts'
 import { service60s } from './module/60s.module.ts'

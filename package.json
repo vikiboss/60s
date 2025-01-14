@@ -2,14 +2,13 @@
   "name": "60s-api",
   "type": "module",
   "scripts": {
-    "dev": "DEV=1 bun --watch --env-file=.env bun.ts",
-    "start": "bun --env-file=.env bun.ts"
+    "dev": "DEV=1 deno --watch --env-file=.env -A deno.ts",
+    "start": "deno --watch --env-file=.env -A deno.ts"
   },
   "dependencies": {
-    "@oak/oak": "npm:@oakserver/oak@^14.1.0"
+    "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
   },
   "devDependencies": {
-    "@types/node": "^22.10.5",
     "typescript": "^5.7.3",
     "wrangler": "^3.99.0"
   }

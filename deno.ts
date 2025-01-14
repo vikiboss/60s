@@ -12,8 +12,7 @@ declare global {
 
 globalThis.env = Deno.env.toObject()
 
-console.log(`service is running at http://localhost:${config.port}`)
-
-await app.listen({
-  port: config.port,
+Deno.serve({ port: config.port }, async (request, info) => {
+  const res = await app.handle(request, info.remoteAddr)
+  return res ?? Response.error()
 })

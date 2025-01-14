@@ -9,12 +9,9 @@ importers:
   .:
     dependencies:
       '@oak/oak':
-        specifier: npm:@oakserver/oak@^14.1.0
-        version: '@oakserver/oak@14.1.0'
+        specifier: npm:@jsr/oak__oak@^17.1.4
+        version: '@jsr/oak__oak@17.1.4'
     devDependencies:
-      '@types/node':
-        specifier: ^22.10.5
-        version: 22.10.5
       typescript:
         specifier: ^5.7.3
         version: 5.7.3
@@ -225,15 +222,6 @@ packages:
     resolution: {integrity: sha512-IchNf6dN4tHoMFIn/7OE8LWZ19Y6q/67Bmf6vnGREv8RSbBVb9LPJxEcnwrcwX6ixSvaiGoomAUvu4YSxXrVgw==}
     engines: {node: '>=12'}
 
-  '@deno/shim-crypto@0.3.1':
-    resolution: {integrity: sha512-ed4pNnfur6UbASEgF34gVxR9p7Mc3qF+Ygbmjiil8ws5IhNFhPDFy5vE5hQAUA9JmVsSxXPcVLM5Rf8LOZqQ5Q==}
-
-  '@deno/shim-deno-test@0.5.0':
-    resolution: {integrity: sha512-4nMhecpGlPi0cSzT67L+Tm+GOJqvuk8gqHBziqcUQOarnuIax1z96/gJHCSIz2Z0zhxE6Rzwb3IZXPtFh51j+w==}
-
-  '@deno/shim-deno@0.18.2':
-    resolution: {integrity: sha512-oQ0CVmOio63wlhwQF75zA4ioolPvOwAoK0yuzcS5bDC1JUvH3y1GS8xPh8EOpcoDQRU4FTG8OQfxhpR+c6DrzA==}
-
   '@esbuild-plugins/node-globals-polyfill@0.2.3':
     resolution: {integrity: sha512-r3MIryXDeXDOZh7ih1l/yE9ZLORCd5e8vWg02azWRGj5SPTuoh69A2AIyn0Z31V/kHBfZ4HgWJ+OK3GTTwLmnw==}
     peerDependencies:
@@ -390,9 +378,50 @@ packages:
   '@jridgewell/trace-mapping@0.3.9':
     resolution: {integrity: sha512-3Belt6tdc8bPgAtbcmdtNJlirVoTmEb5e2gC94PnkwEW9jI6CAHUeoG85tjWP5WquqfavoMtMwiG4P926ZKKuQ==}
 
-  '@oakserver/oak@14.1.0':
-    resolution: {integrity: sha512-lA2o9dW0Oi2NG6/Mp2a9W4eCnj7Ab6utP4XZc/13Dlg+fhVdDcxqq0qOgtHW6JyMg1ORJIfj1nKUy5XQm2pshw==}
-    engines: {node: '>=16.5.0 <22'}
+  '@jsr/oak__commons@1.0.0':
+    resolution: {integrity: sha512-KwXlS+TVFZ7EQo62nzGdCHg2/toRzcTCAxQ/BqS7QzAP7QQDv5nQRyybgLwK9zjVwG0D9ahN5x2biJTbinP9fw==, tarball: https://npm.jsr.io/~/11/@jsr/oak__commons/1.0.0.tgz}
+
+  '@jsr/oak__oak@17.1.4':
+    resolution: {integrity: sha512-dXBkD6jsduEbOFrxzRfG/hf7UUGTBnvy17rvVnmZ3YM6zw6NvTx3vKduHpt3mf9EKSCtXxBWWhb10Nv3V3pRfA==, tarball: https://npm.jsr.io/~/11/@jsr/oak__oak/17.1.4.tgz}
+
+  '@jsr/std__assert@1.0.10':
+    resolution: {integrity: sha512-CtUmSFZCxOoyxwhCgaaksNW1Wnf++texZNyrwXC/p32Fm+3ciHgY8oXVsd/BtjoSy3ChB/XkMOu162tnFSkGaA==, tarball: https://npm.jsr.io/~/11/@jsr/std__assert/1.0.10.tgz}
+
+  '@jsr/std__bytes@1.0.4':
+    resolution: {integrity: sha512-3RJxZsSHd9AhTIbJDYDigSTlElYkkU/NilUHtgLGxlXgNPxmb+wapntsxmgqQACsykhdCOUSW9SH/NinTBJ/XQ==, tarball: https://npm.jsr.io/~/11/@jsr/std__bytes/1.0.4.tgz}
+
+  '@jsr/std__cli@1.0.10':
+    resolution: {integrity: sha512-bF7M8dZQhTK+17df6smXW5Ry6FYTG5lCoMs2BtPdPU/mtAmCh83BAhIMgYz63CRacI31BjtzdTB1sVGz7KAUug==, tarball: https://npm.jsr.io/~/11/@jsr/std__cli/1.0.10.tgz}
+
+  '@jsr/std__crypto@1.0.3':
+    resolution: {integrity: sha512-B/4PCckQfbfVMyQvG2I15QbN4vfx1S0tXKstpSlzuSmVwGmAOT/DLCtrbrAKlMiJBN4Zb53KaAJQm8VgkZ+bDg==, tarball: https://npm.jsr.io/~/11/@jsr/std__crypto/1.0.3.tgz}
+
+  '@jsr/std__encoding@1.0.6':
+    resolution: {integrity: sha512-P5q1wD6O7RtZ89PaIDsQb+3NeCK2xlDEVhZT+k3gn9RNEep4StH7r50cRPK4bp2E7MU8kKc24sSsaCpj5v4i3Q==, tarball: https://npm.jsr.io/~/11/@jsr/std__encoding/1.0.6.tgz}
+
+  '@jsr/std__fmt@1.0.4':
+    resolution: {integrity: sha512-LtGv/QiMOECQr4bCaJ/14sIdp/atKEiW8B8K3vV0RZ5X/tgOeMNvcvfxGpvKgeqIESsecJ4Pa6icNgI/H3pLBA==, tarball: https://npm.jsr.io/~/11/@jsr/std__fmt/1.0.4.tgz}
+
+  '@jsr/std__html@1.0.3':
+    resolution: {integrity: sha512-yJrM4yMRZ3EQgzqR5oAP4xc4+QVo1GgimZ5NszA38quXCsFna0bEpl4heyosUtcDjuSYSdBGr5dKAQlfkQpZCQ==, tarball: https://npm.jsr.io/~/11/@jsr/std__html/1.0.3.tgz}
+
+  '@jsr/std__http@1.0.12':
+    resolution: {integrity: sha512-AGdon4ifRfI2KmI/7JOEGGp27pqCxemDWSLDqk79C7YM7tOUVYunRsJqc91p7TTWZY0nJs1lFmX336HpseoBOQ==, tarball: https://npm.jsr.io/~/11/@jsr/std__http/1.0.12.tgz}
+
+  '@jsr/std__internal@1.0.5':
+    resolution: {integrity: sha512-W2aN7UypJJ6EkfyXt5hBeIijBb8CmZk0jdjCzhOROr0SrXsXZ/V/9Qu1N0NxumFauPDAJz9NcP1mmZ9ZVSXwpQ==, tarball: https://npm.jsr.io/~/11/@jsr/std__internal/1.0.5.tgz}
+
+  '@jsr/std__media-types@1.1.0':
+    resolution: {integrity: sha512-dHvaxHL7ENWnltgL653uo3KnKFse3ZbopZop2gqsT7yrscx7irZEClu5Cba7gMPPRk4Lg1FbriNcaBViM2RSBw==, tarball: https://npm.jsr.io/~/11/@jsr/std__media-types/1.1.0.tgz}
+
+  '@jsr/std__net@1.0.4':
+    resolution: {integrity: sha512-KJGU8ZpQ70sMW2Zk+wU3wFUkggS9lTLfRFBygnV9VaK8KI+1ggiqtB06rH4a14CNRGM9y46Mn/ZCbQUd4Q45Jg==, tarball: https://npm.jsr.io/~/11/@jsr/std__net/1.0.4.tgz}
+
+  '@jsr/std__path@1.0.8':
+    resolution: {integrity: sha512-eNBGlh/8ZVkMxtFH4bwIzlAeKoHYk5in4wrBZhi20zMdOiuX4QozP4+19mIXBT2lzHDjhuVLyECbhFeR304iDg==, tarball: https://npm.jsr.io/~/11/@jsr/std__path/1.0.8.tgz}
+
+  '@jsr/std__streams@1.0.8':
+    resolution: {integrity: sha512-CTpO3/SIGGsA8i4qWmplPiUxJKxtZ6bx4A7piYioFlt5BDUf1fUtNs/120NPEW0b97I8Z+nolCx5SdY32sNOfw==, tarball: https://npm.jsr.io/~/11/@jsr/std__streams/1.0.8.tgz}
 
   '@smithy/abort-controller@4.0.1':
     resolution: {integrity: sha512-fiUIYgIgRjMWznk6iLJz35K2YxSLHzLBA/RC6lBrKfQ8fHbPfvk7Pk9UvpKoHgJjI18MnbPuEju53zcVy6KF1g==}
@@ -704,10 +733,6 @@ packages:
     resolution: {integrity: sha512-UfoeMA6fIJ8wTYFEUjelnaGI67v6+N7qXJEvQuIGa99l4xsCruSYOVSQ0uPANn4dAzm8lkYPaKLrrijLq7x23w==}
     engines: {node: '>= 0.4'}
 
-  isexe@3.1.1:
-    resolution: {integrity: sha512-LpB/54B+/2J5hqQ7imZHfdU31OlgQqx7ZicVlkm9kzg9/w8GKLEcFfJl/t7DCEDueOyBAD6zCCwTO6Fzs0NoEQ==}
-    engines: {node: '>=16'}
-
   itty-time@1.0.6:
     resolution: {integrity: sha512-+P8IZaLLBtFv8hCkIjcymZOp4UJ+xW6bSlQsXGqrkmJh7vSiMFSlNne0mCYagEE0N7HDNR5jJBRxwN0oYv61Rw==}
 
@@ -809,9 +834,6 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
-  tslib@2.6.3:
-    resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
-
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
 
@@ -830,20 +852,11 @@ packages:
     resolution: {integrity: sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==}
     engines: {node: '>=14.0'}
 
-  undici@6.21.0:
-    resolution: {integrity: sha512-BUgJXc752Kou3oOIuU1i+yZZypyZRqNPW0vqoMPl8VaoalSfeR0D8/t4iAS3yirs79SSMTxTag+ZC86uswv+Cw==}
-    engines: {node: '>=18.17'}
-
   unenv-nightly@2.0.0-20241218-183400-5d6aec3:
     resolution: {integrity: sha512-7Xpi29CJRbOV1/IrC03DawMJ0hloklDLq/cigSe+J2jkcC+iDres2Cy0r4ltj5f0x7DqsaGaB4/dLuCPPFZnZA==}
 
   uuid@9.0.1:
     resolution: {integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==}
-    hasBin: true
-
-  which@4.0.0:
-    resolution: {integrity: sha512-GlaYyEb07DPxYCKhKzplCWBJtvxZcZMrL+4UkrTSJHHPyZU4mYYTv3qaOe77H7EODLSSopAUFAc6W8U4yqvscg==}
-    engines: {node: ^16.13.0 || >=18.0.0}
     hasBin: true
 
   workerd@1.20241230.0:
@@ -1414,15 +1427,6 @@ snapshots:
     dependencies:
       '@jridgewell/trace-mapping': 0.3.9
 
-  '@deno/shim-crypto@0.3.1': {}
-
-  '@deno/shim-deno-test@0.5.0': {}
-
-  '@deno/shim-deno@0.18.2':
-    dependencies:
-      '@deno/shim-deno-test': 0.5.0
-      which: 4.0.0
-
   '@esbuild-plugins/node-globals-polyfill@0.2.3(esbuild@0.17.19)':
     dependencies:
       esbuild: 0.17.19
@@ -1510,12 +1514,63 @@ snapshots:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
 
-  '@oakserver/oak@14.1.0':
+  '@jsr/oak__commons@1.0.0':
     dependencies:
-      '@deno/shim-crypto': 0.3.1
-      '@deno/shim-deno': 0.18.2
-      tslib: 2.6.3
-      undici: 6.21.0
+      '@jsr/std__assert': 1.0.10
+      '@jsr/std__bytes': 1.0.4
+      '@jsr/std__crypto': 1.0.3
+      '@jsr/std__encoding': 1.0.6
+      '@jsr/std__http': 1.0.12
+      '@jsr/std__media-types': 1.1.0
+
+  '@jsr/oak__oak@17.1.4':
+    dependencies:
+      '@jsr/oak__commons': 1.0.0
+      '@jsr/std__assert': 1.0.10
+      '@jsr/std__bytes': 1.0.4
+      '@jsr/std__http': 1.0.12
+      '@jsr/std__media-types': 1.1.0
+      '@jsr/std__path': 1.0.8
+      path-to-regexp: 6.3.0
+
+  '@jsr/std__assert@1.0.10':
+    dependencies:
+      '@jsr/std__internal': 1.0.5
+
+  '@jsr/std__bytes@1.0.4': {}
+
+  '@jsr/std__cli@1.0.10': {}
+
+  '@jsr/std__crypto@1.0.3': {}
+
+  '@jsr/std__encoding@1.0.6': {}
+
+  '@jsr/std__fmt@1.0.4': {}
+
+  '@jsr/std__html@1.0.3': {}
+
+  '@jsr/std__http@1.0.12':
+    dependencies:
+      '@jsr/std__cli': 1.0.10
+      '@jsr/std__encoding': 1.0.6
+      '@jsr/std__fmt': 1.0.4
+      '@jsr/std__html': 1.0.3
+      '@jsr/std__media-types': 1.1.0
+      '@jsr/std__net': 1.0.4
+      '@jsr/std__path': 1.0.8
+      '@jsr/std__streams': 1.0.8
+
+  '@jsr/std__internal@1.0.5': {}
+
+  '@jsr/std__media-types@1.1.0': {}
+
+  '@jsr/std__net@1.0.4': {}
+
+  '@jsr/std__path@1.0.8': {}
+
+  '@jsr/std__streams@1.0.8':
+    dependencies:
+      '@jsr/std__bytes': 1.0.4
 
   '@smithy/abort-controller@4.0.1':
     dependencies:
@@ -1950,8 +2005,6 @@ snapshots:
     dependencies:
       hasown: 2.0.2
 
-  isexe@3.1.1: {}
-
   itty-time@1.0.6: {}
 
   magic-string@0.25.9:
@@ -2054,8 +2107,6 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
-  tslib@2.6.3: {}
-
   tslib@2.8.1: {}
 
   typescript@5.7.3: {}
@@ -2068,8 +2119,6 @@ snapshots:
     dependencies:
       '@fastify/busboy': 2.1.1
 
-  undici@6.21.0: {}
-
   unenv-nightly@2.0.0-20241218-183400-5d6aec3:
     dependencies:
       defu: 6.1.4
@@ -2079,10 +2128,6 @@ snapshots:
       ufo: 1.5.4
 
   uuid@9.0.1: {}
-
-  which@4.0.0:
-    dependencies:
-      isexe: 3.1.1
 
   workerd@1.20241230.0:
     optionalDependencies:

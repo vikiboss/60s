@@ -3,8 +3,8 @@
     "strict": true,
     "lib": ["esnext", "dom"]
   },
+  "exclude": ["./cf-worker.ts", "./bun.ts"],
   "lint": {
-    "exclude": ["./cf-worker.ts", "./bun.ts"],
     "rules": {
       "exclude": ["no-explicit-any"]
     }

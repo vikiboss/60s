@@ -1,4 +1,4 @@
-import { Application } from '@oak/oak'
+import { Application } from '@oak/oak/application'
 
 import { appRouter, rootRouter } from './router.ts'
 
