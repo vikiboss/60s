@@ -21,6 +21,7 @@ import { serviceDuanzi } from './module/duanzi/duanzi.module.ts'
 import { serviceAnswer } from './module/answer/answer.module.ts'
 import { serviceLuck } from './module/luck/luck.module.ts'
 import { serviceHash } from './module/hash.module.ts'
+import { serviceFanyi } from './module/fanyi.module.ts'
 
 export const rootRouter = new Router()
 
@@ -64,3 +65,4 @@ appRouter.get('/duanzi', serviceDuanzi.handle())
 appRouter.get('/answer', serviceAnswer.handle())
 appRouter.get('/luck', serviceLuck.handle())
 appRouter.all('/hash', serviceHash.handle())
+appRouter.all('/fanyi', serviceFanyi.handle())
