@@ -1,0 +1,1342 @@
+[
+  {
+    "id": "1",
+    "answer": "寻求更多的选择",
+    "answer_en": "Seek more choices"
+  },
+  {
+    "id": "2",
+    "answer": "不",
+    "answer_en": "No"
+  },
+  {
+    "id": "3",
+    "answer": "别忽视显而易见的东西",
+    "answer_en": "Don't overlook the obvious"
+  },
+  {
+    "id": "4",
+    "answer": "结果可能令人吃惊",
+    "answer_en": "The result may be surprising"
+  },
+  {
+    "id": "5",
+    "answer": "有决心就能成功",
+    "answer_en": "Determination will lead to success"
+  },
+  {
+    "id": "6",
+    "answer": "做一次改变",
+    "answer_en": "Make a change"
+  },
+  {
+    "id": "7",
+    "answer": "照别人告诉你的去做",
+    "answer_en": "Do as others tell you"
+  },
+  {
+    "id": "8",
+    "answer": "不能保证",
+    "answer_en": "No guarantee"
+  },
+  {
+    "id": "9",
+    "answer": "答案可能会以另一种形式出现",
+    "answer_en": "The answer may come in another form"
+  },
+  {
+    "id": "10",
+    "answer": "毫无疑问",
+    "answer_en": "Without a doubt"
+  },
+  {
+    "id": "11",
+    "answer": "这样做会使事情变得有趣",
+    "answer_en": "This will make things interesting"
+  },
+  {
+    "id": "12",
+    "answer": "这是肯定的",
+    "answer_en": "This is affirmative"
+  },
+  {
+    "id": "13",
+    "answer": "有可能会伤害到他人",
+    "answer_en": "It may harm others"
+  },
+  {
+    "id": "14",
+    "answer": "全身心投入将赢得好结果",
+    "answer_en": "Wholehearted devotion will bring good results"
+  },
+  {
+    "id": "15",
+    "answer": "采取冒险的态度",
+    "answer_en": "Take an adventurous attitude"
+  },
+  {
+    "id": "16",
+    "answer": "最好等待",
+    "answer_en": "Better to wait"
+  },
+  {
+    "id": "17",
+    "answer": "可能会惹上麻烦",
+    "answer_en": "May get into trouble"
+  },
+  {
+    "id": "18",
+    "answer": "你需要采取主动",
+    "answer_en": "You need to take the initiative"
+  },
+  {
+    "id": "19",
+    "answer": "似乎没问题",
+    "answer_en": "Seems ok"
+  },
+  {
+    "id": "20",
+    "answer": "当然",
+    "answer_en": "Of course"
+  },
+  {
+    "id": "21",
+    "answer": "不要在意",
+    "answer_en": "Don't mind"
+  },
+  {
+    "id": "22",
+    "answer": "尽早做好它",
+    "answer_en": "Do it soon"
+  },
+  {
+    "id": "23",
+    "answer": "你终会发现你想知道的一切",
+    "answer_en": "You will eventually find out what you want to know"
+  },
+  {
+    "id": "24",
+    "answer": "除非你独自一人",
+    "answer_en": "Unless you are alone"
+  },
+  {
+    "id": "25",
+    "answer": "是，但不要强求",
+    "answer_en": "Yes, but don't force it"
+  },
+  {
+    "id": "26",
+    "answer": "你需要去适应",
+    "answer_en": "You need to adapt"
+  },
+  {
+    "id": "27",
+    "answer": "明天再来试试",
+    "answer_en": "Try again tomorrow"
+  },
+  {
+    "id": "28",
+    "answer": "以更放松的态度去面对",
+    "answer_en": "Face it with a more relaxed attitude"
+  },
+  {
+    "id": "29",
+    "answer": "你需要考虑其他方法",
+    "answer_en": "You need to consider other ways"
+  },
+  {
+    "id": "30",
+    "answer": "在习惯中接受一些改变",
+    "answer_en": "Accept some changes in habits"
+  },
+  {
+    "id": "31",
+    "answer": "要知道选择太多和选择太少一样很难",
+    "answer_en": "Know that having too many or too few choices is equally difficult"
+  },
+  {
+    "id": "32",
+    "answer": "别浪费时间了",
+    "answer_en": "Don't waste time"
+  },
+  {
+    "id": "33",
+    "answer": "是",
+    "answer_en": "Yes"
+  },
+  {
+    "id": "34",
+    "answer": "花更多时间来决定",
+    "answer_en": "Take more time to decide"
+  },
+  {
+    "id": "35",
+    "answer": "灵活应对",
+    "answer_en": "Be flexible"
+  },
+  {
+    "id": "36",
+    "answer": "似乎已成事实",
+    "answer_en": "Seems to be a fact"
+  },
+  {
+    "id": "37",
+    "answer": "看开一点",
+    "answer_en": "Take it easy"
+  },
+  {
+    "id": "38",
+    "answer": "问问你的异性同事",
+    "answer_en": "Ask your opposite-sex colleague"
+  },
+  {
+    "id": "39",
+    "answer": "柳暗花明又一村",
+    "answer_en": "After the darkness there will be brightness"
+  },
+  {
+    "id": "40",
+    "answer": "你会后悔的",
+    "answer_en": "You will regret it"
+  },
+  {
+    "id": "41",
+    "answer": "避免第一个解决办法",
+    "answer_en": "Avoid the first solution"
+  },
+  {
+    "id": "42",
+    "answer": "随它去吧",
+    "answer_en": "Let it be"
+  },
+  {
+    "id": "43",
+    "answer": "过段时间就不那么重要了",
+    "answer_en": "It won't be so important after a while"
+  },
+  {
+    "id": "44",
+    "answer": "拭目以待",
+    "answer_en": "Wait and see"
+  },
+  {
+    "id": "45",
+    "answer": "相信你最初的想法",
+    "answer_en": "Trust your initial thoughts"
+  },
+  {
+    "id": "46",
+    "answer": "请不要抗拒",
+    "answer_en": "Please don't resist"
+  },
+  {
+    "id": "47",
+    "answer": "这会带来好运",
+    "answer_en": "This will bring good luck"
+  },
+  {
+    "id": "48",
+    "answer": "那一定很棒",
+    "answer_en": "That must be great"
+  },
+  {
+    "id": "49",
+    "answer": "把它记下来",
+    "answer_en": "Write it down"
+  },
+  {
+    "id": "50",
+    "answer": "可能发生小意外",
+    "answer_en": "A minor accident may occur"
+  },
+  {
+    "id": "51",
+    "answer": "学习并享受它",
+    "answer_en": "Learn and enjoy it"
+  },
+  {
+    "id": "52",
+    "answer": "这具有重要意义",
+    "answer_en": "This has important meaning"
+  },
+  {
+    "id": "53",
+    "answer": "防备意外发生",
+    "answer_en": "Beware of accidents"
+  },
+  {
+    "id": "54",
+    "answer": "一切将依赖于你的选择",
+    "answer_en": "Everything will depend on your choice"
+  },
+  {
+    "id": "55",
+    "answer": "转移注意力",
+    "answer_en": "Divert your attention"
+  },
+  {
+    "id": "56",
+    "answer": "离开",
+    "answer_en": "Leave"
+  },
+  {
+    "id": "57",
+    "answer": "你需要其他人的帮助",
+    "answer_en": "You need help from others"
+  },
+  {
+    "id": "58",
+    "answer": "这有些特别",
+    "answer_en": "This is a bit special"
+  },
+  {
+    "id": "59",
+    "answer": "不要犹豫",
+    "answer_en": "Don't hesitate"
+  },
+  {
+    "id": "60",
+    "answer": "先完成其他事",
+    "answer_en": "Finish other things first"
+  },
+  {
+    "id": "61",
+    "answer": "给自己一点时间",
+    "answer_en": "Give yourself some time"
+  },
+  {
+    "id": "62",
+    "answer": "现在你就能",
+    "answer_en": "You can do it now"
+  },
+  {
+    "id": "63",
+    "answer": "那不值得纠结",
+    "answer_en": "It's not worth worrying about"
+  },
+  {
+    "id": "64",
+    "answer": "那将影响别人对你的看法",
+    "answer_en": "That will affect how others see you"
+  },
+  {
+    "id": "65",
+    "answer": "照别人说的去做",
+    "answer_en": "Do as others say"
+  },
+  {
+    "id": "66",
+    "answer": "转移你的注意力",
+    "answer_en": "Divert your attention"
+  },
+  {
+    "id": "67",
+    "answer": "你会失望的",
+    "answer_en": "You will be disappointed"
+  },
+  {
+    "id": "68",
+    "answer": "最好关注你的工作",
+    "answer_en": "Better focus on your work"
+  },
+  {
+    "id": "69",
+    "answer": "形式尚不明朗",
+    "answer_en": "The form is still unclear"
+  },
+  {
+    "id": "70",
+    "answer": "不要抱有成见",
+    "answer_en": "Don't be biased"
+  },
+  {
+    "id": "71",
+    "answer": "你必须现在就行动",
+    "answer_en": "You must act now"
+  },
+  {
+    "id": "72",
+    "answer": "那可能很难，但值得",
+    "answer_en": "It may be difficult, but worth it"
+  },
+  {
+    "id": "73",
+    "answer": "付出就会有回报",
+    "answer_en": "Effort will be rewarded"
+  },
+  {
+    "id": "74",
+    "answer": "对意外要有思想准备",
+    "answer_en": "Be prepared for the unexpected"
+  },
+  {
+    "id": "75",
+    "answer": "更细心地去倾听，你就会知道",
+    "answer_en": "Listen more carefully and you will know"
+  },
+  {
+    "id": "76",
+    "answer": "且行且思",
+    "answer_en": "Act while thinking"
+  },
+  {
+    "id": "77",
+    "answer": "你有能力以任何方式改善",
+    "answer_en": "You have the ability to improve in any way"
+  },
+  {
+    "id": "78",
+    "answer": "这是你不会忘记的事物",
+    "answer_en": "This is something you won't forget"
+  },
+  {
+    "id": "79",
+    "answer": "履行你的义务",
+    "answer_en": "Fulfill your duty"
+  },
+  {
+    "id": "80",
+    "answer": "快刀斩乱麻",
+    "answer_en": "Cut the knot quickly"
+  },
+  {
+    "id": "81",
+    "answer": "别在这上面下赌注",
+    "answer_en": "Don't bet on this"
+  },
+  {
+    "id": "82",
+    "answer": "也许吧",
+    "answer_en": "Maybe"
+  },
+  {
+    "id": "83",
+    "answer": "专注于你的家庭生活",
+    "answer_en": "Focus on your family life"
+  },
+  {
+    "id": "84",
+    "answer": "绝对不",
+    "answer_en": "Absolutely not"
+  },
+  {
+    "id": "85",
+    "answer": "等待",
+    "answer_en": "Wait"
+  },
+  {
+    "id": "86",
+    "answer": "别犯傻了",
+    "answer_en": "Don't be foolish"
+  },
+  {
+    "id": "87",
+    "answer": "可能吧",
+    "answer_en": "Maybe"
+  },
+  {
+    "id": "88",
+    "answer": "表示怀疑",
+    "answer_en": "Express doubt"
+  },
+  {
+    "id": "89",
+    "answer": "意义非凡",
+    "answer_en": "Extraordinary significance"
+  },
+  {
+    "id": "90",
+    "answer": "那可能非同寻常",
+    "answer_en": "That may be out of the ordinary"
+  },
+  {
+    "id": "91",
+    "answer": "不可能失败",
+    "answer_en": "Cannot fail"
+  },
+  {
+    "id": "92",
+    "answer": "你需要了解更多",
+    "answer_en": "You need to know more"
+  },
+  {
+    "id": "93",
+    "answer": "情况很快就会有变化",
+    "answer_en": "The situation will change soon"
+  },
+  {
+    "id": "94",
+    "answer": "这并不重要",
+    "answer_en": "It's not important"
+  },
+  {
+    "id": "95",
+    "answer": "顺其自然",
+    "answer_en": "Let it be natural"
+  },
+  {
+    "id": "96",
+    "answer": "问问你最好的朋友",
+    "answer_en": "Ask your best friend"
+  },
+  {
+    "id": "97",
+    "answer": "这时不要再自找麻烦",
+    "answer_en": "Don't be so selfish"
+  },
+  {
+    "id": "98",
+    "answer": "晚一点处理",
+    "answer_en": "Handle it later"
+  },
+  {
+    "id": "99",
+    "answer": "尝试一种更可能的解决方案",
+    "answer_en": "Try a more likely solution"
+  },
+  {
+    "id": "100",
+    "answer": "先做重要的事",
+    "answer_en": "Do the important things first"
+  },
+  {
+    "id": "101",
+    "answer": "投硬币来做决定吧",
+    "answer_en": "Toss a coin to decide"
+  },
+  {
+    "id": "102",
+    "answer": "这也取决于另一种情况",
+    "answer_en": "It also depends on another situation"
+  },
+  {
+    "id": "103",
+    "answer": "你最终能如愿",
+    "answer_en": "You will eventually get what you want"
+  },
+  {
+    "id": "104",
+    "answer": "可行",
+    "answer_en": "Feasible"
+  },
+  {
+    "id": "105",
+    "answer": "答案就在你家窗外",
+    "answer_en": "The answer is right outside your window"
+  },
+  {
+    "id": "106",
+    "answer": "现在的你比以往任何时候都清楚",
+    "answer_en": "You are clearer now than ever before"
+  },
+  {
+    "id": "107",
+    "answer": "只需说声\"谢谢\"",
+    "answer_en": "Just say \"Thank you\""
+  },
+  {
+    "id": "108",
+    "answer": "或许，等你再年长些就明白了",
+    "answer_en": "Perhaps, you'll understand when you're older"
+  },
+  {
+    "id": "109",
+    "answer": "这将轰动一时",
+    "answer_en": "This will cause a sensation"
+  },
+  {
+    "id": "110",
+    "answer": "放手一搏",
+    "answer_en": "Take a chance"
+  },
+  {
+    "id": "111",
+    "answer": "事情会朝目标发展",
+    "answer_en": "Things will develop toward the goal"
+  },
+  {
+    "id": "112",
+    "answer": "更细心去了解，你就知道该怎么做了",
+    "answer_en": "With more careful understanding, you'll know what to do"
+  },
+  {
+    "id": "113",
+    "answer": "需要做更多的努力",
+    "answer_en": "More effort is needed"
+  },
+  {
+    "id": "114",
+    "answer": "等待一个更好的机会",
+    "answer_en": "Wait for a better opportunity"
+  },
+  {
+    "id": "115",
+    "answer": "数到5，再试一次",
+    "answer_en": "Count to 5, then try again"
+  },
+  {
+    "id": "116",
+    "answer": "你不得不妥协",
+    "answer_en": "You have to compromise"
+  },
+  {
+    "id": "117",
+    "answer": "很快就能解决",
+    "answer_en": "It will be resolved soon"
+  },
+  {
+    "id": "118",
+    "answer": "十分确定",
+    "answer_en": "Very certain"
+  },
+  {
+    "id": "119",
+    "answer": "这还不确定",
+    "answer_en": "This is still uncertain"
+  },
+  {
+    "id": "120",
+    "answer": "谨慎处理",
+    "answer_en": "Handle with caution"
+  },
+  {
+    "id": "121",
+    "answer": "全力以赴",
+    "answer_en": "Give it your all"
+  },
+  {
+    "id": "122",
+    "answer": "重新考虑你的做法",
+    "answer_en": "Reconsider your approach"
+  },
+  {
+    "id": "123",
+    "answer": "问问你的母亲吧",
+    "answer_en": "Ask your mother"
+  },
+  {
+    "id": "124",
+    "answer": "如果你独自一人就不要",
+    "answer_en": "Don't, if you're alone"
+  },
+  {
+    "id": "125",
+    "answer": "无需担忧",
+    "answer_en": "No need to worry"
+  },
+  {
+    "id": "126",
+    "answer": "保持开放的心态",
+    "answer_en": "Keep an open mind"
+  },
+  {
+    "id": "127",
+    "answer": "你会为自己所做的感到高兴的",
+    "answer_en": "You will be glad for what you did"
+  },
+  {
+    "id": "128",
+    "answer": "发挥你的想象力",
+    "answer_en": "Use your imagination"
+  },
+  {
+    "id": "129",
+    "answer": "献出你的一切",
+    "answer_en": "Give your all"
+  },
+  {
+    "id": "130",
+    "answer": "顺从你的意愿",
+    "answer_en": "Follow your will"
+  },
+  {
+    "id": "131",
+    "answer": "先做好自己的事",
+    "answer_en": "Take care of your own matters first"
+  },
+  {
+    "id": "132",
+    "answer": "不要怀疑",
+    "answer_en": "Don't doubt"
+  },
+  {
+    "id": "133",
+    "answer": "是时候做新打算了​",
+    "answer_en": "It's time to make new plans"
+  },
+  {
+    "id": "134",
+    "answer": "省省力气吧",
+    "answer_en": "Save your energy"
+  },
+  {
+    "id": "135",
+    "answer": "合作将是关键",
+    "answer_en": "Cooperation will be the key"
+  },
+  {
+    "id": "136",
+    "answer": "此时不宜",
+    "answer_en": "Not advisable at this time"
+  },
+  {
+    "id": "137",
+    "answer": "把这看做一次机会",
+    "answer_en": "See this as an opportunity"
+  },
+  {
+    "id": "138",
+    "answer": "莫等待",
+    "answer_en": "Don't wait"
+  },
+  {
+    "id": "139",
+    "answer": "你可能不得不放弃其他东西",
+    "answer_en": "You may have to give up other things"
+  },
+  {
+    "id": "140",
+    "answer": "遵守规则",
+    "answer_en": "Follow the rules"
+  },
+  {
+    "id": "141",
+    "answer": "相关问题可能会出现",
+    "answer_en": "Related issues may arise"
+  },
+  {
+    "id": "142",
+    "answer": "事情将如你所愿",
+    "answer_en": "Things will be as you wish"
+  },
+  {
+    "id": "143",
+    "answer": "赌一把",
+    "answer_en": "Take a chance"
+  },
+  {
+    "id": "144",
+    "answer": "以后再处理",
+    "answer_en": "Handle it later"
+  },
+  {
+    "id": "145",
+    "answer": "结果是乐观的",
+    "answer_en": "The outcome is optimistic"
+  },
+  {
+    "id": "146",
+    "answer": "期待解决",
+    "answer_en": "Expect a resolution"
+  },
+  {
+    "id": "147",
+    "answer": "灵活应对",
+    "answer_en": "Be flexible"
+  },
+  {
+    "id": "148",
+    "answer": "注意细节",
+    "answer_en": "Pay attention to details"
+  },
+  {
+    "id": "149",
+    "answer": "你的行动会使一切变好",
+    "answer_en": "Your actions will make everything better"
+  },
+  {
+    "id": "150",
+    "answer": "答案就在公园里",
+    "answer_en": "The answer is in the park"
+  },
+  {
+    "id": "151",
+    "answer": "消除你自身的障碍",
+    "answer_en": "Remove your own obstacles"
+  },
+  {
+    "id": "152",
+    "answer": "这是不明智的",
+    "answer_en": "This is unwise"
+  },
+  {
+    "id": "153",
+    "answer": "将需要大量的努力",
+    "answer_en": "It will require a lot of effort"
+  },
+  {
+    "id": "154",
+    "answer": "不要勉强自己",
+    "answer_en": "Don't force yourself"
+  },
+  {
+    "id": "155",
+    "answer": "是时候做打算了",
+    "answer_en": "It's time to make plans"
+  },
+  {
+    "id": "156",
+    "answer": "别再犹豫了",
+    "answer_en": "Don't hesitate any longer"
+  },
+  {
+    "id": "157",
+    "answer": "享受这次体验",
+    "answer_en": "Enjoy this experience"
+  },
+  {
+    "id": "158",
+    "answer": "要付出坚持不懈的努力",
+    "answer_en": "Persevering effort is required"
+  },
+  {
+    "id": "159",
+    "answer": "那仍旧无法预测",
+    "answer_en": "It is still unpredictable"
+  },
+  {
+    "id": "160",
+    "answer": "毋庸置疑",
+    "answer_en": "Without a doubt"
+  },
+  {
+    "id": "161",
+    "answer": "多花点时间来做决定",
+    "answer_en": "Take more time to decide"
+  },
+  {
+    "id": "162",
+    "answer": "只做这一次",
+    "answer_en": "Do it just this once"
+  },
+  {
+    "id": "163",
+    "answer": "这是不明智的",
+    "answer_en": "This is unwise"
+  },
+  {
+    "id": "164",
+    "answer": "做些改变",
+    "answer_en": "Make some changes"
+  },
+  {
+    "id": "165",
+    "answer": "可行",
+    "answer_en": "Feasible"
+  },
+  {
+    "id": "166",
+    "answer": "先做好其他事",
+    "answer_en": "Take care of other things first"
+  },
+  {
+    "id": "167",
+    "answer": "不要陷入到情绪之中",
+    "answer_en": "Don't get caught up in emotions"
+  },
+  {
+    "id": "168",
+    "answer": "相信你的直觉",
+    "answer_en": "Trust your intuition"
+  },
+  {
+    "id": "169",
+    "answer": "采纳智者的建议",
+    "answer_en": "Heed the advice of the wise"
+  },
+  {
+    "id": "170",
+    "answer": "情况不明了",
+    "answer_en": "The situation is unclear"
+  },
+  {
+    "id": "171",
+    "answer": "你不得不妥协",
+    "answer_en": "You have to compromise"
+  },
+  {
+    "id": "172",
+    "answer": "列出否定的理由",
+    "answer_en": "List the reasons against it"
+  },
+  {
+    "id": "173",
+    "answer": "要有耐心",
+    "answer_en": "Have patience"
+  },
+  {
+    "id": "174",
+    "answer": "一笑置之",
+    "answer_en": "Laugh it off"
+  },
+  {
+    "id": "175",
+    "answer": "继续",
+    "answer_en": "Continue"
+  },
+  {
+    "id": "176",
+    "answer": "你必须随机应变",
+    "answer_en": "You must adapt as you go"
+  },
+  {
+    "id": "177",
+    "answer": "别忘记享受乐趣",
+    "answer_en": "Don't forget to enjoy yourself"
+  },
+  {
+    "id": "178",
+    "answer": "那是在浪费金钱",
+    "answer_en": "That is a waste of money"
+  },
+  {
+    "id": "179",
+    "answer": "重要的优先",
+    "answer_en": "Prioritize what's important"
+  },
+  {
+    "id": "180",
+    "answer": "为了做出最好的决定，务必保持冷静",
+    "answer_en": "Stay calm to make the best decision"
+  },
+  {
+    "id": "181",
+    "answer": "尝试一个更没把握的方法",
+    "answer_en": "Try a less certain approach"
+  },
+  {
+    "id": "182",
+    "answer": "清除你自身的障碍",
+    "answer_en": "Remove your own obstacles"
+  },
+  {
+    "id": "183",
+    "answer": "那可能已成事实",
+    "answer_en": "It may already be a fact"
+  },
+  {
+    "id": "184",
+    "answer": "保守你的秘密",
+    "answer_en": "Keep your secret"
+  },
+  {
+    "id": "185",
+    "answer": "你必须马上行动",
+    "answer_en": "You must act immediately"
+  },
+  {
+    "id": "186",
+    "answer": "不要妄下赌注",
+    "answer_en": "Don't bet recklessly"
+  },
+  {
+    "id": "187",
+    "answer": "那可能已无法改变",
+    "answer_en": "It may be unchangeable"
+  },
+  {
+    "id": "188",
+    "answer": "一些帮助能确保你成功",
+    "answer_en": "Some help can ensure your success"
+  },
+  {
+    "id": "189",
+    "answer": "你肯定会获得支持",
+    "answer_en": "You will definitely get support"
+  },
+  {
+    "id": "190",
+    "answer": "只做一次",
+    "answer_en": "Do it just once"
+  },
+  {
+    "id": "191",
+    "answer": "遵循智者的建议",
+    "answer_en": "Follow the advice of the wise"
+  },
+  {
+    "id": "192",
+    "answer": "如你所愿",
+    "answer_en": "As you wish"
+  },
+  {
+    "id": "193",
+    "answer": "当局者迷",
+    "answer_en": "It's unclear to those involved"
+  },
+  {
+    "id": "194",
+    "answer": "无论你怎么做，结果依旧",
+    "answer_en": "No matter what you do, the result is the same"
+  },
+  {
+    "id": "195",
+    "answer": "先主后次",
+    "answer_en": "Prioritize the main over the secondary"
+  },
+  {
+    "id": "196",
+    "answer": "这会让你付出代价",
+    "answer_en": "This will cost you"
+  },
+  {
+    "id": "197",
+    "answer": "尽早行动",
+    "answer_en": "Act sooner rather than later"
+  },
+  {
+    "id": "198",
+    "answer": "寻求更多选择",
+    "answer_en": "Seek more choices"
+  },
+  {
+    "id": "199",
+    "answer": "你现在比以往任何时候都清楚",
+    "answer_en": "You are clearer now than ever before"
+  },
+  {
+    "id": "200",
+    "answer": "极可能发生事故",
+    "answer_en": "An accident is very likely"
+  },
+  {
+    "id": "201",
+    "answer": "带着好奇去探索",
+    "answer_en": "Explore with curiosity"
+  },
+  {
+    "id": "202",
+    "answer": "列出这样做的理由",
+    "answer_en": "List the reasons to do it"
+  },
+  {
+    "id": "203",
+    "answer": "马上停下来",
+    "answer_en": "Stop right away"
+  },
+  {
+    "id": "204",
+    "answer": "这不是很确定",
+    "answer_en": "This is not very certain"
+  },
+  {
+    "id": "205",
+    "answer": "不用担心",
+    "answer_en": "No need to worry"
+  },
+  {
+    "id": "206",
+    "answer": "不要告诉别人",
+    "answer_en": "Don't tell others"
+  },
+  {
+    "id": "207",
+    "answer": "你需要其他人的帮助",
+    "answer_en": "You need help from others"
+  },
+  {
+    "id": "208",
+    "answer": "那将是一件乐事",
+    "answer_en": "That will be a pleasure"
+  },
+  {
+    "id": "209",
+    "answer": "不要迫于压力草率行事",
+    "answer_en": "Don't act rashly under pressure"
+  },
+  {
+    "id": "210",
+    "answer": "不要等待",
+    "answer_en": "Don't wait"
+  },
+  {
+    "id": "211",
+    "answer": "你能以任何方式改善现状",
+    "answer_en": "You can improve the situation in any way"
+  },
+  {
+    "id": "212",
+    "answer": "你会为此感到高兴",
+    "answer_en": "You will be glad for this"
+  },
+  {
+    "id": "213",
+    "answer": "放弃之前的想法",
+    "answer_en": "Abandon your previous idea"
+  },
+  {
+    "id": "214",
+    "answer": "你不会忘记这些",
+    "answer_en": "You won't forget this"
+  },
+  {
+    "id": "215",
+    "answer": "谨慎对待",
+    "answer_en": "Treat with caution"
+  },
+  {
+    "id": "216",
+    "answer": "放弃你现在的想法",
+    "answer_en": "Abandon your current idea"
+  },
+  {
+    "id": "217",
+    "answer": "有理由保持乐观",
+    "answer_en": "There is reason to be optimistic"
+  },
+  {
+    "id": "218",
+    "answer": "你会发现自己难以妥协",
+    "answer_en": "You will find it hard to compromise"
+  },
+  {
+    "id": "219",
+    "answer": "改变不会很快发生",
+    "answer_en": "Change will not happen quickly"
+  },
+  {
+    "id": "220",
+    "answer": "有些障碍需要克服",
+    "answer_en": "Some obstacles need to be overcome"
+  },
+  {
+    "id": "221",
+    "answer": "耐心点",
+    "answer_en": "Be patient"
+  },
+  {
+    "id": "222",
+    "answer": "果断放弃",
+    "answer_en": "Abandon decisively"
+  },
+  {
+    "id": "223",
+    "answer": "最好把心思放在工作上",
+    "answer_en": "Better focus on your work"
+  },
+  {
+    "id": "224",
+    "answer": "要做就做好，否则就不要去做",
+    "answer_en": "Do it well or don't do it at all"
+  },
+  {
+    "id": "225",
+    "answer": "深表怀疑",
+    "answer_en": "Express deep doubt"
+  },
+  {
+    "id": "226",
+    "answer": "最好的解决方法可能不太明显",
+    "answer_en": "The best solution may not be obvious"
+  },
+  {
+    "id": "227",
+    "answer": "已超出你的控制",
+    "answer_en": "It is beyond your control"
+  },
+  {
+    "id": "228",
+    "answer": "看看会发生什么",
+    "answer_en": "See what happens"
+  },
+  {
+    "id": "229",
+    "answer": "你需要更多信息",
+    "answer_en": "You need more information"
+  },
+  {
+    "id": "230",
+    "answer": "开阔视野",
+    "answer_en": "Broaden your perspective"
+  },
+  {
+    "id": "231",
+    "answer": "看得更清楚些",
+    "answer_en": "See more clearly"
+  },
+  {
+    "id": "232",
+    "answer": "结果可能会令人震惊",
+    "answer_en": "The result may be shocking"
+  },
+  {
+    "id": "233",
+    "answer": "节省你的精力吧",
+    "answer_en": "Save your energy"
+  },
+  {
+    "id": "234",
+    "answer": "管它呢",
+    "answer_en": "Never mind it"
+  },
+  {
+    "id": "235",
+    "answer": "无论你做什么，结果依旧",
+    "answer_en": "No matter what you do, the result is the same"
+  },
+  {
+    "id": "236",
+    "answer": "那将引起一些纷争",
+    "answer_en": "That will cause some disputes"
+  },
+  {
+    "id": "237",
+    "answer": "相关问题可能会浮出水面",
+    "answer_en": "Related issues may surface"
+  },
+  {
+    "id": "238",
+    "answer": "遵循其他人的建议",
+    "answer_en": "Follow others' advice"
+  },
+  {
+    "id": "239",
+    "answer": "改变将不会很快发生",
+    "answer_en": "Change will not happen quickly"
+  },
+  {
+    "id": "240",
+    "answer": "值得付出努力",
+    "answer_en": "It's worth the effort"
+  },
+  {
+    "id": "241",
+    "answer": "负起责任来",
+    "answer_en": "Take responsibility"
+  },
+  {
+    "id": "242",
+    "answer": "不值得一争",
+    "answer_en": "Not worth fighting for"
+  },
+  {
+    "id": "243",
+    "answer": "问问你的父亲吧",
+    "answer_en": "Ask your father"
+  },
+  {
+    "id": "244",
+    "answer": "向别人倾诉",
+    "answer_en": "Confide in others"
+  },
+  {
+    "id": "245",
+    "answer": "看起来还行",
+    "answer_en": "Looks okay"
+  },
+  {
+    "id": "246",
+    "answer": "绝不",
+    "answer_en": "Absolutely not"
+  },
+  {
+    "id": "247",
+    "answer": "等待一个更好的提议",
+    "answer_en": "Wait for a better proposal"
+  },
+  {
+    "id": "248",
+    "answer": "你可能会遭遇反对",
+    "answer_en": "You may encounter opposition"
+  },
+  {
+    "id": "249",
+    "answer": "告诉某人那对你意味着什么",
+    "answer_en": "Tell someone what it means to you"
+  },
+  {
+    "id": "250",
+    "answer": "一切都取决于你的选择",
+    "answer_en": "Everything depends on your choice"
+  },
+  {
+    "id": "251",
+    "answer": "把这看作一个时机",
+    "answer_en": "See this as an opportunity"
+  },
+  {
+    "id": "252",
+    "answer": "不要陷入你的情绪",
+    "answer_en": "Don't get caught up in your emotions"
+  },
+  {
+    "id": "253",
+    "answer": "你一定得这么做",
+    "answer_en": "You must do it this way"
+  },
+  {
+    "id": "254",
+    "answer": "享受这个过程",
+    "answer_en": "Enjoy the process"
+  },
+  {
+    "id": "255",
+    "answer": "不识庐山真面目，只缘身在此山中",
+    "answer_en": "You can't see the true face of Lushan, only because you're in the mountain"
+  },
+  {
+    "id": "256",
+    "answer": "你不会失望的",
+    "answer_en": "You won't be disappointed"
+  },
+  {
+    "id": "257",
+    "answer": "是时候走了",
+    "answer_en": "It's time to leave"
+  },
+  {
+    "id": "258",
+    "answer": "欣然接受",
+    "answer_en": "Accept with pleasure"
+  },
+  {
+    "id": "259",
+    "answer": "遵循其他人的意见",
+    "answer_en": "Follow others' opinions"
+  },
+  {
+    "id": "260",
+    "answer": "说出来吧",
+    "answer_en": "Say it out loud"
+  },
+  {
+    "id": "261",
+    "answer": "慷慨大度一些",
+    "answer_en": "Be more generous"
+  },
+  {
+    "id": "262",
+    "answer": "你可能遭遇反对",
+    "answer_en": "You may encounter opposition"
+  },
+  {
+    "id": "263",
+    "answer": "你能否不要抗拒",
+    "answer_en": "Could you not resist"
+  },
+  {
+    "id": "264",
+    "answer": "要障碍需要克服",
+    "answer_en": "Obstacles need to be overcome"
+  },
+  {
+    "id": "265",
+    "answer": "做出改变",
+    "answer_en": "Make changes"
+  },
+  {
+    "id": "266",
+    "answer": "无法保证",
+    "answer_en": "No guarantee"
+  },
+  {
+    "id": "267",
+    "answer": "算了吧",
+    "answer_en": "Forget about it"
+  },
+  {
+    "id": "268",
+    "answer": "合作是关键",
+    "answer_en": "Cooperation is key"
+  }
+]

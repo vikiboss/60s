@@ -23,10 +23,25 @@ class ServiceChangYa {
     'toGZlBfZbukck2sHb',
     'WoENz0IiQVX1PLJs7',
   ]
+
   handle(): RouterMiddleware<'/changya'> {
     return async ctx => {
       const data = await this.#fetch()
-      ctx.response.body = data
+
+      switch (ctx.state.encoding) {
+        case 'text':
+          ctx.response.body = data.audio.url
+          break
+
+        case 'audio':
+          ctx.response.redirect(data.audio.url)
+          break
+
+        case 'json':
+        default:
+          ctx.response.body = data
+          break
+      }
     }
   }
 

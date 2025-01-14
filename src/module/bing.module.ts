@@ -2,7 +2,7 @@ import { Common } from '../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
-interface BingData {
+interface BingItem {
   title: string
   headline: string
   description: string
@@ -15,7 +15,7 @@ interface BingData {
 class ServiceBing {
   #API = 'https://cn.bing.com'
   // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10
-  #cache = new Map<string, BingData>()
+  #cache = new Map<string, BingItem>()
 
   handle(): RouterMiddleware<'/bing'> {
     return async ctx => {
@@ -31,9 +31,11 @@ class ServiceBing {
         case 'text':
           ctx.response.body = data.cover || ''
           break
+
         case 'image':
           ctx.response.redirect(data.cover || '')
           break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)

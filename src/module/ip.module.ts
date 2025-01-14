@@ -1,4 +1,5 @@
 import type { RouterMiddleware } from '@oak/oak'
+import { Common } from '../common.ts'
 
 class ServiceIP {
   getClientIP(requestHeaders: Headers): string | undefined {
@@ -19,12 +20,17 @@ class ServiceIP {
   handle(): RouterMiddleware<'/ip'> {
     return ctx => {
       const clientIP = this.getClientIP(ctx.request.headers)
+      const ip = clientIP || ctx.request.ip
 
-      try {
-        ctx.response.body = clientIP || ctx.request.ip
-      } catch (e) {
-        console.error(e)
-        ctx.response.body = ''
+      switch (ctx.state.encoding) {
+        case 'text':
+          ctx.response.body = ip
+          break
+
+        case 'json':
+        default:
+          ctx.response.body = Common.buildJson({ ip })
+          break
       }
     }
   }

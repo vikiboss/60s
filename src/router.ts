@@ -18,6 +18,9 @@ import { serviceToutiao } from './module/toutiao.module.ts'
 import { serviceWeibo } from './module/weibo.module.ts'
 import { serviceZhihu } from './module/zhihu.module.ts'
 import { serviceDuanzi } from './module/duanzi/duanzi.module.ts'
+import { serviceAnswer } from './module/answer/answer.module.ts'
+import { serviceLuck } from './module/luck/luck.module.ts'
+import { serviceHash } from './module/hash.module.ts'
 
 export const rootRouter = new Router()
 
@@ -58,3 +61,6 @@ appRouter.get('/ip', serviceIP.handle())
 appRouter.get('/hitokoto', serviceHitokoto.handle())
 appRouter.get('/fabing', serviceFabing.handle())
 appRouter.get('/duanzi', serviceDuanzi.handle())
+appRouter.get('/answer', serviceAnswer.handle())
+appRouter.get('/luck', serviceLuck.handle())
+appRouter.all('/hash', serviceHash.handle())
