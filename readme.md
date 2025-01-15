@@ -1,4 +1,6 @@
-# ⏰ 60s API (v1 Legacy)
+# 【重要】 v1 版本即将在 2025/6/30 号后下线，请及时迁移到 [v2](https://github.com/vikiboss/60s)。
+
+# ⏰ 60s API v1 (即将停止维护)
 
 使用 [Deno](https://deno.com/) 构建的简单 API 列表项目，不仅仅是每天 60 秒读懂世界～
 
