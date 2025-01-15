@@ -30,15 +30,15 @@
 - 🚀 实用功能
   - 🎮 Epic Games 免费游戏
   - ❓ 百度百科词条
+  - 🌈 哈希/解压/压缩（包含 `md5`、`base64`、`URL`、`GZIP` 等）
+  - 🌍 有道翻译
 - ... 更多功能持续增加中
 
 <details>
 <summary>👉 点击展开查看更多</summary>
 
   - 🐦 【API 文档待完善】获取 [OG](https://ogp.me/) 信息
-  - 🌈 【API 文档待完善】Hash 转换（包含 `md5`、`base64`、`URL`、`sha1/sha256/sha512`、`gzip`、`deflate`、`brotli`）
   - 📡 【API 文档待完善】IP 检测
-  - 🌍 【API 文档待完善】有道翻译
   - 📖 【API 文档待完善】答案之书
   - ✨ 【API 文档待完善】随机运势
   - 💬 【API 文档待完善】随机一言
