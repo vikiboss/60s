@@ -1,11 +1,4 @@
-import {
-  gzipSync,
-  unzipSync,
-  deflateSync,
-  inflateSync,
-  brotliCompressSync,
-  brotliDecompressSync,
-} from 'node:zlib'
+import { gzipSync, unzipSync, deflateSync, inflateSync, brotliCompressSync, brotliDecompressSync } from 'node:zlib'
 import crypto from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { Common } from '../common.ts'
@@ -14,7 +7,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceHash {
   handle(): RouterMiddleware<'/hash'> {
-    return async ctx => {
+    return async (ctx) => {
       const content = await Common.getParam('content', ctx.request)
 
       if (!content) {
@@ -24,6 +17,7 @@ class ServiceHash {
       }
 
       const data = {
+        source: content,
         md5: Common.md5(content, 'hex'),
         sha: {
           sha1: this.sha1(content),
@@ -60,7 +54,7 @@ class ServiceHash {
 
         case 'text':
           ctx.response.body = Object.entries(data)
-            .map(e => `${e[0]} => ${e[1]}`)
+            .map((e) => `${e[0]} => ${e[1]}`)
             .join('\n')
           break
       }
@@ -100,36 +94,36 @@ class ServiceHash {
   }
 
   gzipEncode(content: string) {
-    return gzipSync(Buffer.from(content)).toString('base64')
+    return gzipSync(Buffer.from(content)).toString('hex')
   }
 
   gzipDecode(content: string) {
     try {
-      return unzipSync(Buffer.from(content, 'base64')).toString('utf8')
+      return unzipSync(Buffer.from(content.replace(/\s*/g, ''), 'hex')).toString('utf8')
     } catch {
       return ''
     }
   }
 
   deflateEncode(content: string) {
-    return deflateSync(Buffer.from(content)).toString('base64')
+    return deflateSync(Buffer.from(content)).toString('hex')
   }
 
   deflateDecode(content: string) {
     try {
-      return inflateSync(Buffer.from(content, 'base64')).toString('utf8')
+      return inflateSync(Buffer.from(content.replace(/\s*/g, ''), 'hex')).toString('utf8')
     } catch {
       return ''
     }
   }
 
   brotliEncode(content: string) {
-    return brotliCompressSync(Buffer.from(content)).toString('base64')
+    return brotliCompressSync(Buffer.from(content)).toString('hex')
   }
 
   brotliDecode(content: string) {
     try {
-      return brotliDecompressSync(Buffer.from(content, 'base64')).toString('utf8')
+      return brotliDecompressSync(Buffer.from(content.replace(/\s*/g, ''), 'hex')).toString('utf8')
     } catch {
       return ''
     }
