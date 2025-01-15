@@ -1,11 +1,16 @@
 import crypto from 'node:crypto'
-import { Common } from '../common.ts'
+import { Common } from '../../common.ts'
+
+// stored from 'https://api-overmind.youdao.com/openapi/get/luna/dict/luna-front/prod/langType'
+import langs from './langs.json' with { type: 'json' }
 
 import type { RouterMiddleware } from '@oak/oak'
 
+const langMap = Object.groupBy(langs, (e) => e.code)
+
 class ServiceFanyi {
-  handle(): RouterMiddleware<'/ip'> {
-    return async ctx => {
+  handle(): RouterMiddleware<'/fanyi'> {
+    return async (ctx) => {
       const text = await Common.getParam('text', ctx.request)
 
       if (!text) {
@@ -35,11 +40,13 @@ class ServiceFanyi {
             ? Common.buildJson({
                 source: {
                   type: sourceType,
+                  type_desc: langMap[sourceType]?.[0]?.label || '',
                   content: responseItem?.src || '',
                   pronounce: responseItem?.srcPronounce || '',
                 },
                 target: {
                   type: targetType,
+                  type_desc: langMap[targetType]?.[0]?.label || '',
                   content: responseItem?.tgt || '',
                   pronounce: responseItem?.tgtPronounce || '',
                 },
@@ -50,17 +57,17 @@ class ServiceFanyi {
     }
   }
 
+  langs(): RouterMiddleware<'/fanyi/langs'> {
+    return (ctx) => {
+      ctx.response.body = Common.buildJson(langs)
+    }
+  }
+
   async #fetch(text: string, from: string, to: string) {
     function aesDecode(value: string) {
-      const key =
-        'ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl'
-      const iv =
-        'ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4'
-      const encoder = crypto.createDecipheriv(
-        'aes-128-cbc',
-        Common.md5(key, 'buffer'),
-        Common.md5(iv, 'buffer')
-      )
+      const key = 'ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl'
+      const iv = 'ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4'
+      const encoder = crypto.createDecipheriv('aes-128-cbc', Common.md5(key, 'buffer'), Common.md5(iv, 'buffer'))
       return encoder.update(value, 'base64', 'utf-8') + encoder.final('utf-8')
     }
 
@@ -83,7 +90,7 @@ class ServiceFanyi {
         `https://dict.youdao.com/webtranslate/key?${Common.qs({
           keyid: 'webfanyi-key-getter',
           ...getCommonParams('asdjnjfenknafdfsdfsd'),
-        })}`
+        })}`,
       )
       const data = await response.json()
       return data?.data?.secretKey || ''
@@ -92,8 +99,7 @@ class ServiceFanyi {
     const response = await fetch('https://dict.youdao.com/webtranslate', {
       method: 'POST',
       headers: {
-        cookie:
-          'OUTFOX_SEARCH_USER_ID_NCOO=2100336809.6038957; OUTFOX_SEARCH_USER_ID=711138426@112.20.94.181',
+        cookie: 'OUTFOX_SEARCH_USER_ID_NCOO=2100336809.6038957; OUTFOX_SEARCH_USER_ID=711138426@112.20.94.181',
         referer: 'https://fanyi.youdao.com/',
         'content-type': 'application/x-www-form-urlencoded',
       },
