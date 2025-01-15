@@ -1,6 +1,7 @@
 import { Router } from '@oak/oak/router'
 import { Common } from './common.ts'
 import { config } from './config/index.ts'
+import { version } from '../package.json' with { type: 'json' }
 
 import { service60s } from './module/60s.module.ts'
 import { serviceBaike } from './module/baike.module.ts'
@@ -26,24 +27,24 @@ import { serviceOG } from './module/og.module.ts'
 
 export const rootRouter = new Router()
 
-rootRouter.get('/', ctx => {
+rootRouter.get('/', (ctx) => {
   ctx.response.body = Common.buildJson({
-    author: 'Viki <hi@viki.moe>',
+    author: config.author,
     user_group: config.group,
     github_repo: config.github,
   })
 })
 
 export const appRouter = new Router({
-  prefix: '/api/v2',
+  prefix: '/v2',
 })
 
-appRouter.get('/', ctx => {
+appRouter.get('/', (ctx) => {
   ctx.response.body = Common.buildJson({
-    author: 'Viki <hi@viki.moe>',
+    author: config.author,
     user_group: config.group,
     github_repo: config.github,
-    api_version: '2.0',
+    api_version: version,
   })
 })
 
