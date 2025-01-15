@@ -8,7 +8,6 @@
     "npm:bumpp@^9.10.0": "9.10.0",
     "npm:hast-util-from-html-isomorphic@2": "2.0.0",
     "npm:prettier@^3.4.2": "3.4.2",
-    "npm:rehype-autolink-headings@^7.1.0": "7.1.0",
     "npm:rehype-katex@^7.0.1": "7.0.1",
     "npm:rehype-preset-minify@^7.0.1": "7.0.1",
     "npm:rehype-raw@7": "7.0.0",
@@ -696,12 +695,6 @@
     },
     "hast-util-has-property@3.0.0": {
       "integrity": "sha512-MNilsvEKLFpV604hwfhVStK0usFY/QmM5zX16bo7EjnAEGofr5YyI37kzopBlZJkHD4t887i+q/C8/tr5Q94cA==",
-      "dependencies": [
-        "@types/hast"
-      ]
-    },
-    "hast-util-heading-rank@3.0.0": {
-      "integrity": "sha512-EJKb8oMUXVHcWZTDepnr+WNbfnXKFNf9duMesmr4S8SXTJBJ9M4Yok08pu9vxdJwdlGRhVumk9mEhkEvKGifwA==",
       "dependencies": [
         "@types/hast"
       ]
@@ -1528,17 +1521,6 @@
         "regex-utilities"
       ]
     },
-    "rehype-autolink-headings@7.1.0": {
-      "integrity": "sha512-rItO/pSdvnvsP4QRB1pmPiNHUskikqtPojZKJPPPAVx9Hj8i8TwMBhofrrAYRhYOOBZH9tgmG5lPqDLuIWPWmw==",
-      "dependencies": [
-        "@types/hast",
-        "@ungap/structured-clone",
-        "hast-util-heading-rank",
-        "hast-util-is-element",
-        "unified",
-        "unist-util-visit@5.0.0"
-      ]
-    },
     "rehype-katex@7.0.1": {
       "integrity": "sha512-OiM2wrZ/wuhKkigASodFoo8wimG3H12LWQaH8qSPVJn9apWKFSH3YOCtbKpBorTVw/eI7cuT21XBbvwEswbIOA==",
       "dependencies": [
@@ -2176,9 +2158,7 @@
         "npm:@shikijs/transformers@^1.26.1",
         "npm:@types/remark-heading-id@1",
         "npm:bumpp@^9.10.0",
-        "npm:hast-util-from-html-isomorphic@2",
         "npm:prettier@^3.4.2",
-        "npm:rehype-autolink-headings@^7.1.0",
         "npm:rehype-katex@^7.0.1",
         "npm:rehype-preset-minify@^7.0.1",
         "npm:rehype-raw@7",

@@ -3,7 +3,6 @@ import path from 'node:path'
 import rehypeShiki from '@shikijs/rehype'
 import { remarkAlert } from 'remark-github-blockquote-alert'
 import { unified } from 'unified'
-// import rehypeAutolinkHeadings from 'rehype-autolink-headings'
 import rehypeKatex from 'rehype-katex'
 import rehypePresetMinify from 'rehype-preset-minify'
 import rehypeRaw from 'rehype-raw'
@@ -15,7 +14,6 @@ import remarkHeadingId from 'remark-heading-id'
 import remarkMath from 'remark-math'
 import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
-// import { fromHtmlIsomorphic } from 'hast-util-from-html-isomorphic'
 import { Common } from '../../common.ts'
 import {
   transformerNotationDiff,
@@ -38,59 +36,6 @@ const katexCSS = fs.readFileSync(path.join(__dirname, './css/katex.css'), opts).
 const ghAlertCSS = fs.readFileSync(path.join(__dirname, './css/gh-alert.css'), opts).replace(/[\r\n]+/g, ' ')
 const shikiCSS = fs.readFileSync(path.join(__dirname, './css/shiki.css'), opts).replace(/[\r\n]+/g, ' ')
 const globalCSS = fs.readFileSync(path.join(__dirname, './css/global.css'), opts).replace(/[\r\n]+/g, ' ')
-const linkIcon = fs.readFileSync(path.join(__dirname, './icons/link.svg'), opts).replace(/[\r\n]+/g, ' ')
-
-const processor = unified()
-  .use(remarkParse)
-  .use(remarkFrontmatter)
-  .use(remarkAlert, {
-    legacyTitle: true,
-  })
-  .use(remarkMath)
-  .use(remarkEmoji, {
-    accessible: true,
-    padSpaceAfter: true,
-    emoticon: true,
-  })
-  .use(remarkHeadingId, {
-    defaults: true,
-    uniqueDefaults: true,
-  })
-  .use(remarkGfm)
-  .use(remarkRehype, {
-    allowDangerousHtml: true,
-  })
-  .use(rehypeRaw, {
-    tagfilter: true,
-  })
-  // .use(rehypeAutolinkHeadings, {
-  //   behavior: 'append',
-  //   content: fromHtmlIsomorphic(`<span class="icon icon-link">${linkIcon}</span>`, { fragment: true }) as any,
-  // })
-  .use(rehypeKatex)
-  .use(rehypeShiki, {
-    defaultColor: 'light',
-    themes: {
-      dark: 'one-dark-pro',
-      light: 'one-light',
-    },
-    transformers: [
-      transformerNotationDiff(), // like: +const a = 1
-      transformerNotationFocus(), // like: // [!code focus]
-      transformerMetaHighlight(), // like: ```js {1,3-5}
-      transformerMetaWordHighlight(), // like: ```js /Hello/
-      transformerNotationHighlight(), // like: // [!code highlight]
-      transformerCompactLineOptions(), // shiki lineOptions
-      transformerNotationErrorLevel(), // like: [!code error] & [!code warning]
-      transformerNotationWordHighlight(), // like: // [!code word:Hello]
-    ],
-  })
-  .use(rehypePresetMinify)
-  .use(rehypeStringify)
-
-processor.process('# Preheated').then((file) => {
-  console.log(`[preheated] /md2html: ${file.toString()}`)
-})
 
 class ServiceMD2HTML {
   handle(): RouterMiddleware<'/md2html'> {
@@ -122,6 +67,7 @@ class ServiceMD2HTML {
   }
 
   async md2html(md: string): Promise<string> {
+    const processor = this.getProcessor({ shiki: md.includes('```') })
     const html = await processor.process(md)
 
     return `<!DOCTYPE html>
@@ -141,13 +87,9 @@ class ServiceMD2HTML {
       }
 
       ${globalCSS}
-
       ${glmCSS}
-
       ${katexCSS}
-
       ${ghAlertCSS}
-
       ${shikiCSS}
     </style>
   </head>
@@ -158,6 +100,59 @@ class ServiceMD2HTML {
   </body>
 </html>
     `
+  }
+
+  getProcessor(options: { shiki?: boolean } = {}) {
+    const { shiki = false } = options
+
+    let processor = unified()
+      .use(remarkParse)
+      .use(remarkFrontmatter)
+      .use(remarkAlert, {
+        legacyTitle: true,
+      })
+      .use(remarkMath)
+      .use(remarkEmoji, {
+        accessible: true,
+        padSpaceAfter: true,
+        emoticon: true,
+      })
+      .use(remarkHeadingId, {
+        defaults: true,
+        uniqueDefaults: true,
+      })
+      .use(remarkGfm)
+      .use(remarkRehype, {
+        allowDangerousHtml: true,
+      })
+
+    if (shiki) {
+      processor = processor.use(rehypeShiki, {
+        defaultColor: 'light',
+        themes: {
+          dark: 'one-dark-pro',
+          light: 'one-light',
+        },
+        transformers: [
+          transformerNotationDiff(), // like: +const a = 1
+          transformerNotationFocus(), // like: // [!code focus]
+          transformerMetaHighlight(), // like: ```js {1,3-5}
+          transformerMetaWordHighlight(), // like: ```js /Hello/
+          transformerNotationHighlight(), // like: // [!code highlight]
+          transformerCompactLineOptions(), // shiki lineOptions
+          transformerNotationErrorLevel(), // like: [!code error] & [!code warning]
+          transformerNotationWordHighlight(), // like: // [!code word:Hello]
+        ],
+      })
+    }
+
+    return processor
+      .use(rehypeRaw, {
+        tagfilter: true,
+      })
+      .use(rehypeKatex)
+      .use(rehypePresetMinify)
+      .use(rehypeStringify)
   }
 }
 
