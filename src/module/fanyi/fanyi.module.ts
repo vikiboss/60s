@@ -39,15 +39,15 @@ class ServiceFanyi {
           ctx.response.body = isSuccess
             ? Common.buildJson({
                 source: {
+                  text: responseItem?.src || '',
                   type: sourceType,
                   type_desc: langMap[sourceType]?.[0]?.label || '',
-                  content: responseItem?.src || '',
                   pronounce: responseItem?.srcPronounce || '',
                 },
                 target: {
+                  text: responseItem?.tgt || '',
                   type: targetType,
                   type_desc: langMap[targetType]?.[0]?.label || '',
-                  content: responseItem?.tgt || '',
                   pronounce: responseItem?.tgtPronounce || '',
                 },
               })
