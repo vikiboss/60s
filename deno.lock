@@ -3210,6 +3210,8 @@
     "packageJson": {
       "dependencies": [
         "npm:@jsr/oak__oak@^17.1.4",
+        "npm:bumpp@^9.10.0",
+        "npm:prettier@^3.4.2",
         "npm:typescript@^5.7.3",
         "npm:wrangler@^3.99.0"
       ]

@@ -1,7 +1,8 @@
+import pkg from '../package.json' with { type: 'json' }
+
 import { Router } from '@oak/oak/router'
 import { Common } from './common.ts'
 import { config } from './config/index.ts'
-import { version } from '../package.json' with { type: 'json' }
 
 import { service60s } from './module/60s.module.ts'
 import { serviceBaike } from './module/baike.module.ts'
@@ -32,11 +33,15 @@ rootRouter.get('/', (ctx) => {
     author: config.author,
     user_group: config.group,
     github_repo: config.github,
+    api_version: pkg.version,
+    endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
   })
 })
 
+const PREFIX_V2 = '/v2'
+
 export const appRouter = new Router({
-  prefix: '/v2',
+  prefix: PREFIX_V2,
 })
 
 appRouter.get('/', (ctx) => {
@@ -44,7 +49,8 @@ appRouter.get('/', (ctx) => {
     author: config.author,
     user_group: config.group,
     github_repo: config.github,
-    api_version: version,
+    api_version: pkg.version,
+    endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path.replace(PREFIX_V2, '') || '/'),
   })
 })
 
