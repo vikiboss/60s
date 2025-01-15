@@ -1,12 +1,13 @@
 {
   "name": "60s-api",
   "version": "2.0.0",
-  "updateTime": "",
+  "updateTime": "2025/01/15 09:43:38",
   "type": "module",
   "scripts": {
     "dev": "DEV=1 deno --watch --env-file=.env -A deno.ts",
     "start": "deno --watch --env-file=.env -A deno.ts",
-    "release": "bumpp && deno ./scripts/write-update-time.ts"
+    "update": "deno -A ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
+    "release": "deno -A ./scripts/write-update-time.ts && bumpp"
   },
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
