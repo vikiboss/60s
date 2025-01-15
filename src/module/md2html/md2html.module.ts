@@ -89,7 +89,7 @@ const processor = unified()
   .use(rehypeStringify)
 
 processor.process('# Preheated').then((file) => {
-  console.log(file.toString())
+  console.log(`[preheated] /md2html: ${file.toString()}`)
 })
 
 class ServiceMD2HTML {
