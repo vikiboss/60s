@@ -102,16 +102,16 @@ class ServiceMD2HTML {
       const html = await this.md2html(markdown)
 
       switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.headers.set('Content-Type', 'text/html')
-          ctx.response.body = html
-          break
-
         case 'json':
-        default:
           ctx.response.body = Common.buildJson({
             html,
           })
+          break
+
+        case 'text':
+        default:
+          ctx.response.headers.set('Content-Type', 'text/html')
+          ctx.response.body = html
           break
       }
     }
