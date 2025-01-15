@@ -1,4 +1,4 @@
-# ⏰ 60s API
+# ⏰ 60s API (v1 Legacy)
 
 使用 [Deno](https://deno.com/) 构建的简单 API 列表项目，不仅仅是每天 60 秒读懂世界～
 
