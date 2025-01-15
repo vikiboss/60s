@@ -88,6 +88,10 @@ const processor = unified()
   .use(rehypePresetMinify)
   .use(rehypeStringify)
 
+processor.process('# Preheated').then((file) => {
+  console.log(file.toString())
+})
+
 class ServiceMD2HTML {
   handle(): RouterMiddleware<'/md2html'> {
     return async (ctx) => {
