@@ -1,0 +1,11 @@
+:root {
+  --theme-color: #fefefe;
+  --text-color: #222222;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --theme-color: #222222;
+    --text-color: #fefefe;
+  }
+}

@@ -1,0 +1,91 @@
+@media (prefers-color-scheme: dark) {
+  .shiki,
+  .shiki span {
+    color: var(--shiki-dark) !important;
+    font-style: var(--shiki-dark-font-style) !important;
+    font-weight: var(--shiki-dark-font-weight) !important;
+    text-decoration: var(--shiki-dark-text-decoration) !important;
+    background-color: var(--shiki-dark-bg) !important;
+  }
+}
+
+pre.shiki code {
+  counter-reset: step;
+  counter-increment: step 0;
+}
+
+pre.shiki code .line {
+  margin: 0 -24px;
+  padding: 0 24px;
+  width: calc(100% + 48px);
+  display: inline-block;
+}
+
+pre.shiki code .line::before {
+  content: counter(step);
+  counter-increment: step;
+  min-width: 1rem;
+  margin-right: 0.8rem;
+  display: inline-block;
+  text-align: right;
+  color: rgba(115, 138, 148, 0.4) !important;
+}
+
+.shiki .highlighted-word {
+  z-index: 10;
+  position: relative;
+  border: 1px solid rgba(165, 188, 198, 0.8);
+  padding: 1px 3px;
+  margin: -1px -3px;
+  border-radius: 4px;
+}
+
+.shiki code .diff {
+  transition: background-color 0.5s;
+}
+
+.shiki code .diff.remove {
+  background-color: rgba(244, 63, 94, 0.14) !important;
+  opacity: 0.7;
+}
+
+.shiki code .diff.add {
+  background-color: rgba(16, 185, 129, 0.14) !important;
+}
+
+.shiki.has-focused .line:not(.focused) {
+  filter: blur(0.06rem);
+  opacity: 0.7;
+  transition:
+    filter 0.35s,
+    opacity 0.35s;
+}
+
+.shiki.has-focused:hover .line:not(.focused) {
+  filter: none;
+  opacity: none;
+}
+
+.shiki code .highlighted {
+  transition: background-color 0.5s;
+}
+
+.shiki code .warning {
+  background-color: rgba(234, 179, 8, 0.14) !important;
+}
+
+.shiki code .error {
+  background-color: rgba(244, 63, 94, 0.14) !important;
+}
+
+.shiki code .highlighted:not(.error, .warning) {
+  background-color: rgba(142, 150, 170, 0.14) !important;
+}
+
+.shiki code .diff.add span,
+.shiki code .diff.remove span,
+.shiki code .highlighted span,
+.shiki code .warning span,
+.shiki code .error span {
+  background-color: transparent !important;
+}

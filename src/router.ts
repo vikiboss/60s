@@ -1,7 +1,6 @@
 import pkg from '../package.json' with { type: 'json' }
 
 import { Router } from '@oak/oak/router'
-import { Common } from './common.ts'
 import { config } from './config/index.ts'
 
 import { service60s } from './module/60s.module.ts'
@@ -25,6 +24,7 @@ import { serviceLuck } from './module/luck/luck.module.ts'
 import { serviceHash } from './module/hash.module.ts'
 import { serviceFanyi } from './module/fanyi/fanyi.module.ts'
 import { serviceOG } from './module/og.module.ts'
+import { serviceMD2HTML } from './module/md2html/md2html.module.ts'
 
 export const rootRouter = new Router()
 
@@ -70,6 +70,7 @@ appRouter.get('/luck', serviceLuck.handle())
 
 appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
+appRouter.all('/md2html', serviceMD2HTML.handle())
 
 appRouter.all('/fanyi', serviceFanyi.handle())
 appRouter.all('/fanyi/langs', serviceFanyi.langs())
