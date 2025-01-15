@@ -29,7 +29,8 @@
 - ... 更多功能持续增加中
 
 <details>
-<summary>👉 点击展开查看更多/summary>
+<summary>👉 点击展开查看更多</summary>
+
   - 🐦 【API 文档待完善】获取 [OG](https://ogp.me/) 信息
   - 🌈 【API 文档待完善】Hash 转换（包含 `md5`、`base64`、`URL`、`sha1/sha256/sha512`、`gzip`、`deflate`、`brotli`）
   - 📡 【API 文档待完善】IP 检测
@@ -40,6 +41,7 @@
   - 🤣 【API 文档待完善】随机段子
   - 🤭 【API 文档待完善】随机骚话
   - 🎤 【API 文档待完善】随机唱歌音频
+
 </details>
 
 ## API 文档
