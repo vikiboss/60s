@@ -12,7 +12,13 @@ declare global {
 
 globalThis.env = Deno.env.toObject()
 
-Deno.serve({ port: config.port }, async (request, info) => {
-  const res = await app.handle(request, info.remoteAddr)
-  return res ?? Response.error()
-})
+Deno.serve(
+  {
+    port: config.port,
+    hostname: 'localhost',
+  },
+  async (request, info) => {
+    const res = await app.handle(request, info.remoteAddr)
+    return res ?? Response.error()
+  },
+)
