@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "DEV=1 deno --watch --env-file=.env -A deno.ts",
     "start": "deno --watch --env-file=.env -A deno.ts",
-    "update": "deno -A ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
-    "release": "deno -A ./scripts/write-update-time.ts && bumpp"
+    "prerelease": "deno -A ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
+    "release": "bumpp"
   },
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
