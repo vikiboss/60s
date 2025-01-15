@@ -1,7 +1,7 @@
 {
   "name": "60s-api",
   "version": "2.1.1",
-  "updateTime": "2025/01/15 21:19:07",
+  "updateTime": "2025/01/15 21:20:19",
   "type": "module",
   "scripts": {
     "dev": "DEV=1 deno --watch --env-file=.env -A deno.ts",
