@@ -33,10 +33,10 @@ class Service60s {
       return cachedItem
     }
 
-    const ZHIHU_CK = globalThis.env?.ZHIHU_CK ?? ''
+    const ZHIHU_COOKIE = globalThis.env?.ZHIHU_COOKIE ?? ''
 
     const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
-    const response = await fetch(api, { headers: { cookie: ZHIHU_CK } })
+    const response = await fetch(api, { headers: { cookie: ZHIHU_COOKIE } })
     const { data = [] } = (await response.json()) || {}
 
     const { url: link, title_image: cover, updated: updatedAt, content = '' } = data.at(0) || {}

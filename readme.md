@@ -44,6 +44,8 @@
 
 </details>
 
+可访问直接 https://60s-api.viki.moe 查看所有可用的 API Endpoints。 
+
 ## API 文档
 
 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，可在线调试、生成业务代码、查看接口参数等。

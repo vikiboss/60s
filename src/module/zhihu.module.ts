@@ -28,7 +28,7 @@ class ServiceZhihuHot {
 
     const response = await fetch(api, {
       headers: {
-        cookie: globalThis.env.ZHIHU_CK || '',
+        cookie: globalThis.env.ZHIHU_COOKIE || '',
       },
     })
 
