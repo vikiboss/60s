@@ -34,24 +34,14 @@ rootRouter.get('/', (ctx) => {
     user_group: config.group,
     github_repo: config.github,
     api_version: pkg.version,
+    updated: pkg.updateTime,
+    updated_at: new Date(pkg.updateTime).getTime(),
     endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
   })
 })
 
-const PREFIX_V2 = '/v2'
-
 export const appRouter = new Router({
-  prefix: PREFIX_V2,
-})
-
-appRouter.get('/', (ctx) => {
-  ctx.response.body = Common.buildJson({
-    author: config.author,
-    user_group: config.group,
-    github_repo: config.github,
-    api_version: pkg.version,
-    endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path.replace(PREFIX_V2, '') || '/'),
-  })
+  prefix: '/v2',
 })
 
 appRouter.get('/60s', service60s.handle())

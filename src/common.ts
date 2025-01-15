@@ -13,11 +13,7 @@ interface FormatOptions {
 type Primitive = boolean | number | string | null | undefined
 
 export class Common {
-  static buildJson(
-    data: boolean | number | string | object | null,
-    code = 200,
-    message = COMMON_MSG
-  ) {
+  static buildJson(data: boolean | number | string | object | null, code = 200, message = COMMON_MSG) {
     return {
       code,
       message,
@@ -25,7 +21,7 @@ export class Common {
     }
   }
 
-  static localeDate(ts: number | Date = Date.now(), options: FormatOptions = {}) {
+  static localeDate(ts: number | string | Date = Date.now(), options: FormatOptions = {}) {
     const { locale = 'zh-CN', timeZone = 'Asia/Shanghai' } = options
     const today = ts instanceof Date ? ts : new Date(ts)
 
@@ -39,10 +35,7 @@ export class Common {
     return formatter.format(today)
   }
 
-  static localeTime(
-    ts: number | Date = Date.now(),
-    options: FormatOptions & { seconds?: boolean } = {}
-  ) {
+  static localeTime(ts: number | string | Date = Date.now(), options: FormatOptions & { seconds?: boolean } = {}) {
     const { locale = 'zh-CN', timeZone = 'Asia/Shanghai', seconds = true } = options
     const now = ts instanceof Date ? ts : new Date(ts)
 
@@ -89,7 +82,7 @@ export class Common {
       return str.replace(/&#(\d+);/g, (_, $1) => String.fromCharCode(Number($1)))
     }
 
-    return str.replace(/./, _ => `&#${_.charCodeAt(0)};`)
+    return str.replace(/./, (_) => `&#${_.charCodeAt(0)};`)
   }
 
   static md5(text: string, encoding: 'buffer'): Buffer
@@ -110,7 +103,7 @@ export class Common {
     options: {
       /** 是否移除值为 null 或 undefined 的键 */
       removeNullish?: boolean
-    } = {}
+    } = {},
   ): string {
     const { removeNullish = true } = options
     const entries = Object.entries(params)
