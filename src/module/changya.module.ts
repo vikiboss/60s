@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceChangYa {
   handle(): RouterMiddleware<'/changya'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -18,7 +18,7 @@ class ServiceChangYa {
 
         case 'json':
         default:
-          ctx.response.body = data
+          ctx.response.body = Common.buildJson(data)
           break
       }
     }
@@ -58,7 +58,7 @@ class ServiceChangYa {
     const pageData = JSON.parse(mid(data, start, end))
 
     return Common.randomItem(
-      (pageData.props.pageProps.pieces as Item[]).map(item => {
+      (pageData.props.pageProps.pieces as Item[]).map((item) => {
         const audioUrl = item.originAudioUrl || item.audioUrl || item.recordUrl
 
         return {
@@ -70,7 +70,7 @@ class ServiceChangYa {
           song: {
             name: item.songName,
             singer: item.artist,
-            lyrics: item.lyric.split('\n').map(e => e.trim()),
+            lyrics: item.lyric.split('\n').map((e) => e.trim()),
           },
           audio: {
             url: audioUrl ? decodeURIComponent(audioUrl) : '',
@@ -81,7 +81,7 @@ class ServiceChangYa {
             publish_at: new Date(item.publishTime).getTime(),
           },
         }
-      })
+      }),
     )
 
     function mid(str: string, start: string, end: string, greed = false) {
