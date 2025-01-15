@@ -24,7 +24,7 @@ class ServiceHash {
       }
 
       const data = {
-        md5: this.md5(content),
+        md5: Common.md5(content, 'hex'),
         sha: {
           sha1: this.sha1(content),
           sha256: this.sha256(content),
@@ -65,10 +65,6 @@ class ServiceHash {
           break
       }
     }
-  }
-
-  md5(content: string) {
-    return crypto.createHash('md5').update(content).digest('hex')
   }
 
   sha1(content: string) {

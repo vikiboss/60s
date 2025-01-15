@@ -3,8 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceDouyin {
-  #API = 'https://aweme-lq.snssdk.com/aweme/v1/hot/search/list/?aid=1128&version_code=880'
-
   handle(): RouterMiddleware<'/douyin'> {
     return async ctx => {
       const data = await this.#fetch()
@@ -26,7 +24,8 @@ class ServiceDouyin {
   }
 
   async #fetch() {
-    const { data = {} } = await (await fetch(this.#API)).json()
+    const api = 'https://aweme-lq.snssdk.com/aweme/v1/hot/search/list/?aid=1128&version_code=880'
+    const { data = {} } = await (await fetch(api)).json()
     const { word_list = [], active_time = '' } = data
     const list = word_list as {
       article_detail_count: number

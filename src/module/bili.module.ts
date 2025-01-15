@@ -3,8 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceBili {
-  #API = 'https://app.bilibili.com/x/v2/search/trending/ranking'
-
   handle(): RouterMiddleware<'/bili'> {
     return async ctx => {
       const data = await this.#fetch()
@@ -26,7 +24,8 @@ class ServiceBili {
   }
 
   async #fetch() {
-    const { data = {} } = await (await fetch(this.#API)).json()
+    const api = 'https://app.bilibili.com/x/v2/search/trending/ranking'
+    const { data = {} } = await (await fetch(api)).json()
 
     // deno-lint-ignore no-explicit-any
     return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map(

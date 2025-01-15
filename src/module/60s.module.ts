@@ -3,9 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class Service60s {
-  #API = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
-  #REG_TAG = /<[^<>]+>/g
-  #REG_ITEM = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
   #cache = new Map<string, DailyNewsItem>()
   #TIP_PREFIX = '【微语】'
 
@@ -38,13 +35,16 @@ class Service60s {
 
     const ZHIHU_CK = globalThis.env?.ZHIHU_CK ?? ''
 
-    const response = await fetch(this.#API, { headers: { cookie: ZHIHU_CK } })
+    const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
+    const response = await fetch(api, { headers: { cookie: ZHIHU_CK } })
     const { data = [] } = (await response.json()) || {}
 
     const { url: link, title_image: cover, updated: updatedAt, content = '' } = data.at(0) || {}
 
-    const items = ((content.match(this.#REG_ITEM) || []) as string[])
-      .map(e => Common.transformEntities(e.replace(this.#REG_TAG, '').trim()))
+    const REG_TAG = /<[^<>]+>/g
+    const REG_ITEM = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
+    const items = ((content.match(REG_ITEM) || []) as string[])
+      .map(e => Common.transformEntities(e.replace(REG_TAG, '').trim()))
       .map(e => e.replace(/(^\d+、\s*)|([。！～；]$)/g, ''))
       .filter(e => e.length > 6)
 

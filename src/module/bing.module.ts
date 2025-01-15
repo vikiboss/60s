@@ -13,8 +13,6 @@ interface BingItem {
 }
 
 class ServiceBing {
-  #API = 'https://cn.bing.com'
-  // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10
   #cache = new Map<string, BingItem>()
 
   handle(): RouterMiddleware<'/bing'> {
@@ -52,7 +50,10 @@ class ServiceBing {
       return cache
     }
 
-    const rawContent = await (await fetch(this.#API)).text()
+    const api = 'https://cn.bing.com'
+    // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10
+
+    const rawContent = await (await fetch(api)).text()
     const rawJson = /var\s*_model\s*=\s*([^;]+);/.exec(rawContent)?.[1] || '{}'
     const images = JSON.parse(rawJson)?.MediaContents ?? []
 

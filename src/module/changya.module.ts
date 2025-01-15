@@ -3,27 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceChangYa {
-  static seedIdList = [
-    '7o62vihNpccBDyDPv',
-    '7onVzoWsr2m12T3Jn',
-    '9o73vLjV8gBVXsaTK',
-    'bop2h0lm9HqkTZk5l',
-    'foh3CeIN82Vq2V1g8',
-    'fop3CRU0CDDRVZyRv',
-    'Io82fiEPMZXca3L2h',
-    'jov3lixipX1myTZJ8',
-    'Ko-3CFC4SwwgPVkad',
-    'Koj3bFjg9iTHHFVwp',
-    'OoC38kEclV2PHPw08',
-    'QoM37qUJxRJg5ZR5U',
-    'roz2SJYV8oy0sNHPl',
-    'SoO36F74v12acJg5z',
-    'SoQJ9cKu61FJ1Vwc7',
-    'Soz3xRz1f230H3ws6',
-    'toGZlBfZbukck2sHb',
-    'WoENz0IiQVX1PLJs7',
-  ]
-
   handle(): RouterMiddleware<'/changya'> {
     return async ctx => {
       const data = await this.#fetch()
@@ -46,7 +25,28 @@ class ServiceChangYa {
   }
 
   async #fetch() {
-    const randomId = Common.randomItem(ServiceChangYa.seedIdList)
+    const seedIdList = [
+      '7o62vihNpccBDyDPv',
+      '7onVzoWsr2m12T3Jn',
+      '9o73vLjV8gBVXsaTK',
+      'bop2h0lm9HqkTZk5l',
+      'foh3CeIN82Vq2V1g8',
+      'fop3CRU0CDDRVZyRv',
+      'Io82fiEPMZXca3L2h',
+      'jov3lixipX1myTZJ8',
+      'Ko-3CFC4SwwgPVkad',
+      'Koj3bFjg9iTHHFVwp',
+      'OoC38kEclV2PHPw08',
+      'QoM37qUJxRJg5ZR5U',
+      'roz2SJYV8oy0sNHPl',
+      'SoO36F74v12acJg5z',
+      'SoQJ9cKu61FJ1Vwc7',
+      'Soz3xRz1f230H3ws6',
+      'toGZlBfZbukck2sHb',
+      'WoENz0IiQVX1PLJs7',
+    ]
+
+    const randomId = Common.randomItem(seedIdList)
     const url = `https://m.api.singduck.cn/user-piece/${randomId}`
     const data = await (await fetch(url)).text()
 

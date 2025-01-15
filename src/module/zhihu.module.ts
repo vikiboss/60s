@@ -3,8 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceZhihuHot {
-  #API = 'https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total?limit=1000'
-
   handle(): RouterMiddleware<'/zhihu'> {
     return async ctx => {
       const data = await this.#fetch()
@@ -26,8 +24,15 @@ class ServiceZhihuHot {
   }
 
   async #fetch() {
-    const headers = { cookie: globalThis.env.ZHIHU_CK || '' }
-    const { data = [] } = (await (await fetch(this.#API, { headers })).json()) || {}
+    const api = 'https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total?limit=1000'
+
+    const response = await fetch(api, {
+      headers: {
+        cookie: globalThis.env.ZHIHU_CK || '',
+      },
+    })
+
+    const { data = [] } = await response.json()
 
     return (data as Item[]).map(e => ({
       title: e.target.title,

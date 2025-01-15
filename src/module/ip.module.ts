@@ -2,7 +2,7 @@ import type { RouterMiddleware } from '@oak/oak'
 import { Common } from '../common.ts'
 
 class ServiceIP {
-  getClientIP(requestHeaders: Headers): string | undefined {
+  getClientIP(requestHeaders: Headers): string {
     const headerFields = ['x-forwarded-for', 'x-client-ip', 'x-real-ip', 'x-real-client-ip']
 
     for (const field of headerFields) {
@@ -14,7 +14,7 @@ class ServiceIP {
       }
     }
 
-    return undefined
+    return ''
   }
 
   handle(): RouterMiddleware<'/ip'> {

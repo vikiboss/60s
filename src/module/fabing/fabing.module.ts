@@ -18,7 +18,10 @@ class ServiceFabing {
 
         case 'json':
         default:
-          ctx.response.body = Common.buildJson({ index, saying })
+          ctx.response.body = Common.buildJson({
+            index,
+            saying,
+          })
           break
       }
     }

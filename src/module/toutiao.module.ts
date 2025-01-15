@@ -3,8 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceToutiao {
-  #API = 'https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc'
-
   handle(): RouterMiddleware<'/toutiao'> {
     return async ctx => {
       const data = await this.#fetch()
@@ -26,7 +24,8 @@ class ServiceToutiao {
   }
 
   async #fetch() {
-    const { data = [] } = await (await fetch(this.#API)).json()
+    const api = 'https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc'
+    const { data = [] } = await (await fetch(api)).json()
 
     return (data as Item[]).map(e => ({
       title: e.Title,

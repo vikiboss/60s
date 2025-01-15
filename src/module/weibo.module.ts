@@ -3,8 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceWeibo {
-  #API = 'https://weibo.com/ajax/side/hotSearch'
-
   handle(): RouterMiddleware<'/weibo'> {
     return async ctx => {
       const data = await this.#fetch()
@@ -26,7 +24,8 @@ class ServiceWeibo {
   }
 
   async #fetch() {
-    const { data = {} } = await (await fetch(this.#API)).json()
+    const api = 'https://weibo.com/ajax/side/hotSearch'
+    const { data = {} } = await (await fetch(api)).json()
     return (((data?.realtime || []) as Item[]).filter(e => !e.is_ad) || []).map(e => ({
       title: e.word,
       hot_value: e.num,

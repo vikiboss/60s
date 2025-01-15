@@ -3,9 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceEpic {
-  #API =
-    'https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=zh-CN&country=CN&allowCountries=CN'
-
   handle(): RouterMiddleware<'/epic'> {
     return async ctx => {
       const data = await this.#fetch()
@@ -33,7 +30,9 @@ class ServiceEpic {
   }
 
   async #fetch() {
-    const data = ((await (await fetch(Common.useProxiedUrl(this.#API))).json()) || {}) as any
+    const api =
+      'https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=zh-CN&country=CN&allowCountries=CN'
+    const data = ((await (await fetch(Common.useProxiedUrl(api))).json()) || {}) as any
 
     const allGames = (data?.data?.Catalog?.searchStore?.elements || []) as GameItem[]
     const activeGames = allGames

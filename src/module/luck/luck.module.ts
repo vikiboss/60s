@@ -7,10 +7,12 @@ class ServiceLuck {
   handle(): RouterMiddleware<'/luck'> {
     return ctx => {
       const luck = Common.randomItem(luckData)
+      const tip = Common.randomItem(luck.content)
+      const tip_index = luck.content.indexOf(tip)
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = `${luck['good-luck']}: ${Common.randomItem(luck.content)}`
+          ctx.response.body = `${luck['good-luck']}: ${tip}`
           break
 
         case 'json':
@@ -18,7 +20,8 @@ class ServiceLuck {
           ctx.response.body = Common.buildJson({
             luck_desc: luck['good-luck'],
             luck_rank: luck.rank,
-            luck_tip: Common.randomItem(luck.content),
+            luck_tip: tip,
+            luck_tip_index: tip_index,
           })
       }
     }

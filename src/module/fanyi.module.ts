@@ -1,7 +1,5 @@
 import crypto from 'node:crypto'
-import { Buffer } from 'node:buffer'
 import { Common } from '../common.ts'
-import { serviceHash } from './hash.module.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
@@ -53,21 +51,23 @@ class ServiceFanyi {
   }
 
   async #fetch(text: string, from: string, to: string) {
-    const alloc = (key: string) => ServiceFanyi.md5(key)
-    const aesDecode = (value: string) => {
+    function aesDecode(value: string) {
       const key =
         'ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl'
       const iv =
         'ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4'
-      const encoder = crypto.createDecipheriv('aes-128-cbc', alloc(key), alloc(iv))
+      const encoder = crypto.createDecipheriv(
+        'aes-128-cbc',
+        Common.md5(key, 'buffer'),
+        Common.md5(iv, 'buffer')
+      )
       return encoder.update(value, 'base64', 'utf-8') + encoder.final('utf-8')
     }
-    const getSign = (now: string, secretKey: string) =>
-      serviceHash.md5(`client=fanyideskweb&mysticTime=${now}&product=webfanyi&key=${secretKey}`)
-    function getParams(secretKey: string) {
+
+    function getCommonParams(secretKey: string) {
       const now = String(Date.now())
       return {
-        sign: getSign(now, secretKey),
+        sign: Common.md5(`client=fanyideskweb&mysticTime=${now}&product=webfanyi&key=${secretKey}`),
         client: 'fanyideskweb',
         product: 'webfanyi',
         appVersion: '1.0.0',
@@ -77,33 +77,37 @@ class ServiceFanyi {
         keyfrom: 'fanyi.web',
       }
     }
+
     async function getSecretKey() {
-      const keyApi = 'https://dict.youdao.com/webtranslate/key'
-      const params = { keyid: 'webfanyi-key-getter', ...getParams('asdjnjfenknafdfsdfsd') }
-      const data = await (await fetch(`${keyApi}?${ServiceFanyi.qs(params)}`)).json()
+      const response = await fetch(
+        `https://dict.youdao.com/webtranslate/key?${Common.qs({
+          keyid: 'webfanyi-key-getter',
+          ...getCommonParams('asdjnjfenknafdfsdfsd'),
+        })}`
+      )
+      const data = await response.json()
       return data?.data?.secretKey || ''
     }
 
-    const params = getParams(await getSecretKey())
-    const headers = {
-      cookie:
-        'OUTFOX_SEARCH_USER_ID_NCOO=2100336809.6038957; OUTFOX_SEARCH_USER_ID=711138426@112.20.94.181',
-      referer: 'https://fanyi.youdao.com/',
-      'content-type': 'application/x-www-form-urlencoded',
-    }
-    const payload = { from, to, i: text, dictResult: true, keyid: 'webfanyi', ...params }
-    const options = { method: 'POST', headers, body: ServiceFanyi.qs(payload) }
-    const translationApi = 'https://dict.youdao.com/webtranslate'
-    const data = await (await fetch(translationApi, options)).text()
-    return JSON.parse(aesDecode(data)) as YoudaoData
-  }
+    const response = await fetch('https://dict.youdao.com/webtranslate', {
+      method: 'POST',
+      headers: {
+        cookie:
+          'OUTFOX_SEARCH_USER_ID_NCOO=2100336809.6038957; OUTFOX_SEARCH_USER_ID=711138426@112.20.94.181',
+        referer: 'https://fanyi.youdao.com/',
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+      body: Common.qs({
+        from,
+        to,
+        i: text,
+        dictResult: true,
+        keyid: 'webfanyi',
+        ...getCommonParams(await getSecretKey()),
+      }),
+    })
 
-  static md5(text: string): Buffer {
-    return crypto.createHash('md5').update(text).digest()
-  }
-
-  static qs(params: Record<string, any>): string {
-    return new URLSearchParams(params).toString()
+    return JSON.parse(aesDecode(await response.text())) as YoudaoData
   }
 }
 

@@ -3,8 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceTodayInHistory {
-  #API = 'https://baike.deno.dev/today_in_history'
-
   handle(): RouterMiddleware<'/today_in_history'> {
     return async ctx => {
       const data = await this.#fetch()
@@ -26,11 +24,11 @@ class ServiceTodayInHistory {
   }
 
   async #fetch() {
-    const { data = [] } = await (await fetch(this.#API)).json()
+    const { data = [] } = await (await fetch('https://baike.deno.dev/today_in_history')).json()
     const items = data as Item[]
-    const [month, day] = data[0].date.split('-')
+    const [month = 0, day = 0] = items[0].date?.split('-') || []
     return {
-      date: `${month}月${day}日`,
+      date: month ? `${month}月${day}日` : '',
       month: +month,
       day: +day,
       items: items.map(e => {

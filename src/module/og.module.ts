@@ -28,7 +28,7 @@ class ServiceOG {
       } catch (e: any) {
         console.error(e)
         ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, `OG 信息解析失败: ${e.message || e}`)
+        ctx.response.body = Common.buildJson(null, 500, `OG 信息解析失败: ${e.message || e}`)
       }
     }
   }
@@ -40,7 +40,7 @@ class ServiceOG {
     try {
       _url = new URL(link)
     } catch {
-      throw new Error('Invalid URL')
+      throw new Error('无效的 URL')
     }
 
     const response = await fetch(_url)
@@ -48,7 +48,7 @@ class ServiceOG {
     const isHTML = ['text/html', 'application/xhtml+xml'].some(e => type.includes(e))
 
     if (!isHTML) {
-      throw new Error('Not a HTML page')
+      throw new Error('目标 URL 不是一个 HTML 页面，无法解析 OG 信息')
     }
 
     const html = await response.text()

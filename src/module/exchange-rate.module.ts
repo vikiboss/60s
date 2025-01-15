@@ -3,7 +3,6 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceExRate {
-  #API = 'https://open.er-api.com/v6/latest'
   #cache = new Map<string, RateItem>()
 
   handle(): RouterMiddleware<'/exchange_rate'> {
@@ -36,9 +35,9 @@ class ServiceExRate {
       return cache
     }
 
-    const { time_last_update_unix, time_next_update_unix, base_code, rates } = (await (
-      await fetch(`${this.#API}/${currency}`)
-    ).json()) as RateResponse
+    const api = 'https://open.er-api.com/v6/latest'
+    const data = (await (await fetch(`${api}/${currency}`)).json()) as RateResponse
+    const { time_last_update_unix, time_next_update_unix, base_code, rates } = data
 
     const rateItem = {
       base_code,

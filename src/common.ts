@@ -1,11 +1,16 @@
+import crypto from 'node:crypto'
+import { Buffer } from 'node:buffer'
 import { COMMON_MSG } from './config/index.ts'
 
+import type { BinaryToTextEncoding } from 'node:crypto'
 import type { Request } from '@oak/oak'
 
 interface FormatOptions {
   locale?: string
   timeZone?: string
 }
+
+type Primitive = boolean | number | string | null | undefined
 
 export class Common {
   static buildJson(
@@ -63,14 +68,16 @@ export class Common {
     return url.toString()
   }
 
-  static randomItem<T>(arr: T[]) {
+  static randomItem<T>(arr: T[]): T {
     return arr[Math.floor(Math.random() * arr.length)]
   }
 
   static async getParam(name: string, request: Request) {
     let value = request.url.searchParams.get(name) || ''
     try {
-      value = (await request.body.json())[name] || ''
+      if (!value) {
+        value = (await request.body.json())[name] || ''
+      }
     } catch {
       // ignored
     }
@@ -83,5 +90,48 @@ export class Common {
     }
 
     return str.replace(/./, _ => `&#${_.charCodeAt(0)};`)
+  }
+
+  static md5(text: string, encoding: 'buffer'): Buffer
+  static md5(text: string, encoding?: BinaryToTextEncoding): string
+  static md5(text: string, encoding: 'buffer' | BinaryToTextEncoding = 'hex'): string | Buffer {
+    if (encoding === 'buffer') {
+      return crypto.createHash('md5').update(text).digest()
+    }
+    return crypto.createHash('md5').update(text).digest(encoding)
+  }
+
+  static isNullish(value: unknown): value is null | undefined {
+    return value === null || value === undefined
+  }
+
+  static qs(
+    params: Record<string, Primitive | Primitive[]> | string | URLSearchParams,
+    options: {
+      /** 是否移除值为 null 或 undefined 的键 */
+      removeNullish?: boolean
+    } = {}
+  ): string {
+    const { removeNullish = true } = options
+    const entries = Object.entries(params)
+    const hasArray = entries.some(([, value]) => Array.isArray(value))
+
+    if (hasArray) {
+      const result = new URLSearchParams()
+      for (const [key, value] of entries) {
+        if (Array.isArray(value)) {
+          for (const item of value) {
+            if (removeNullish && this.isNullish(item)) continue
+            result.append(key, item)
+          }
+        } else {
+          if (removeNullish && this.isNullish(value)) continue
+          result.append(key, value)
+        }
+      }
+      return result.toString()
+    }
+
+    return new URLSearchParams(entries).toString()
   }
 }
