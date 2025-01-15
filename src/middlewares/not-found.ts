@@ -1,9 +1,15 @@
-import type { Context, Next } from '@oak/oak'
+import { Common } from '../common.ts'
+import { COMMON_MSG } from '../config/index.ts'
 
-export default async function notFound(ctx: Context, next: Next) {
-  await next()
+import type { Middleware } from '@oak/oak'
 
-  ctx.response.redirect('https://github.com/vikiboss/60s')
+export function notFound(): Middleware {
+  return async (ctx, next) => {
+    await next()
 
-  return
+    ctx.response.status = 404
+    ctx.response.body = Common.buildJson(null, 404, `接口被吃掉了！${COMMON_MSG}`)
+
+    return
+  }
 }

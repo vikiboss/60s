@@ -1,17 +1,21 @@
 {
-  "name": "60s",
+  "name": "60s-api",
+  "version": "2.0.1",
+  "updateTime": "2025/01/15 09:59:27",
   "type": "module",
-  "packageManager":"pnpm@9.12.1",
   "scripts": {
-    "dev": "esno ./src/main.ts"
+    "dev": "DEV=1 deno --watch --env-file=.env -A deno.ts",
+    "start": "deno --watch --env-file=.env -A deno.ts",
+    "prerelease": "deno -A ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
+    "release": "bumpp"
   },
   "dependencies": {
-    "@oak/oak": "npm:@jsr/oak__oak@14",
-    "nanoid": "npm:@jsr/viki__nanoid@^3.0.0"
+    "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
   },
   "devDependencies": {
-    "@types/node": "^22.7.5",
-    "esno": "^4.8.0",
-    "wrangler": "^3.80.2"
+    "bumpp": "^9.10.0",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3",
+    "wrangler": "^3.99.0"
   }
 }

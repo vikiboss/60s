@@ -1,10 +1,13 @@
-import type { Context, Next } from '@oak/oak'
+import type { Middleware } from '@oak/oak'
 
-export default async function favicon(ctx: Context, next: Next) {
-  if (ctx.request.url.pathname === '/favicon.ico') {
-    ctx.response.redirect('https://avatar.viki.moe')
-    return
+export function favicon(): Middleware {
+  return async (ctx, next) => {
+    if (ctx.request.url.pathname === '/favicon.ico') {
+      ctx.response.redirect('https://avatar.viki.moe')
+
+      return
+    }
+
+    await next()
   }
-
-  await next()
 }

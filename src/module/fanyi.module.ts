@@ -1,0 +1,158 @@
+import crypto from 'node:crypto'
+import { Common } from '../common.ts'
+
+import type { RouterMiddleware } from '@oak/oak'
+
+class ServiceFanyi {
+  handle(): RouterMiddleware<'/ip'> {
+    return async ctx => {
+      const text = await Common.getParam('text', ctx.request)
+
+      if (!text) {
+        ctx.response.status = 400
+        ctx.response.body = Common.buildJson(null, 400, 'text 参数不能为空')
+        return
+      }
+
+      const from = ctx.request.url.searchParams.get('from') || 'auto'
+      const to = ctx.request.url.searchParams.get('to') || 'auto'
+
+      const data = await this.#fetch(text, from, to)
+      const isSuccess = data.code === 0
+      const responseItem = data?.translateResult?.[0]?.[0] || {}
+
+      ctx.response.status = isSuccess ? 200 : 500
+      const [sourceType, targetType] = data.type.split('2')
+
+      switch (ctx.state.encoding) {
+        case 'text':
+          ctx.response.body = isSuccess ? data.translateResult[0][0]?.tgt || '' : '[翻译服务异常]'
+          break
+
+        case 'json':
+        default:
+          ctx.response.body = isSuccess
+            ? Common.buildJson({
+                source: {
+                  type: sourceType,
+                  content: responseItem?.src || '',
+                  pronounce: responseItem?.srcPronounce || '',
+                },
+                target: {
+                  type: targetType,
+                  content: responseItem?.tgt || '',
+                  pronounce: responseItem?.tgtPronounce || '',
+                },
+              })
+            : Common.buildJson(null, 500, `翻译服务异常，调试信息: ${JSON.stringify(data)}`)
+          break
+      }
+    }
+  }
+
+  async #fetch(text: string, from: string, to: string) {
+    function aesDecode(value: string) {
+      const key =
+        'ydsecret://query/key/B*RGygVywfNBwpmBaZg*WT7SIOUP2T0C9WHMZN39j^DAdaZhAnxvGcCY6VYFwnHl'
+      const iv =
+        'ydsecret://query/iv/C@lZe2YzHtZ2CYgaXKSVfsb7Y4QWHjITPPZ0nQp87fBeJ!Iv6v^6fvi2WN@bYpJ4'
+      const encoder = crypto.createDecipheriv(
+        'aes-128-cbc',
+        Common.md5(key, 'buffer'),
+        Common.md5(iv, 'buffer')
+      )
+      return encoder.update(value, 'base64', 'utf-8') + encoder.final('utf-8')
+    }
+
+    function getCommonParams(secretKey: string) {
+      const now = String(Date.now())
+      return {
+        sign: Common.md5(`client=fanyideskweb&mysticTime=${now}&product=webfanyi&key=${secretKey}`),
+        client: 'fanyideskweb',
+        product: 'webfanyi',
+        appVersion: '1.0.0',
+        vendor: 'web',
+        pointParam: 'client,mysticTime,product',
+        mysticTime: now,
+        keyfrom: 'fanyi.web',
+      }
+    }
+
+    async function getSecretKey() {
+      const response = await fetch(
+        `https://dict.youdao.com/webtranslate/key?${Common.qs({
+          keyid: 'webfanyi-key-getter',
+          ...getCommonParams('asdjnjfenknafdfsdfsd'),
+        })}`
+      )
+      const data = await response.json()
+      return data?.data?.secretKey || ''
+    }
+
+    const response = await fetch('https://dict.youdao.com/webtranslate', {
+      method: 'POST',
+      headers: {
+        cookie:
+          'OUTFOX_SEARCH_USER_ID_NCOO=2100336809.6038957; OUTFOX_SEARCH_USER_ID=711138426@112.20.94.181',
+        referer: 'https://fanyi.youdao.com/',
+        'content-type': 'application/x-www-form-urlencoded',
+      },
+      body: Common.qs({
+        from,
+        to,
+        i: text,
+        dictResult: true,
+        keyid: 'webfanyi',
+        ...getCommonParams(await getSecretKey()),
+      }),
+    })
+
+    return JSON.parse(aesDecode(await response.text())) as YoudaoData
+  }
+}
+
+export const serviceFanyi = new ServiceFanyi()
+
+interface YoudaoData {
+  code: number
+  dictResult: {
+    ce?: {
+      word: {
+        trs?: {
+          voice: string
+          '#text': string
+          '#tran': string
+        }[]
+        phone?: string
+        'return-phrase'?: string
+      }
+    }
+    ec?: {
+      exam_type: string[]
+      word: {
+        usphone?: string
+        ukphone?: string
+        ukspeech?: string
+        trs?: {
+          pos: string
+          tran: string
+        }[]
+        wfs?: {
+          wf?: {
+            name: string
+            value: string
+          }
+        }[]
+        'return-phrase'?: string
+        usspeech?: string
+      }
+    }
+  }
+  translateResult: {
+    tgt: string
+    src: string
+    srcPronounce?: string
+    tgtPronounce?: string
+  }[][]
+  type: string
+}

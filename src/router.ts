@@ -1,74 +1,68 @@
+import pkg from '../package.json' with { type: 'json' }
+
 import { Router } from '@oak/oak/router'
+import { Common } from './common.ts'
+import { config } from './config/index.ts'
 
-import { fetch60s } from './services/60s.ts'
-import { fetchBaike } from './services/baike.ts'
-import { fetchBili } from './services/bili.ts'
-import { fetchBing } from './services/bing.ts'
-import { fetchDouyin } from './services/douyin.ts'
-import { fetchEpicFreeGames } from './services/epic.ts'
-import { fetchRatesByCurrency } from './services/ext-rates.ts'
-import { fetchTodayInHistory } from './services/today-in-history.ts'
-import { fetchToutiao } from './services/toutiao.ts'
-import { fetchWeather } from './services/weather.ts'
-import { fetchWeibo } from './services/weibo.ts'
-import { fetchXiaoai } from './legacy-services/xiaoai.ts'
-import { fetchZhihu } from './services/zhihu.ts'
-import { fetchZhihuHot } from './services/zhihu-hot.ts'
-import { fetchOlympics } from './services/olympics.ts'
+import { service60s } from './module/60s.module.ts'
+import { serviceBaike } from './module/baike.module.ts'
+import { serviceBili } from './module/bili.module.ts'
+import { serviceBing } from './module/bing.module.ts'
+import { serviceChangYa } from './module/changya.module.ts'
+import { serviceDouyin } from './module/douyin.module.ts'
+import { serviceEpic } from './module/epic.module.ts'
+import { serviceExRate } from './module/exchange-rate.module.ts'
+import { serviceFabing } from './module/fabing/fabing.module.ts'
+import { serviceHitokoto } from './module/hitokoto/hitokoto.module.ts'
+import { serviceIP } from './module/ip.module.ts'
+import { serviceTodayInHistory } from './module/today-in-history.module.ts'
+import { serviceToutiao } from './module/toutiao.module.ts'
+import { serviceWeibo } from './module/weibo.module.ts'
+import { serviceZhihu } from './module/zhihu.module.ts'
+import { serviceDuanzi } from './module/duanzi/duanzi.module.ts'
+import { serviceAnswer } from './module/answer/answer.module.ts'
+import { serviceLuck } from './module/luck/luck.module.ts'
+import { serviceHash } from './module/hash.module.ts'
+import { serviceFanyi } from './module/fanyi.module.ts'
+import { serviceOG } from './module/og.module.ts'
 
-const router = new Router()
+export const rootRouter = new Router()
 
-const routerMap = {
-  '/': fetch60s,
-  '/60s': fetch60s,
-  '/olympic': fetchOlympics,
-  '/bili': fetchBili,
-  '/weibo': fetchWeibo,
-  '/zhihu': fetchZhihu,
-  '/zhihu-hot': fetchZhihuHot,
-  '/toutiao': fetchToutiao,
-  '/douyin': fetchDouyin,
-  '/epic': fetchEpicFreeGames,
-  '/today_in_history': fetchTodayInHistory,
-}
-
-for (const [path, handler] of Object.entries(routerMap)) {
-  router.get(path, async (ctx) => {
-    ctx.response.body = await handler(ctx.state.type, ctx)
+rootRouter.get('/', (ctx) => {
+  ctx.response.body = Common.buildJson({
+    author: config.author,
+    user_group: config.group,
+    github_repo: config.github,
+    api_version: pkg.version,
+    updated: pkg.updateTime,
+    updated_at: new Date(pkg.updateTime).getTime(),
+    endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
   })
-}
-
-// weather
-router.get('/weather/:city', async (ctx) => {
-  ctx.response.body = await fetchWeather(ctx.params.city, ctx.state.type, ctx)
 })
 
-// baike
-router.get('/baike/:item', async (ctx) => {
-  ctx.response.body = await fetchBaike(ctx.params.item, ctx.state.type)
+export const appRouter = new Router({
+  prefix: '/v2',
 })
 
-// exchange rates
-router.get('/ex-rates', async (ctx) => {
-  const url = new URL(ctx.request.url)
-  const currency = url.searchParams.get('c') || 'CNY'
-  ctx.response.body = await fetchRatesByCurrency(currency, ctx.state.type)
-})
+appRouter.get('/60s', service60s.handle())
+appRouter.get('/baike', serviceBaike.handle())
+appRouter.get('/bili', serviceBili.handle())
+appRouter.get('/bing', serviceBing.handle())
+appRouter.get('/douyin', serviceDouyin.handle())
+appRouter.get('/epic', serviceEpic.handle())
+appRouter.get('/exchange_rate', serviceExRate.handle())
+appRouter.get('/today_in_history', serviceTodayInHistory.handle())
+appRouter.get('/toutiao', serviceToutiao.handle())
+appRouter.get('/weibo', serviceWeibo.handle())
+appRouter.get('/zhihu', serviceZhihu.handle())
+appRouter.get('/changya', serviceChangYa.handle())
+appRouter.get('/ip', serviceIP.handle())
+appRouter.get('/hitokoto', serviceHitokoto.handle())
+appRouter.get('/fabing', serviceFabing.handle())
+appRouter.get('/duanzi', serviceDuanzi.handle())
+appRouter.get('/answer', serviceAnswer.handle())
+appRouter.get('/luck', serviceLuck.handle())
 
-// bing wallpaper
-router.get('/bing', async (ctx) => {
-  if (ctx.state.type === 'image') {
-    ctx.response.redirect(await fetchBing(ctx.state.type))
-  } else {
-    ctx.response.body = await fetchBing(ctx.state.type)
-  }
-})
-
-// 小爱，已失效
-router.get('/xiaoai', async (ctx) => {
-  const text = ctx.request.url.searchParams.get('text') || '你好'
-  const textOnly = ctx.request.url.searchParams.get('text-only') === '1'
-  ctx.response.body = await fetchXiaoai(text, textOnly, ctx.state.type)
-})
-
-export default router
+appRouter.all('/hash', serviceHash.handle())
+appRouter.all('/fanyi', serviceFanyi.handle())
+appRouter.all('/og', serviceOG.handle())
