@@ -2,7 +2,7 @@
   "version": "4",
   "specifiers": {
     "npm:@jsr/oak__oak@^17.1.4": "17.1.4",
-    "npm:bumpp@^9.10.0": "9.10.0",
+    "npm:bumpp@^9.10.0": "9.10.1",
     "npm:prettier@^3.4.2": "3.4.2",
     "npm:typescript@^5.7.3": "5.7.3",
     "npm:wrangler@^3.102.0": "3.102.0_esbuild@0.17.19"
@@ -230,8 +230,8 @@
     "blake3-wasm@2.1.5": {
       "integrity": "sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g=="
     },
-    "bumpp@9.10.0": {
-      "integrity": "sha512-gNY3tYEGKyqW8+qtpeLQ2UfQW7G81d/vhCWNGrMlvy0Toq1LZPRs8wk9woAw8o9Tzv7pvjaF/Gno+UN3qiqNxA==",
+    "bumpp@9.10.1": {
+      "integrity": "sha512-KG7oQmv6cz7QQwOvM3x/yPcF8+VBEtuLEEecmohNyb4+bLbtSVpJp8brjzcZYQN7UOyR4i0qIIYThnsBgP8uCA==",
       "dependencies": [
         "c12",
         "cac",
