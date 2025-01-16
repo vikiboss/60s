@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 import { Buffer } from 'node:buffer'
-import { COMMON_MSG } from './config/index.ts'
+import { COMMON_MSG } from './config.ts'
 
 import type { BinaryToTextEncoding } from 'node:crypto'
 import type { Request, RouterContext } from '@oak/oak'

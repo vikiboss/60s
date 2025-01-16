@@ -1,7 +1,7 @@
 ///<reference lib="deno.ns" />
 
 import { app } from './src/app.ts'
-import { config } from './src/config/index.ts'
+import { config } from './src/config.ts'
 
 declare global {
   namespace globalThis {

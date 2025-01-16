@@ -1,4 +1,4 @@
-import { serviceIP } from '../module/ip.module.ts'
+import { serviceIP } from '../modules/ip.module.ts'
 
 import type { Middleware } from '@oak/oak'
 
