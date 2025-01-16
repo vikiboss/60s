@@ -24,7 +24,6 @@ import { serviceLuck } from './modules/luck/luck.module.ts'
 import { serviceHash } from './modules/hash.module.ts'
 import { serviceFanyi } from './modules/fanyi/fanyi.module.ts'
 import { serviceOG } from './modules/og.module.ts'
-import { serviceMD2HTML } from './modules/md2html/md2html.module.ts'
 
 export const rootRouter = new Router()
 
@@ -70,7 +69,6 @@ appRouter.get('/luck', serviceLuck.handle())
 
 appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
-appRouter.all('/md2html', serviceMD2HTML.handle())
 
 appRouter.all('/fanyi', serviceFanyi.handle())
 appRouter.all('/fanyi/langs', serviceFanyi.langs())

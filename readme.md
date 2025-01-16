@@ -43,7 +43,7 @@
   - 📖 随机答案之书
 - ... 更多功能持续增加中
 
-可访问直接 https://60s-api.viki.moe 查看所有可用的 API Endpoints。 
+可直接访问 https://60s-api.viki.moe 查看所有可用的 API Endpoints。 
 
 ## API 文档
 
