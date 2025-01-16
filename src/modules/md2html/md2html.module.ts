@@ -41,7 +41,7 @@ class ServiceMD2HTML {
   handle(): RouterMiddleware<'/md2html'> {
     return async (ctx) => {
       const markdown = await ctx.request.body.text()
-      const title = ctx.request.url.searchParams.get('title') || 'Readme'
+      const title = ctx.request.url.searchParams.get('title') || ''
 
       if (!markdown) {
         ctx.response.status = 400
@@ -56,7 +56,7 @@ class ServiceMD2HTML {
   }
 
   async md2html(md: string, options: { htmlTitle?: string }): Promise<string> {
-    const { htmlTitle } = options
+    const { htmlTitle = '' } = options
 
     const enableShiki = md.includes('```')
     const enableKatex = md.includes('$$') || md.includes('\\(') || md.includes('\\[')
