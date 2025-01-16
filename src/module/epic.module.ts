@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceEpic {
   handle(): RouterMiddleware<'/epic'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -35,8 +35,13 @@ class ServiceEpic {
     const data = ((await (await fetch(Common.useProxiedUrl(api))).json()) || {}) as any
 
     const allGames = (data?.data?.Catalog?.searchStore?.elements || []) as GameItem[]
+
     const activeGames = allGames
-      .filter(e => e.offerType === 'BASE_GAME' && e.promotions)
+      .filter((e) => {
+        const promotion = e.promotions?.upcomingPromotionalOffers?.[0] || e.promotions?.promotionalOffers?.[0]
+        const freeDiscount = promotion?.promotionalOffers?.[0]?.discountSetting?.discountPercentage === 0
+        return e.offerType === 'BASE_GAME' && freeDiscount
+      })
       .toSorted((a, b) => {
         return (
           (a.promotions?.upcomingPromotionalOffers?.length || 0) -
@@ -44,13 +49,9 @@ class ServiceEpic {
         )
       })
 
-    return activeGames.map(e => {
+    return activeGames.map((e) => {
       const slug =
-        e.productSlug ||
-        e.catalogNs?.mappings?.[0]?.pageSlug ||
-        e.offerMappings?.[0]?.pageSlug ||
-        e.urlSlug ||
-        ''
+        e.productSlug || e.catalogNs?.mappings?.[0]?.pageSlug || e.offerMappings?.[0]?.pageSlug || e.urlSlug || ''
 
       const promotion = e.promotions?.upcomingPromotionalOffers.length
         ? e.promotions?.upcomingPromotionalOffers
