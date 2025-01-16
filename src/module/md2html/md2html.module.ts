@@ -4,7 +4,7 @@ import rehypeShiki from '@shikijs/rehype'
 import { remarkAlert } from 'remark-github-blockquote-alert'
 import { unified } from 'unified'
 import rehypeKatex from 'rehype-katex'
-import rehypePresetMinify from 'rehype-preset-minify'
+// import rehypePresetMinify from 'rehype-preset-minify'
 import rehypeRaw from 'rehype-raw'
 import rehypeStringify from 'rehype-stringify'
 import remarkEmoji from 'remark-emoji'
@@ -40,78 +40,67 @@ const globalCSS = fs.readFileSync(path.join(__dirname, './css/global.css'), opts
 class ServiceMD2HTML {
   handle(): RouterMiddleware<'/md2html'> {
     return async (ctx) => {
-      const markdown = await Common.getParam('markdown', ctx.request)
+      const markdown = await ctx.request.body.text()
+      const title = ctx.request.url.searchParams.get('title') || 'Readme'
 
       if (!markdown) {
         ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, 'markdown 参数不能为空')
+        ctx.response.body = Common.buildJson(null, 400, '需要传入 markdown 文本内容作为 POST 请求的 body')
         return
       }
 
-      const html = await this.md2html(markdown)
-
-      switch (ctx.state.encoding) {
-        case 'json':
-          ctx.response.body = Common.buildJson({
-            html,
-          })
-          break
-
-        case 'text':
-        default:
-          ctx.response.headers.set('Content-Type', 'text/html')
-          ctx.response.body = html
-          break
-      }
+      const html = await this.md2html(markdown, { htmlTitle: title })
+      ctx.response.headers.set('Content-Type', 'text/html')
+      ctx.response.body = html
     }
   }
 
-  async md2html(md: string): Promise<string> {
-    const processor = this.getProcessor({ shiki: md.includes('```') })
-    const html = await processor.process(md)
+  async md2html(md: string, options: { htmlTitle?: string }): Promise<string> {
+    const { htmlTitle } = options
+
+    const enableShiki = md.includes('```')
+    const enableKatex = md.includes('$$') || md.includes('\\(') || md.includes('\\[')
+    const enableGhAlert = md.includes('> [!')
+    const title = htmlTitle || (md.match(/#+\s*(.+)\n?/)?.[1] || 'Readme').replace(/\s*\{#.+\}\s*/g, '').trim()
+
+    const processor = this.getProcessor({
+      shiki: enableShiki,
+      katex: enableKatex,
+      ghAlert: enableGhAlert,
+    })
+
+    const mainHTML = await processor.process(md)
 
     return `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${title}</title>
     <style>
-      body {
-        margin: 2rem auto;
-        background-color: var(--color-canvas-default);
-      }
-
-      main {
-        max-width: 800px;
-        margin: 0 auto;
-      }
-
+      body { margin: 2rem auto; background-color: var(--color-canvas-default); }
+      main { max-width: 800px; margin: 0 auto; }
       ${globalCSS}
       ${glmCSS}
-      ${katexCSS}
-      ${ghAlertCSS}
-      ${shikiCSS}
+      ${enableKatex ? katexCSS : ''}
+      ${enableGhAlert ? ghAlertCSS : ''}
+      ${enableShiki ? shikiCSS : ''}
     </style>
   </head>
   <body class="markdown-body">
     <main data-color-mode="auto" data-light-theme="light" data-dark-theme="dark">
-      ${html.toString()}
+      ${mainHTML.toString()}
     </main>
   </body>
-</html>
-    `
+</html>`
   }
 
-  getProcessor(options: { shiki?: boolean } = {}) {
-    const { shiki = false } = options
+  getProcessor(options: { shiki?: boolean; katex?: boolean; ghAlert?: boolean }) {
+    const { shiki = false, katex = true, ghAlert = true } = options
 
     let processor = unified()
       .use(remarkParse)
       .use(remarkFrontmatter)
-      .use(remarkAlert, {
-        legacyTitle: true,
-      })
-      .use(remarkMath)
       .use(remarkEmoji, {
         accessible: true,
         padSpaceAfter: true,
@@ -121,10 +110,20 @@ class ServiceMD2HTML {
         defaults: true,
         uniqueDefaults: true,
       })
-      .use(remarkGfm)
-      .use(remarkRehype, {
-        allowDangerousHtml: true,
+
+    if (ghAlert) {
+      processor = processor.use(remarkAlert, {
+        legacyTitle: true,
       })
+    }
+
+    if (katex) {
+      processor = processor.use(remarkMath)
+    }
+
+    processor = processor.use(remarkGfm).use(remarkRehype, {
+      allowDangerousHtml: true,
+    })
 
     if (shiki) {
       processor = processor.use(rehypeShiki, {
@@ -146,13 +145,16 @@ class ServiceMD2HTML {
       })
     }
 
-    return processor
-      .use(rehypeRaw, {
-        tagfilter: true,
-      })
-      .use(rehypeKatex)
-      .use(rehypePresetMinify)
-      .use(rehypeStringify)
+    if (katex) {
+      processor = processor.use(rehypeKatex)
+    }
+
+    processor = processor.use(rehypeRaw, {
+      tagfilter: true,
+    })
+    // .use(rehypePresetMinify)
+
+    return processor.use(rehypeStringify)
   }
 }
 

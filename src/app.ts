@@ -7,9 +7,11 @@ import { notFound } from './middlewares/not-found.ts'
 import { favicon } from './middlewares/favicon.ts'
 import { debug } from './middlewares/debug.ts'
 import { encoding } from './middlewares/encoding.ts'
+import { handleGlobalError } from './middlewares/handle-global-error.ts'
 
 export const app = new Application()
 
+app.use(handleGlobalError())
 app.use(debug(), cors(), favicon(), encoding())
 
 app.use(rootRouter.routes(), rootRouter.allowedMethods())

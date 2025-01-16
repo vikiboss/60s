@@ -3,7 +3,7 @@ import { Buffer } from 'node:buffer'
 import { COMMON_MSG } from './config/index.ts'
 
 import type { BinaryToTextEncoding } from 'node:crypto'
-import type { Request } from '@oak/oak'
+import type { Request, RouterContext } from '@oak/oak'
 
 interface FormatOptions {
   locale?: string
@@ -19,6 +19,17 @@ export class Common {
       message,
       data,
     }
+  }
+
+  static requireArguments(name: string | string[], ctx: RouterContext<any, Record<string, any>>) {
+    ctx.response.status = 400
+    const args = Array.isArray(name) ? name : [name]
+
+    ctx.response.body = Common.buildJson(
+      null,
+      400,
+      `参数 ${args.join(', ')} 不能为空，可以是 GET 请求的 query 参数或 POST 请求的 body JSON 参数。query 参数请进行必要的 URL 编码`,
+    )
   }
 
   static localeDate(ts: number | string | Date = Date.now(), options: FormatOptions = {}) {
