@@ -1,7 +1,7 @@
 {
   "name": "60s-api",
   "version": "2.1.5",
-  "updateTime": "2025/01/16 10:43:16",
+  "updateTime": "2025/01/16 11:12:38",
   "devDependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4",
     "@shikijs/rehype": "^1.26.1",
