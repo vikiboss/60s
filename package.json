@@ -8,7 +8,7 @@
     "bumpp": "^9.10.0",
     "prettier": "^3.4.2",
     "typescript": "^5.7.3",
-    "wrangler": "^3.102.0"
+    "wrangler": "^0.0.0-b35265a79"
   },
   "scripts": {
     "dev": "DEV=1 deno --watch --env-file=.env -A deno.ts",

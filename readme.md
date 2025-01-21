@@ -49,12 +49,40 @@
   - 📖 随机答案之书
 - ... 更多功能持续增加中
 
-## API 文档
+## 🧩 API 文档
 
 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，可在线调试、生成业务代码、查看接口参数等。
 
 - 主域名: https://60s-api.viki.moe （部分地区可能被墙）
 - 备用域名: https://60s-api.114128.xyz
+
+## 💻 本地部署
+
+### Deno
+
+```bash
+deno install && deno run -A deno.ts
+```
+
+### Bun
+
+```bash
+bun install && bun run bun.ts
+```
+
+### Node.js
+
+> 要求 Node.js 版本 >= 22.6 以支持 `--experimental-strip-types` 参数来执行 TypeScript 文件
+
+```bash
+npm install && node --experimental-strip-types node.ts
+```
+
+### Cloudflare Workers
+
+```bash
+wrangler publish
+```
 
 ## 🧑‍🤝‍🧑 用户群
 
@@ -71,6 +99,6 @@ API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，可�
   <img src="https://smms.viki.moe/2022/11/16/vZ4xkCopKRmIFVX.jpg" alt="alipay" height="160px" style="margin:24px;"/>
 </div>
 
-## License （开源协议）
+## 🪪 License （开源协议）
 
 [MIT](license) License © 2022-PRESENT Viki
