@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceDouyin {
   handle(): RouterMiddleware<'/douyin'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -54,7 +54,7 @@ class ServiceDouyin {
       room_count?: number
     }[]
 
-    return list.map(e => ({
+    return list.map((e) => ({
       title: e?.word,
       hot_value: e?.hot_value,
       cover: e?.word_cover?.url_list[0],

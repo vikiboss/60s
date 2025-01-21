@@ -5,9 +5,9 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceHitokoto {
   handle(): RouterMiddleware<'/hitokoto'> {
-    return ctx => {
+    return (ctx) => {
       const hitokoto = Common.randomItem(hitokotoData)
-      const index = hitokotoData.findIndex(item => item === hitokoto)
+      const index = hitokotoData.findIndex((item) => item === hitokoto)
 
       switch (ctx.state.encoding) {
         case 'text':

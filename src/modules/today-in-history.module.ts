@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceTodayInHistory {
   handle(): RouterMiddleware<'/today_in_history'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -31,7 +31,7 @@ class ServiceTodayInHistory {
       date: month ? `${month}月${day}日` : '',
       month: +month,
       day: +day,
-      items: items.map(e => {
+      items: items.map((e) => {
         return {
           title: e.title,
           year: e.year,

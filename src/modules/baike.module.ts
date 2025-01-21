@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceBaike {
   handle(): RouterMiddleware<'/baike'> {
-    return async ctx => {
+    return async (ctx) => {
       const word = ctx.request.url.searchParams.get('word')
 
       if (!word) {

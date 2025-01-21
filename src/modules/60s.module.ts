@@ -7,7 +7,7 @@ class Service60s {
   #TIP_PREFIX = '【微语】'
 
   handle(): RouterMiddleware<'/60s'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -39,23 +39,23 @@ class Service60s {
     const response = await fetch(api, { headers: { cookie: ZHIHU_COOKIE } })
     const { data = [] } = (await response.json()) || {}
 
-    const { url: link, title_image: cover, updated: updatedAt, content = '' } = data.at(0) || {}
+    const { url: link, title_image: cover, updated: updatedAt = 0, content = '' } = data.at(0) || {}
 
     const REG_TAG = /<[^<>]+>/g
     const REG_ITEM = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
     const items = ((content.match(REG_ITEM) || []) as string[])
-      .map(e => Common.transformEntities(e.replace(REG_TAG, '').trim()))
-      .map(e => e.replace(/(^\d+、\s*)|([。！～；]$)/g, ''))
-      .filter(e => e.length > 6)
+      .map((e) => Common.transformEntities(e.replace(REG_TAG, '').trim()))
+      .map((e) => e.replace(/(^\d+、\s*)|([。！～；]$)/g, ''))
+      .filter((e) => e.length > 6)
 
     const todayInData = Common.localeDate(updatedAt * 1000)
-    const news = items.filter(e => !e.includes(this.#TIP_PREFIX))
-    const tip = items.find(e => e.includes(this.#TIP_PREFIX)) || ''
+    const news = items.filter((e) => !e.includes(this.#TIP_PREFIX))
+    const tip = items.find((e) => e.includes(this.#TIP_PREFIX)) || ''
 
     const item = {
       date: Common.localeDate(updatedAt * 1000),
       cover,
-      news: news.map(e => ({
+      news: news.map((e) => ({
         title: e,
         link: `https://www.baidu.com/s?wd=${encodeURIComponent(e)}`,
       })),

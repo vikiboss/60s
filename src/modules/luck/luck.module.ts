@@ -5,7 +5,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceLuck {
   handle(): RouterMiddleware<'/luck'> {
-    return ctx => {
+    return (ctx) => {
       const luck = Common.randomItem(luckData)
       const tip = Common.randomItem(luck.content)
       const tip_index = luck.content.indexOf(tip)

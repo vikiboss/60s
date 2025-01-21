@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceToutiao {
   handle(): RouterMiddleware<'/toutiao'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -27,7 +27,7 @@ class ServiceToutiao {
     const api = 'https://www.toutiao.com/hot-event/hot-board/?origin=toutiao_pc'
     const { data = [] } = await (await fetch(api)).json()
 
-    return (data as Item[]).map(e => ({
+    return (data as Item[]).map((e) => ({
       title: e.Title,
       hot_value: +e.HotValue,
       cover: e.Image.url,

@@ -6,7 +6,7 @@ class ServiceExRate {
   #cache = new Map<string, RateItem>()
 
   handle(): RouterMiddleware<'/exchange_rate'> {
-    return async ctx => {
+    return async (ctx) => {
       const currency = ctx.request.url.searchParams.get('currency') || 'CNY'
 
       const data = await this.#fetch(currency)
@@ -15,7 +15,7 @@ class ServiceExRate {
         case 'text':
           ctx.response.body = Object.entries(data.rates)
             .slice(0, 20)
-            .map(e => `${e[0]} => ${e[1]}`)
+            .map((e) => `${e[0]} => ${e[1]}`)
             .join('\n')
           break
 

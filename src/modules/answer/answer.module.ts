@@ -5,7 +5,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceAnswer {
   handle(): RouterMiddleware<'/answer'> {
-    return ctx => {
+    return (ctx) => {
       const answer = Common.randomItem(answerData)
 
       switch (ctx.state.encoding) {
@@ -15,7 +15,7 @@ class ServiceAnswer {
 
         case 'json':
         default:
-          ctx.response.body = Common.buildJson( answer )
+          ctx.response.body = Common.buildJson(answer)
           break
       }
     }

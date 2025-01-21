@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceBili {
   handle(): RouterMiddleware<'/bili'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -28,14 +28,12 @@ class ServiceBili {
     const { data = {} } = await (await fetch(api)).json()
 
     // deno-lint-ignore no-explicit-any
-    return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map(
-      item => {
-        return {
-          title: item.keyword || item.show_name,
-          link: `https://search.bilibili.com/all?keyword=${encodeURIComponent(item.keyword)}`,
-        }
+    return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map((item) => {
+      return {
+        title: item.keyword || item.show_name,
+        link: `https://search.bilibili.com/all?keyword=${encodeURIComponent(item.keyword)}`,
       }
-    )
+    })
   }
 }
 

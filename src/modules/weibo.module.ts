@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceWeibo {
   handle(): RouterMiddleware<'/weibo'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -26,7 +26,7 @@ class ServiceWeibo {
   async #fetch() {
     const api = 'https://weibo.com/ajax/side/hotSearch'
     const { data = {} } = await (await fetch(api)).json()
-    return (((data?.realtime || []) as Item[]).filter(e => !e.is_ad) || []).map(e => ({
+    return (((data?.realtime || []) as Item[]).filter((e) => !e.is_ad) || []).map((e) => ({
       title: e.word,
       hot_value: e.num,
       link: `https://s.weibo.com/weibo?q=${encodeURIComponent(e.word)}`,

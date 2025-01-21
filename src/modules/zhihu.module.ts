@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceZhihuHot {
   handle(): RouterMiddleware<'/zhihu'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -34,7 +34,7 @@ class ServiceZhihuHot {
 
     const { data = [] } = await response.json()
 
-    return (data as Item[]).map(e => ({
+    return (data as Item[]).map((e) => ({
       title: e.target.title,
       detail: e.target.excerpt,
       cover: e.children?.[0]?.thumbnail || '',

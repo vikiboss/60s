@@ -5,10 +5,10 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceFabing {
   handle(): RouterMiddleware<'/fabing'> {
-    return ctx => {
+    return (ctx) => {
       const name = ctx.request.url.searchParams.get('name') || '主人'
       const sayingRaw = Common.randomItem(fabingData)
-      const index = fabingData.findIndex(item => item === sayingRaw)
+      const index = fabingData.findIndex((item) => item === sayingRaw)
       const saying = sayingRaw.replaceAll('[name]', name)
 
       switch (ctx.state.encoding) {

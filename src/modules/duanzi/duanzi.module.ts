@@ -5,8 +5,8 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceDuanzi {
   handle(): RouterMiddleware<'/duanzi'> {
-    return ctx => {
-      const duanzi = Common.randomItem(duanziData);
+    return (ctx) => {
+      const duanzi = Common.randomItem(duanziData)
 
       switch (ctx.state.encoding) {
         case 'text':
@@ -16,7 +16,7 @@ class ServiceDuanzi {
         case 'json':
         default:
           ctx.response.body = Common.buildJson({
-            index: duanziData.findIndex(item => item === duanzi),
+            index: duanziData.findIndex((item) => item === duanzi),
             duanzi,
           })
           break

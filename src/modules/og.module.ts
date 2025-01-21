@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceOG {
   handle(): RouterMiddleware<'/og'> {
-    return async ctx => {
+    return async (ctx) => {
       const url = await Common.getParam('url', ctx.request)
 
       if (!url) {
@@ -45,7 +45,7 @@ class ServiceOG {
 
     const response = await fetch(_url)
     const type = response.headers.get('content-type') || ''
-    const isHTML = ['text/html', 'application/xhtml+xml'].some(e => type.includes(e))
+    const isHTML = ['text/html', 'application/xhtml+xml'].some((e) => type.includes(e))
 
     if (!isHTML) {
       throw new Error('目标 URL 不是一个 HTML 页面，无法解析 OG 信息')
@@ -55,8 +55,7 @@ class ServiceOG {
 
     const ogTitlePattern = /<meta property="og:title" content="(?<title>[^"]+)"\s*\/?>/i
     const ogImagePattern = /<meta property="og:image" content="(?<image>[^"]+)"\s*\/?>/i
-    const ogDescriptionPattern =
-      /<meta property="og:description" content="(?<description>[^"]+)"\s*\/?>/i
+    const ogDescriptionPattern = /<meta property="og:description" content="(?<description>[^"]+)"\s*\/?>/i
 
     const [titleMatch, imageMatch, descriptionMatch] = [
       ogTitlePattern.exec(html),

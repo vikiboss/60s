@@ -20,7 +20,7 @@
 
 目前包含的接口如下，仍在持续增加中...
 
-> 可直接访问 https://60s-api.viki.moe (备用域名 https://60s-api.114128.xyz) 查看所有可用的 API Endpoints。 
+> 可直接访问 https://60s-api.viki.moe (备用域名 https://60s-api.114128.xyz) 查看所有可用的 API Endpoints。
 
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界

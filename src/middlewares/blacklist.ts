@@ -13,7 +13,7 @@ export function debug(): Middleware {
       ctx.response.body = Common.buildJson(
         null,
         403,
-        `由于滥用等原因，该 IP (${ip}) 已被禁止，如有疑问请联系 Viki <hi@viki.moe>`
+        `由于滥用等原因，该 IP (${ip}) 已被禁止，如有疑问请联系 Viki <hi@viki.moe>`,
       )
 
       return

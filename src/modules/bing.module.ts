@@ -16,7 +16,7 @@ class ServiceBing {
   #cache = new Map<string, BingItem>()
 
   handle(): RouterMiddleware<'/bing'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       if (!data) {
@@ -60,8 +60,7 @@ class ServiceBing {
     if (images.length) {
       const { ImageContent = {} } = images[0] || {}
 
-      const { Description, Image, Headline, Title, Copyright, QuickFact } = (ImageContent ||
-        {}) as {
+      const { Description, Image, Headline, Title, Copyright, QuickFact } = (ImageContent || {}) as {
         Description: string
         Image: {
           Url: string

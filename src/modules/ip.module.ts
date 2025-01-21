@@ -9,7 +9,7 @@ class ServiceIP {
       const value = requestHeaders.get(field)
 
       if (value) {
-        const ips = value.split(',').map(ip => ip.trim())
+        const ips = value.split(',').map((ip) => ip.trim())
         if (ips.length > 0) return ips[0]
       }
     }
@@ -18,7 +18,7 @@ class ServiceIP {
   }
 
   handle(): RouterMiddleware<'/ip'> {
-    return ctx => {
+    return (ctx) => {
       const clientIP = this.getClientIP(ctx.request.headers)
       const ip = clientIP || ctx.request.ip
 
