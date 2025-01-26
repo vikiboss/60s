@@ -8,7 +8,11 @@ export function notFound(): Middleware {
     await next()
 
     ctx.response.status = 404
-    ctx.response.body = Common.buildJson(null, 404, `接口被吃掉了！${COMMON_MSG}`)
+    ctx.response.body = Common.buildJson(
+      null,
+      404,
+      `接口被吃掉了，请检查请求路径！应用接口需要带上版本号，如 /v2/60s 而不是 /60s。${COMMON_MSG}`,
+    )
 
     return
   }
