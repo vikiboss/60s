@@ -35,11 +35,24 @@ class Service60s {
 
     const ZHIHU_COOKIE = globalThis.env?.ZHIHU_COOKIE ?? ''
 
-    const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
-    const response = await fetch(api, { headers: { cookie: ZHIHU_COOKIE } })
-    const { data = [] } = (await response.json()) || {}
+    const api = 'https://www.zhihu.com/people/98-18-69-57/posts'
+    const response = await fetch(api, {
+      headers: {
+        Cookie: ZHIHU_COOKIE,
+        'User-Agent':
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
+      },
+    })
 
-    const { url: link, title_image: cover, updated: updatedAt = 0, content = '' } = data.at(0) || {}
+    const html = await response.text()
+
+    const initialData = JSON.parse(
+      /<script id="js-initialData" type="text\/json">(.+?)<\/script>/.exec(html)?.[1] || '{}',
+    )
+
+    const data = (Object.values(initialData?.initialState?.entities?.articles || {})[0] || {}) as any
+
+    const { url: link, title_image: cover, updated: updatedAt = 0, content = '' } = data
 
     const REG_TAG = /<[^<>]+>/g
     const REG_ITEM = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
