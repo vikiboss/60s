@@ -92,7 +92,7 @@ class ServiceBing {
         headline: Headline,
         description: Description,
         main_text: QuickFact?.MainText || '',
-        cover: Image?.Wallpaper ? `https://cn.bing.com${Image.Wallpaper}` : '',
+        cover: Image?.Wallpaper ? `https://cn.bing.com${Image.Wallpaper.replaceAll('1920x1200', '1920x1080')}` : '',
         copyright: Copyright,
         update_date: today,
         update_date_at: Date.now(),
