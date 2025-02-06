@@ -52,7 +52,7 @@ class Service60s {
 
     const data = (Object.values(initialData?.initialState?.entities?.articles || {})[0] || {}) as any
 
-    const { url: link, title_image: cover, updated: updatedAt = 0, content = '' } = data
+    const { url: link, imageUrl: cover, updated: updatedAt = 0, content = '' } = data
 
     const REG_TAG = /<[^<>]+>/g
     const REG_ITEM = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
