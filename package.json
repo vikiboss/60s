@@ -2,7 +2,7 @@
   "name": "60s-api",
   "type": "module",
   "version": "2.3.3",
-  "updateTime": "2025/02/06 14:43:06",
+  "updateTime": "2025/02/06 14:53:29",
   "devDependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4",
     "bumpp": "^9.10.0",
