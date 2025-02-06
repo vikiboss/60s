@@ -11,8 +11,6 @@ interface Item {
 
 const cache: Map<string, Item> = new Map()
 
-const api = 'https://www.zhihu.com/api/v4/columns/c_1715391799055720448/items?limit=2'
-
 const itemReg = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
 const tagReg = /<[^<>]+>/g
 
@@ -57,8 +55,25 @@ export async function fetch60s(type: string, ctx: Context) {
 
   if (!returnData) {
     const ZHIHU_CK = globalThis.env?.ZHIHU_CK ?? ''
-    const { data = [] } = await (await fetch(api, { headers: { cookie: ZHIHU_CK } })).json()
-    const { content = '', url = '', title_image = '', updated = 0 } = data[0] || {}
+
+    const api = 'https://www.zhihu.com/people/98-18-69-57/posts'
+    const response = await fetch(api, {
+      headers: {
+        Cookie: ZHIHU_CK,
+        'User-Agent':
+          'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
+      },
+    })
+
+    const html = await response.text()
+
+    const initialData = JSON.parse(
+      /<script id="js-initialData" type="text\/json">(.+?)<\/script>/.exec(html)?.[1] || '{}',
+    )
+
+    const data = (Object.values(initialData?.initialState?.entities?.articles || {})[0] || {}) as any
+
+    const { content = '', url = '', title_image = '', updated = 0 } = data || {}
 
     const contents: string[] = content.match(itemReg) ?? []
 
