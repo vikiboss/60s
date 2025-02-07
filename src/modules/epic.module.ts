@@ -50,10 +50,18 @@ class ServiceEpic {
       const promotionStartAt = startDate ? new Date(startDate).getTime() : new Date('1970/1/1')
       const promotionEndAt = endDate ? new Date(endDate).getTime() : new Date('1970/1/1')
 
+      const originalCover = e.keyImages?.find((e) => e.type === 'OfferImageWide')?.url || e.keyImages[0]?.url || ''
+
+      const cover = originalCover.startsWith('http')
+        ? originalCover
+        : originalCover.includes('?cover=')
+          ? decodeURIComponent(originalCover.split('?cover=')[1] || '')
+          : originalCover
+
       return {
         id: e.id || '',
         title: e.title || '-',
-        cover: e.keyImages?.[0]?.url || '',
+        cover,
         original_price: (e.price.totalPrice.originalPrice || 0) / 100 || 0,
         original_price_desc: e.price.totalPrice.fmtPrice.originalPrice || '暂无价格',
         description: e.description || '暂无描述',
