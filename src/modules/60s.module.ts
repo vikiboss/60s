@@ -12,7 +12,7 @@ class Service60s {
       switch (ctx.state.encoding) {
         case 'text': {
           ctx.response.body = `每天 60s 看世界（${data.date}）\n\n${data.news
-            .map((e, idx) => `${idx + 1}. ${e.title}`)
+            .map((e, idx) => `${idx + 1}. ${e}`)
             .join('\n')}\n\n${data.tip ? `【微语】${data.tip}` : ''}`
           break
         }
@@ -34,7 +34,12 @@ class Service60s {
     const response = await fetch(this.getUrl(date))
 
     if (response.ok) {
-      return (await response.json()) as DailyNewsItem
+      const now = Date.now()
+      return {
+        ...(await response.json()),
+        api_updated: Common.localeDate(now),
+        api_updated_at: now,
+      } as DailyNewsItem
     } else {
       return null
     }
