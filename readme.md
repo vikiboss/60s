@@ -20,8 +20,6 @@
 
 目前包含的接口如下，仍在持续增加中，文档在 [Apifox](https://docs.60s-api.viki.moe) 上更新，也可直接访问 https://60s-api.viki.moe 查看所有可用的 API Endpoints。
 
-备用域名: https://60s-api.114128.xyz / https://60s-api-cf.114128.xyz / https://60s-api-cf.viki.moe / https://60s.b23.run
-
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界
   - 🏞️ 必应每日壁纸（Bing）
@@ -54,7 +52,11 @@
 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，可在线调试、生成业务代码、查看接口参数等。
 
 - 主域名: https://60s-api.viki.moe （部分地区可能被墙）
-- 备用域名: https://60s-api.114128.xyz
+
+- 备用域名 1: https://60s.b23.run (Deno Deploy)
+- 备用域名 2: https://60s-api.114128.xyz (Deno Deploy)
+- 备用域名 3: https://60s-api-cf.viki.moe (CF Workers)
+- 备用域名 4: https://60s-api-cf.114128.xyz  (CF Workers)
 
 ## 💻 本地部署
 
