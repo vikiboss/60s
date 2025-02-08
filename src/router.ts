@@ -31,10 +31,12 @@ rootRouter.get('/', (ctx) => {
   ctx.response.headers.set('Content-Type', 'application/json; charset=utf-8')
   ctx.response.body = JSON.stringify(
     {
+      api_name: '60s-api',
+      api_version: pkg.version,
+      api_docs: 'https://docs.60s-api.viki.moe',
       author: config.author,
       user_group: config.group,
       github_repo: config.github,
-      api_version: pkg.version,
       updated: pkg.updateTime,
       updated_at: new Date(pkg.updateTime).getTime(),
       endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
