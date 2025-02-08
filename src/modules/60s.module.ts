@@ -37,7 +37,7 @@ class Service60s {
       const now = Date.now()
       return {
         ...(await response.json()),
-        api_updated: Common.localeDate(now),
+        api_updated: Common.localeTime(now),
         api_updated_at: now,
       } as DailyNewsItem
     } else {
