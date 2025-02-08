@@ -1,7 +1,7 @@
 {
   "name": "60s-api",
   "type": "module",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "updateTime": "2025/02/08 19:27:31",
   "devDependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4",
