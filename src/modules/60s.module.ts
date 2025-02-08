@@ -4,91 +4,63 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class Service60s {
   #cache = new Map<string, DailyNewsItem>()
-  #TIP_PREFIX = '【微语】'
 
   handle(): RouterMiddleware<'/60s'> {
     return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
-        case 'text':
+        case 'text': {
           ctx.response.body = `每天 60s 看世界（${data.date}）\n\n${data.news
             .map((e, idx) => `${idx + 1}. ${e.title}`)
-            .join('\n')}\n\n${data.tip ? `${this.#TIP_PREFIX}${data.tip}` : ''}`
+            .join('\n')}\n\n${data.tip ? `【微语】${data.tip}` : ''}`
           break
+        }
 
         case 'json':
-        default:
+        default: {
           ctx.response.body = Common.buildJson(data)
           break
+        }
       }
     }
   }
 
+  getUrl(date: string): string {
+    return `https://raw.githubusercontent.com/vikiboss/60s-static-host/refs/heads/main/static/60s/${date}.json`
+  }
+
+  async tryUrl(date: string) {
+    const response = await fetch(this.getUrl(date))
+
+    if (response.ok) {
+      return (await response.json()) as DailyNewsItem
+    } else {
+      return null
+    }
+  }
+
   async #fetch() {
-    const today = Common.localeDate()
+    const today = Common.localeDate(Date.now()).replace(/\//g, '-')
+    const yesterday = Common.localeDate(Date.now() - 24 * 60 * 60 * 1000).replace(/\//g, '-')
     const cachedItem = this.#cache.get(today)
 
-    if (cachedItem) {
-      return cachedItem
+    if (cachedItem) return cachedItem
+
+    for (const date of [today, yesterday]) {
+      const cache = this.#cache.get(date)
+
+      if (cache) return cache
+
+      const data = await this.tryUrl(date)
+
+      if (data) {
+        this.#cache.set(date, data)
+        return data
+      }
     }
 
-    const ZHIHU_COOKIE = globalThis.env?.ZHIHU_COOKIE ?? ''
-
-    const api = 'https://www.zhihu.com/people/98-18-69-57/posts'
-    const response = await fetch(api, {
-      headers: {
-        Cookie: ZHIHU_COOKIE,
-        'User-Agent':
-          'Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
-      },
-    })
-
-    const html = await response.text()
-
-    const initialData = JSON.parse(
-      /<script id="js-initialData" type="text\/json">(.+?)<\/script>/.exec(html)?.[1] || '{}',
-    )
-
-    const data = (Object.values(initialData?.initialState?.entities?.articles || {})[0] || {}) as any
-
-    const { url: link, imageUrl: cover, updated: updatedAt = 0, content = '' } = data
-
-    const REG_TAG = /<[^<>]+>/g
-    const REG_ITEM = /<p\s+data-pid=[^<>]+>([^<>]+)<\/p>/g
-    const items = ((content.match(REG_ITEM) || []) as string[])
-      .map((e) => Common.transformEntities(e.replace(REG_TAG, '').trim()))
-      .map((e) => e.replace(/(^\d+、\s*)|([。！～；]$)/g, ''))
-      .filter((e) => e.length > 6)
-
-    const todayInData = Common.localeDate(updatedAt * 1000)
-    const news = items.filter((e) => !e.includes(this.#TIP_PREFIX))
-    const tip = items.find((e) => e.includes(this.#TIP_PREFIX)) || ''
-
-    const item = {
-      date: Common.localeDate(updatedAt * 1000),
-      cover,
-      news: news.map((e) => ({
-        title: e,
-        link: `https://www.baidu.com/s?wd=${encodeURIComponent(e)}`,
-      })),
-      tip: tip
-        .replace(this.#TIP_PREFIX, '')
-        .replace(/[。！～]?早安$/, '')
-        .trim(),
-      link,
-      updated: Common.localeTime(updatedAt * 1000),
-      updated_at: updatedAt * 1000,
-      api_updated: Common.localeTime(),
-      api_updated_at: Date.now(),
-    }
-
-    // 有数据，且是今天的数据
-    if (items.length && todayInData === today) {
-      this.#cache.set(today, item)
-    }
-
-    return item
+    throw new Error('Failed to fetch 60s data, please try again later.')
   }
 }
 
@@ -100,6 +72,10 @@ interface DailyNewsItem {
     title: string
     link: string
   }[]
+  audio: {
+    news: string
+    music: string
+  }
   cover: string
   tip: string
   link: string
