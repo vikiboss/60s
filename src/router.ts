@@ -4,26 +4,27 @@ import { Router } from '@oak/oak/router'
 import { config } from './config.ts'
 
 import { service60s } from './modules/60s.module.ts'
+import { serviceAnswer } from './modules/answer/answer.module.ts'
 import { serviceBaike } from './modules/baike.module.ts'
 import { serviceBili } from './modules/bili.module.ts'
 import { serviceBing } from './modules/bing.module.ts'
 import { serviceChangYa } from './modules/changya.module.ts'
+import { serviceChemical } from './modules/chemical.module.ts'
 import { serviceDouyin } from './modules/douyin.module.ts'
+import { serviceDuanzi } from './modules/duanzi/duanzi.module.ts'
 import { serviceEpic } from './modules/epic.module.ts'
 import { serviceExRate } from './modules/exchange-rate.module.ts'
 import { serviceFabing } from './modules/fabing/fabing.module.ts'
+import { serviceFanyi } from './modules/fanyi/fanyi.module.ts'
+import { serviceHash } from './modules/hash.module.ts'
 import { serviceHitokoto } from './modules/hitokoto/hitokoto.module.ts'
 import { serviceIP } from './modules/ip.module.ts'
+import { serviceLuck } from './modules/luck/luck.module.ts'
+import { serviceOG } from './modules/og.module.ts'
 import { serviceTodayInHistory } from './modules/today-in-history.module.ts'
 import { serviceToutiao } from './modules/toutiao.module.ts'
 import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
-import { serviceDuanzi } from './modules/duanzi/duanzi.module.ts'
-import { serviceAnswer } from './modules/answer/answer.module.ts'
-import { serviceLuck } from './modules/luck/luck.module.ts'
-import { serviceHash } from './modules/hash.module.ts'
-import { serviceFanyi } from './modules/fanyi/fanyi.module.ts'
-import { serviceOG } from './modules/og.module.ts'
 
 export const rootRouter = new Router()
 
@@ -59,6 +60,7 @@ appRouter.get('/baike', serviceBaike.handle())
 appRouter.get('/bili', serviceBili.handle())
 appRouter.get('/bing', serviceBing.handle())
 appRouter.get('/douyin', serviceDouyin.handle())
+appRouter.get('/chemical', serviceChemical.handle())
 appRouter.get('/epic', serviceEpic.handle())
 appRouter.get('/exchange_rate', serviceExRate.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
