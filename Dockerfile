@@ -22,8 +22,7 @@ FROM node:22-alpine AS runner
 
 # 维护信息
 LABEL maintainer="Viki <hi@viki.moe> (https://github.com/vikiboss)"
-LABEL version="1.0.0"
-LABEL description="⏰ 60s API，每天 60 秒看世界｜一系列 高质量、开源、可靠、全球 CDN 加速 的开放 API 集合"
+LABEL description="⏰ 60s API，每天 60 秒看世界｜一系列 高质量、开源、可靠 的开放 API 集合"
 
 # 设置工作目录
 WORKDIR /app
