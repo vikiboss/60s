@@ -1,7 +1,11 @@
 # ⏰ 60s API v2
 
-一系列 **高质量、开源、可靠、全球 CDN 加速的** 开放 API 集合，使用 [Deno](https://deno.com/) 构建，托管在 [Deno Deploy](https://deno.com/deploy) 上，也支持 [Cloudflare Workers](https://www.cloudflare.com/zh-cn/developer-platform/products/workers/)、[Bun](https://bun.sh/) 和 [Node.js](https://nodejs.org/) 部署。
+一系列 **高质量、开源、可靠、全球 CDN 加速的** 开放 API 集合，使用 [Deno](https://deno.com/) 构建，托管在 [Deno Deploy](https://deno.com/deploy) 上，也支持 [Docker](https://docker.com)、[Cloudflare Workers](https://www.cloudflare.com/zh-cn/developer-platform/products/workers/)、[Bun](https://bun.sh/) 和 [Node.js](https://nodejs.org/) 部署。
 
+> [!CAUTION]
+> 近期公共服务遭受恶意攻击，导致 Deno Deploy 免费额度耗尽，暂时无法访问，建议使用其他服务的备用域名或者本地部署。
+
+> [!WARNING]
 > v1 版本已于 2025/1/15 停止更新，在 [v1-legacy](https://github.com/vikiboss/60s/tree/v1-legacy) 分支上，请尽快迁移至 v2 版本，v1 版本将于 2025/6/31 完全停止服务，届时域名会切换到 v2 版本。
 
 ## 🤔️ 起因
@@ -18,9 +22,18 @@
 
 ## 🍱 API 包含哪些？
 
-目前包含的接口如下，仍在持续增加中，文档在 [Apifox](https://docs.60s-api.viki.moe) 上更新。
+目前包含的接口如下，仍在持续增加中，全面的 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上。
 
-可直接访问 https://60s-api.viki.moe 查看所有可用的 API Endpoints。
+> [!CAUTION]
+> 近期公共服务遭受恶意攻击，导致 Deno Deploy 免费额度耗尽，暂时无法访问，建议使用其他服务的备用域名或者本地部署。
+> 
+> - ~~主域名: https://60s-api.viki.moe （Deno Deploy，暂不可用，部分地区可能被墙）~~
+> 
+> - ~~备用域名 1: https://60s.b23.run (Deno Deploy，暂不可用)~~
+> - 备用域名 2: https://60s-api-cf.viki.moe (CF Workers)
+> - ~~备用域名 3: https://60s-api.114128.xyz (Deno Deploy，暂不可用)~~
+> - 备用域名 4: https://60s-api-cf.114128.xyz  (CF Workers)
+
 
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界 (数据源来自微信公众号，凌晨更新)
@@ -48,19 +61,6 @@
   - 🤭 随机发病文学
   - 📖 随机答案之书
 - ... 更多功能持续增加中
-
-## 🧩 API 文档
-
-API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，可在线调试、生成业务代码、查看接口参数等。
-
-> 近期遭受攻击导致 Deno Deploy 免费额度耗尽，暂时无法访问，建议使用其他服务的备用域名，如 Cloudflare Workers，或者本地部署。
-
-- 主域名: https://60s-api.viki.moe （Deno Deploy，部分地区可能被墙）
-
-- 备用域名 1: https://60s.b23.run (Deno Deploy)
-- 备用域名 2: https://60s-api-cf.viki.moe (CF Workers)
-- 备用域名 3: https://60s-api.114128.xyz (Deno Deploy)
-- 备用域名 4: https://60s-api-cf.114128.xyz  (CF Workers)
 
 ## 💻 本地部署
 
@@ -107,8 +107,8 @@ npm install && npx wrangler publish
 > 采取**自愿**原则, 收到的赞赏将用于提高开发者积极性和开发环境。
 
 <div id='readme-reward' style="display: flex; gap: 8px; flex-wrap: wrap; width: 100%">
-  <img src="https://smms.viki.moe/2022/11/16/X2kFMdaxvSc1V5P.jpg" alt="wxpay" height="160px"style="margin: 24px;"/>
-  <img src="https://smms.viki.moe/2022/11/16/vZ4xkCopKRmIFVX.jpg" alt="alipay" height="160px" style="margin:24px;"/>
+  <img src="https://s2.loli.net/2022/11/16/X2kFMdaxvSc1V5P.jpg" alt="wxpay" height="160px"style="margin: 24px;"/>
+  <img src="https://s2.loli.net/2022/11/16/vZ4xkCopKRmIFVX.jpg" alt="alipay" height="160px" style="margin:24px;"/>
 </div>
 
 ## 🪪 License （开源协议）
