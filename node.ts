@@ -5,4 +5,7 @@ globalThis.env = process.env as Record<string, string>
 
 console.log(`service is running at http://localhost:${config.port}`)
 
-await app.listen({ port: config.port })
+await app.listen({
+  hostname: config.host,
+  port: config.port,
+})

@@ -1,4 +1,5 @@
 export const config = {
+  host: '0.0.0.0',
   port: 4399,
   group: 595941841,
   author: 'Viki <hi@viki.moe>',

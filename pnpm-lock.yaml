@@ -7,10 +7,14 @@ settings:
 importers:
 
   .:
-    devDependencies:
+    dependencies:
       '@oak/oak':
         specifier: npm:@jsr/oak__oak@^17.1.4
         version: '@jsr/oak__oak@17.1.4'
+    devDependencies:
+      '@types/node':
+        specifier: ^22.13.1
+        version: 22.13.1
       bumpp:
         specifier: ^9.10.0
         version: 9.10.1
@@ -106,6 +110,9 @@ packages:
 
   '@types/node@16.18.126':
     resolution: {integrity: sha512-OTcgaiwfGFBKacvfwuHzzn1KLxH/er8mluiy8/uM3sGXHaRe73RrSIj01jow9t4kJEW633Ov+cOexXeiApTyAw==}
+
+  '@types/node@22.13.1':
+    resolution: {integrity: sha512-jK8uzQlrvXqEU91UxiK5J7pKHyzgnI1Qnl0QDHIgVGuolJhRb9EEl28Cj9b3rGR8B2lhFCtvIm5os8lFnO/1Ew==}
 
   '@types/stack-trace@0.0.29':
     resolution: {integrity: sha512-TgfOX+mGY/NyNxJLIbDWrO9DjGoVSW9+aB8H2yy1fy32jsvxijhmyJI9fDFgvz3YP4lvJaq9DzdR/M1bOgVc9g==}
@@ -754,6 +761,9 @@ packages:
   ufo@1.5.4:
     resolution: {integrity: sha512-UsUk3byDzKd04EyoZ7U4DOlxQaD14JUKQl6/P7wiX4FNvUfm3XL246n9W5AmqwW5RSFJ27NAuM0iLscAOYUiGQ==}
 
+  undici-types@6.20.0:
+    resolution: {integrity: sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==}
+
   utf8-byte-length@1.0.5:
     resolution: {integrity: sha512-Xn0w3MtiQ6zoz2vFyUVruaCL53O/DwUvkEeOvj+uulMm0BkUGYWmBYVyElqZaSLhY6ZD0ulfU3aBra2aVT4xfA==}
 
@@ -926,6 +936,10 @@ snapshots:
       webcrypto-core: 1.8.1
 
   '@types/node@16.18.126': {}
+
+  '@types/node@22.13.1':
+    dependencies:
+      undici-types: 6.20.0
 
   '@types/stack-trace@0.0.29': {}
 
@@ -1532,6 +1546,8 @@ snapshots:
   tz-offset@0.0.1: {}
 
   ufo@1.5.4: {}
+
+  undici-types@6.20.0: {}
 
   utf8-byte-length@1.0.5: {}
 
