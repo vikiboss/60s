@@ -19,8 +19,8 @@
     "start": "deno --watch --env-file=.env -A deno.ts",
     "prerelease": "deno -A ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
     "release": "bumpp",
-    "docker:build": "docker build -t 60s-api .",
-    "docker:run": "docker run --name 60-api -p 4399:4399 -d 60s-api",
-    "docker:re-run": "docker stop 60-api && docker rm 60-api && pnpm run docker:run"
+    "docker:build": "docker build -t vikiboss/60s .",
+    "docker:run": "docker run --name 60s -p 4399:4399 -d vikiboss/60s",
+    "docker:re-run": "docker stop 60s && docker rm 60s && pnpm run docker:run"
   }
 }

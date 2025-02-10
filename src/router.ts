@@ -46,6 +46,10 @@ rootRouter.get('/', (ctx) => {
   )
 })
 
+rootRouter.get('/health', (ctx) => {
+  ctx.response.body = 'ok'
+})
+
 export const appRouter = new Router({
   prefix: '/v2',
 })
