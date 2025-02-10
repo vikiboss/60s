@@ -53,11 +53,13 @@
 
 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，可在线调试、生成业务代码、查看接口参数等。
 
+> 近期遭受攻击导致 Deno Deploy 免费额度耗尽，暂时无法访问，建议使用其他服务的备用域名，如 Cloudflare Workers，或者本地部署。
+
 - 主域名: https://60s-api.viki.moe （Deno Deploy，部分地区可能被墙）
 
 - 备用域名 1: https://60s.b23.run (Deno Deploy)
-- 备用域名 2: https://60s-api.114128.xyz (Deno Deploy)
-- 备用域名 3: https://60s-api-cf.viki.moe (CF Workers)
+- 备用域名 2: https://60s-api-cf.viki.moe (CF Workers)
+- 备用域名 3: https://60s-api.114128.xyz (Deno Deploy)
 - 备用域名 4: https://60s-api-cf.114128.xyz  (CF Workers)
 
 ## 💻 本地部署
