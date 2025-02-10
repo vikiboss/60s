@@ -27,8 +27,8 @@ LABEL description="⏰ 60s API，每天 60 秒看世界｜一系列 高质量、
 # 设置工作目录
 WORKDIR /app
 
-# 设置 node 环境变量为生产环境，更高效地运行应用
-ENV NODE_ENV=production
+# 设置 node 环境变量为生产环境，更高效地运行应用，设置时区为上海
+ENV NODE_ENV=production TZ=Asia/Shanghai
 
 # 安装 curl 用于健康检查，改进安全性，创建一个运行用户，避免以 root 用户运行
 # RUN apk add --no-cache curl && \
@@ -51,4 +51,4 @@ EXPOSE 4399
 #   CMD curl --silent --fail http://127.0.0.1:4399/health -H 'User-Agent: Docker Health Check' || exit 1
 
 # 运行应用
-CMD ["node", "--experimental-transform-types", "node.ts"]
+CMD ["node", "--no-warnings", "--experimental-transform-types", "node.ts"]

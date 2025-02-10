@@ -67,8 +67,7 @@ API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，可�
 ### Docker
 
 ```bash
-git clone git@github.com:vikiboss/60s.git && cd 60s
-docker build -t vikiboss/60s . && docker run --name 60s -p 4399:4399 -d vikiboss/60s
+docker run --name 60s -p 4399:4399 -d vikiboss/60s:latest
 ```
 
 ### Deno
