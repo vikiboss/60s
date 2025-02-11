@@ -21,8 +21,8 @@
 
 目前包含的接口如下，仍在持续增加中，全面的 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上。
 
-> - 主域名: https://60s-api.viki.moe （Deno Deploy，部分地区可能被墙）
-> 
+主域名: https://60s-api.viki.moe （Deno Deploy，部分地区可能被墙）
+
 > - 备用域名 1: https://60s.b23.run (Deno Deploy)
 > - 备用域名 2: https://60s-api-cf.viki.moe (CF Workers)
 > - 备用域名 3: https://60s-api.114128.xyz (Deno Deploy)
@@ -42,7 +42,6 @@
   - 📰 头条热搜榜
 - 🚀 实用功能
   - 🎮 Epic Games 免费游戏
-  - ⚛️ 随机化合物
   - ❓ 百度百科词条
   - 🌍 在线翻译（支持 109 种语言）
   - 📡 公网 IP 地址
@@ -51,6 +50,7 @@
 - 😄 消遣娱乐
   - 💬 随机一言
   - ✨ 随机运势
+  - ⚛️ 随机化合物
   - 🎤 随机唱歌音频
   - 🤣 随机搞笑段子
   - 🤭 随机发病文学
