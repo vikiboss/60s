@@ -35,8 +35,14 @@ class Service60s {
 
     if (response.ok) {
       const now = Date.now()
+      const data = await response.json()
+
+      if (!data?.news?.length || !data?.tip || !data?.audio?.news) {
+        return null
+      }
+
       return {
-        ...(await response.json()),
+        ...data,
         api_updated: Common.localeTime(now),
         api_updated_at: now,
       } as DailyNewsItem
