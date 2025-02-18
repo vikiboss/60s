@@ -9,7 +9,7 @@ class ServiceWeibo {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = `头条实时热搜\n\n${data
+          ctx.response.body = `微博实时热搜\n\n${data
             .slice(0, 20)
             .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value})`)
             .join('\n')}`
