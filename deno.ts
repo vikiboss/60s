@@ -18,7 +18,6 @@ Deno.serve(
     hostname: 'localhost',
   },
   async (request, info) => {
-    const res = await app.handle(request, info.remoteAddr)
-    return res ?? Response.error()
+    return (await app.handle(request, info.remoteAddr)) || new Response('Not found', { status: 404 })
   },
 )

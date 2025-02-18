@@ -8,11 +8,12 @@
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
   },
   "devDependencies": {
-    "@types/node": "^22.13.1",
-    "bumpp": "^9.10.0",
-    "prettier": "^3.4.2",
+    "@types/bun": "^1.2.2",
+    "@types/node": "^22.13.4",
+    "bumpp": "^10.0.3",
+    "prettier": "^3.5.1",
     "typescript": "^5.7.3",
-    "wrangler": "^0.0.0-b35265a79"
+    "wrangler": "0.0.0-kickoff-demo"
   },
   "scripts": {
     "dev": "DEV=1 PORT=4398 node --no-warnings --experimental-transform-types --watch --env-file=.env node.ts",
