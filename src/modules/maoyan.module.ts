@@ -5,7 +5,15 @@ import type { RouterMiddleware } from '@oak/oak'
 class ServiceMaoyan {
   handle(): RouterMiddleware<'/chemical'> {
     return async (ctx) => {
-      const res = await fetch(`https://piaofang.maoyan.com/i/api/rank/globalBox/historyRankList?WuKongReady=h5`)
+      const res = await fetch(`https://piaofang.maoyan.com/i/api/rank/globalBox/historyRankList?WuKongReady=h5`, {
+        headers: {
+          'X-Forwarded-For': '109.244.194.121',
+          'X-Real-IP': '109.244.194.121',
+          'Client-IP': '109.244.194.121',
+          'User-Agent':
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+        },
+      })
       const data = await res.json()
 
       let currentHourDate = new Date()
