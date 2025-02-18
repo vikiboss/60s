@@ -2,22 +2,27 @@ import { Common } from '../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
+const headers = {
+  referer: 'https://piaofang.maoyan.com/',
+  'User-Agent':
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+}
+
 class ServiceMaoyan {
   handle(): RouterMiddleware<'/chemical'> {
     return async (ctx) => {
+      const { csrfToken, deviceId } = await this.fetchVerification()
+
+      console.log('deviceId:', deviceId)
+      console.log('csrfToken:', csrfToken)
+
       const res = await fetch(`https://piaofang.maoyan.com/i/api/rank/globalBox/historyRankList?WuKongReady=h5`, {
-        headers: {
-          'X-Forwarded-For': '109.244.194.121',
-          'X-Real-IP': '109.244.194.121',
-          'Client-IP': '109.244.194.121',
-          'User-Agent':
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
-        },
+        headers: { ...headers, uid: csrfToken, uuid: deviceId },
       })
+
       const data = await res.json()
 
       let currentHourDate = new Date()
-
       currentHourDate.setMinutes(0)
       currentHourDate.setSeconds(0)
       currentHourDate.setMilliseconds(0)
@@ -51,6 +56,15 @@ class ServiceMaoyan {
       }
     }
   }
+
+  async fetchVerification() {
+    const html = await (await fetch('https://piaofang.maoyan.com/i/globalBox/historyRank', { headers })).text()
+
+    return {
+      csrfToken: html.match(/<meta name="csrf" content="(.*)">/)?.[1] ?? '',
+      deviceId: html.match(/<meta name="deviceId" content="(.*)">/)?.[1] ?? '',
+    }
+  }
 }
 
 export const serviceMaoyan = new ServiceMaoyan()
@@ -64,34 +78,19 @@ interface MovieItem {
   releaseTime: string
 }
 
-/**
- * 格式化金额展示
- * @param boxOffice 金额数值
- * @param decimals 保留小数位数，默认为 2
- * @returns 格式化后的金额字符串
- */
 function formatBoxOffice(boxOffice: number | string, decimals: number = 2): string {
-  // 参数验证
   if (typeof decimals !== 'number' || decimals < 0) {
     throw new Error('decimals must be a non-negative number')
   }
 
-  // 转换输入为数字
   const amount = Number(boxOffice)
+  if (Number.isNaN(amount)) throw new Error('Invalid input: boxOffice must be a valid number')
 
-  if (isNaN(amount)) {
-    throw new Error('Invalid input: boxOffice must be a valid number')
-  }
-
-  // 定义单位转换阈值
   const UNIT_WAN = 10 ** 4
   const UNIT_YI = 10 ** 8
   const UNIT_WAN_YI = 10 ** 12
 
-  // 格式化函数
-  const formatNumber = (num: number): string => {
-    return num.toFixed(decimals).replace(/\.?0+$/, '')
-  }
+  const formatNumber = (num: number): string => num.toFixed(decimals).replace(/\.?0+$/, '')
 
   if (amount < UNIT_WAN) {
     return `${formatNumber(amount)}元`
