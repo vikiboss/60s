@@ -1,6 +1,7 @@
+import pkg from '../package.json' with { type: 'json' }
 import crypto from 'node:crypto'
 import { Buffer } from 'node:buffer'
-import { COMMON_MSG } from './config.ts'
+import { COMMON_MSG, config } from './config.ts'
 
 import type { BinaryToTextEncoding } from 'node:crypto'
 import type { Request, RouterContext } from '@oak/oak'
@@ -18,6 +19,7 @@ export class Common {
       code,
       message,
       data,
+      debug: Common.getApiInfo(),
     }
   }
 
@@ -141,5 +143,18 @@ export class Common {
     }
 
     return new URLSearchParams(entries).toString()
+  }
+
+  static getApiInfo() {
+    return {
+      api_name: '60s-api',
+      api_version: pkg.version,
+      api_docs: 'https://docs.60s-api.viki.moe',
+      author: config.author,
+      user_group: config.group,
+      github_repo: config.github,
+      updated: pkg.updateTime,
+      updated_at: new Date(pkg.updateTime).getTime(),
+    }
   }
 }
