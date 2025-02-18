@@ -11,16 +11,7 @@ const headers = {
 class ServiceMaoyan {
   handle(): RouterMiddleware<'/chemical'> {
     return async (ctx) => {
-      const { csrfToken, deviceId } = await this.fetchVerification()
-
-      console.log('deviceId:', deviceId)
-      console.log('csrfToken:', csrfToken)
-
-      const res = await fetch(`https://piaofang.maoyan.com/i/api/rank/globalBox/historyRankList?WuKongReady=h5`, {
-        headers: { ...headers, uid: csrfToken, uuid: deviceId },
-      })
-
-      const data = await res.json()
+      const { list, tips } = await this.fetchHTMLData()
 
       let currentHourDate = new Date()
       currentHourDate.setMinutes(0)
@@ -28,7 +19,7 @@ class ServiceMaoyan {
       currentHourDate.setMilliseconds(0)
 
       const ret = {
-        list: ((data?.data?.list || []) as MovieItem[])
+        list: list
           .sort((a, b) => b.rawValue - a.rawValue)
           .map((e, idx) => ({
             rank: idx + 1,
@@ -38,7 +29,7 @@ class ServiceMaoyan {
             box_office: e.rawValue,
             box_office_desc: formatBoxOffice(e.rawValue),
           })),
-        tip: data?.data?.tips,
+        tip: tips,
         update_time: Common.localeTime(currentHourDate),
         update_time_at: currentHourDate.getTime(),
       }
@@ -46,7 +37,6 @@ class ServiceMaoyan {
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = `${ret.list.map((e) => `${e.rank}. ${e.movie_name} (${e.release_year}) - ${e.box_office_desc}`).join('\n')}\n\n${ret.tip}`
-
           break
 
         case 'json':
@@ -57,12 +47,16 @@ class ServiceMaoyan {
     }
   }
 
-  async fetchVerification() {
+  async fetchHTMLData() {
     const html = await (await fetch('https://piaofang.maoyan.com/i/globalBox/historyRank', { headers })).text()
+    const json = /var props = (\{.*?\});/.exec(html)?.[1] || '{}'
+    const data = JSON.parse(json)?.data || {}
 
     return {
-      csrfToken: html.match(/<meta name="csrf" content="(.*)">/)?.[1] ?? '',
-      deviceId: html.match(/<meta name="deviceId" content="(.*)">/)?.[1] ?? '',
+      uid: /name="csrf"\s+content="([^"]+)"/.exec(html)?.[1] ?? '',
+      uuid: /name="deviceId"\s+content="([^"]+)"/.exec(html)?.[1] ?? '',
+      list: (data?.detail?.list || []) as MovieItem[],
+      tips: (data?.detail?.tips || '') as string,
     }
   }
 }
