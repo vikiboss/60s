@@ -23,7 +23,7 @@ class ServiceMaoyan {
           .sort((a, b) => b.rawValue - a.rawValue)
           .map((e, idx) => ({
             rank: idx + 1,
-            move_maoyan_id: e.movieId,
+            maoyan_id: e.movieId,
             movie_name: e.movieName,
             release_year: e.releaseTime,
             box_office: e.rawValue,
