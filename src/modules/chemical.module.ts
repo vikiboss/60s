@@ -14,14 +14,14 @@ class ServiceChemical {
       const html = await res.text()
       const data = JSON.parse(html.split('id="__NUXT_DATA__" data-ssr="true">')[1]?.split('</script>')[0] || '[]')
 
-      ctx.response.body = {
+      ctx.response.body = Common.buildJson({
         id: +id,
         name: data[7] || '',
         mass: data[14] ? toFixedNumber(data[14], 3) : '',
         formula: data[11] || '',
         image: `https://legacy.chemspider.com/ImagesHandler.ashx?id=${id}`,
         monoisotopicMass: data[15] ? toFixedNumber(data[15], 3) : '',
-      }
+      })
     }
   }
 }
