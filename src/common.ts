@@ -19,7 +19,7 @@ export class Common {
       code,
       message,
       data,
-      debug: Common.getApiInfo(),
+      __debug__: Common.getApiInfo(),
     }
   }
 

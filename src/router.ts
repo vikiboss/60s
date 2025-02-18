@@ -20,6 +20,7 @@ import { serviceHash } from './modules/hash.module.ts'
 import { serviceHitokoto } from './modules/hitokoto/hitokoto.module.ts'
 import { serviceIP } from './modules/ip.module.ts'
 import { serviceLuck } from './modules/luck/luck.module.ts'
+import { serviceMaoyan } from './modules/maoyan.module.ts'
 import { serviceOG } from './modules/og.module.ts'
 import { serviceTodayInHistory } from './modules/today-in-history.module.ts'
 import { serviceToutiao } from './modules/toutiao.module.ts'
@@ -56,24 +57,25 @@ export const appRouter = new Router({
 })
 
 appRouter.get('/60s', service60s.handle())
+appRouter.get('/answer', serviceAnswer.handle())
 appRouter.get('/baike', serviceBaike.handle())
 appRouter.get('/bili', serviceBili.handle())
 appRouter.get('/bing', serviceBing.handle())
-appRouter.get('/douyin', serviceDouyin.handle())
+appRouter.get('/changya', serviceChangYa.handle())
 appRouter.get('/chemical', serviceChemical.handle())
+appRouter.get('/douyin', serviceDouyin.handle())
+appRouter.get('/duanzi', serviceDuanzi.handle())
 appRouter.get('/epic', serviceEpic.handle())
 appRouter.get('/exchange_rate', serviceExRate.handle())
+appRouter.get('/fabing', serviceFabing.handle())
+appRouter.get('/hitokoto', serviceHitokoto.handle())
+appRouter.get('/ip', serviceIP.handle())
+appRouter.get('/luck', serviceLuck.handle())
+appRouter.get('/maoyan', serviceMaoyan.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
 appRouter.get('/toutiao', serviceToutiao.handle())
 appRouter.get('/weibo', serviceWeibo.handle())
 appRouter.get('/zhihu', serviceZhihu.handle())
-appRouter.get('/changya', serviceChangYa.handle())
-appRouter.get('/ip', serviceIP.handle())
-appRouter.get('/hitokoto', serviceHitokoto.handle())
-appRouter.get('/fabing', serviceFabing.handle())
-appRouter.get('/duanzi', serviceDuanzi.handle())
-appRouter.get('/answer', serviceAnswer.handle())
-appRouter.get('/luck', serviceLuck.handle())
 
 appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
