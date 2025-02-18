@@ -9,10 +9,10 @@ class ServiceZhihuHot {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = data
+          ctx.response.body = `知乎实时热搜\n\n${data
             .slice(0, 20)
             .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value_desc})`)
-            .join('\n')
+            .join('\n')}`
           break
 
         case 'json':

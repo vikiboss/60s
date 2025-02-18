@@ -18,7 +18,7 @@ class ServiceBaike {
 
         switch (ctx.state.encoding) {
           case 'text':
-            ctx.response.body = `${data.title}: ${data.abstract} ( 详情: ${data.link})`
+            ctx.response.body = `${data.title}: ${data.abstract} (详情: ${data.link})`
             break
 
           case 'json':

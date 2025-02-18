@@ -53,9 +53,9 @@ class ServiceHash {
           break
 
         case 'text':
-          ctx.response.body = Object.entries(data)
+          ctx.response.body = `Hash 等编码转换结果\n\n${Object.entries(data)
             .map((e) => `${e[0]} => ${e[1]}`)
-            .join('\n')
+            .join('\n')}`
           break
       }
     }

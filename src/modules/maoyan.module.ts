@@ -36,7 +36,7 @@ class ServiceMaoyan {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = `${ret.list.map((e) => `${e.rank}. ${e.movie_name} (${e.release_year}) - ${e.box_office_desc}`).join('\n')}\n\n${ret.tip}`
+          ctx.response.body = `全球电影票房总榜（猫眼）\n\n${ret.list.map((e) => `${e.rank}. ${e.movie_name} (${e.release_year}) - ${e.box_office_desc}`).join('\n')}\n\n${ret.tip}`
           break
 
         case 'json':

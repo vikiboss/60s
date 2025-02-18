@@ -13,10 +13,10 @@ class ServiceExRate {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = Object.entries(data.rates)
+          ctx.response.body = `${Common.localeDate()} 的 ${currency} 汇率\n\n${Object.entries(data.rates)
             .slice(0, 20)
             .map((e) => `${e[0]} => ${e[1]}`)
-            .join('\n')
+            .join('\n')}`
           break
 
         case 'json':

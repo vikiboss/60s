@@ -9,10 +9,10 @@ class ServiceTodayInHistory {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = data.items
+          ctx.response.body = `历史上的今天 (${data.date})\n\n${data.items
             .slice(0, 20)
             .map((e, idx) => `${idx + 1}. ${e.title} (${e.year} 年)`)
-            .join('\n')
+            .join('\n')}`
           break
 
         case 'json':

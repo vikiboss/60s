@@ -9,7 +9,7 @@ class ServiceEpic {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = data
+          ctx.response.body = `Epic Games 免费游戏\n\n${data
             .slice(0, 20)
             .map((e, idx) => {
               const date = Common.localeTime(new Date(e.free_start_at), { seconds: false })
@@ -18,7 +18,7 @@ class ServiceEpic {
                 e.is_free_now ? `现在免费，截至到 ${endDate}` : `于 ${date} 至 ${endDate} 免费`
               }\n\n${e.description}`
             })
-            .join('\n\n')
+            .join('\n\n')}`
           break
 
         case 'json':
