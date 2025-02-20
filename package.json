@@ -11,13 +11,12 @@
     "@types/bun": "^1.2.2",
     "@types/node": "^22.13.4",
     "bumpp": "^10.0.3",
-    "prettier": "^3.5.1",
     "typescript": "^5.7.3",
     "wrangler": "0.0.0-b35265a79"
   },
   "scripts": {
     "dev": "DEV=1 PORT=4398 node --no-warnings --experimental-transform-types --watch --env-file=.env node.ts",
-    "start": "PORT=4398 node --no-warnings --experimental-transform-types --watch --env-file=.env node.ts",
+    "start": "PORT=4398 node --no-warnings --experimental-transform-types --env-file=.env node.ts",
     "prerelease": "node --no-warnings --experimental-transform-types ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
     "release": "bumpp",
     "docker:build": "docker build -t vikiboss/60s .",
