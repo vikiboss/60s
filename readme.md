@@ -1,11 +1,13 @@
 # ⏰ 60s API v2
 
+![Update Status](https://github.com/vikiboss/60s-static-host/workflows/schedule/badge.svg) ![Docker](https://img.shields.io/badge/Docker-%230db7ed.svg?logo=docker&logoColor=white) ![NodeJS](https://img.shields.io/badge/node.js-6DA55F?logo=node.js&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?logo=bun&logoColor=white) ![Deno JS](https://img.shields.io/badge/Deno-000000?logo=deno&logoColor=white) [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)
+
 一系列 **高质量、开源、可靠、全球 CDN 加速的** 开放 API 集合，使用 [Deno](https://deno.com/) 构建，托管在 [Deno Deploy](https://deno.com/deploy) 上，也支持 [Docker](https://docker.com)、[Cloudflare Workers](https://www.cloudflare.com/zh-cn/developer-platform/products/workers/)、[Bun](https://bun.sh/) 和 [Node.js](https://nodejs.org/) 部署。
 
 > [!WARNING]
 > v1 版本已于 2025/1/15 停止更新，在 [v1-legacy](https://github.com/vikiboss/60s/tree/v1-legacy) 分支上，请尽快迁移至 v2 版本，v1 版本将于 2025/6/31 完全停止服务，届时域名会切换到 v2 版本。
 
-## 🤔️ 起因
+## 🤔️ 缘起
 
 参考 [这篇文章](https://xlog.viki.moe/60s) 了解更多。
 
@@ -28,7 +30,6 @@
 > - 备用域名 3: https://60s-api.114128.xyz (Deno Deploy)
 > - 备用域名 4: https://60s-api-cf.114128.xyz  (CF Workers)
 
-
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界 (数据源来自微信公众号，凌晨更新)
   - 🏞️ 必应每日壁纸（Bing）
@@ -36,7 +37,7 @@
   - 📅 历史上的今天
 - 🎉 热门榜单
   - 📺 哔哩哔哩热搜榜
-  - 👀 猫眼票房排行榜
+  - 👀 猫眼票房排行榜（**哪吒 2 最新实时票房**）
   - 🦊 微博热搜榜
   - ❓ 知乎热门话题
   - 🎵 抖音热搜榜
@@ -63,7 +64,11 @@
 ### Docker
 
 ```bash
-docker run --name 60s -p 4399:4399 -d vikiboss/60s:latest
+docker run -d \
+  --restart always \
+  --name 60s \
+  -p 4399:4399 \
+  vikiboss/60s:latest
 ```
 
 ### Deno

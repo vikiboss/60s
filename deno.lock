@@ -5,7 +5,6 @@
     "npm:@types/bun@^1.2.2": "1.2.2",
     "npm:@types/node@^22.13.4": "22.13.4",
     "npm:bumpp@^10.0.3": "10.0.3",
-    "npm:prettier@^3.5.1": "3.5.1",
     "npm:typescript@^5.7.3": "5.7.3",
     "npm:wrangler@0.0.0-b35265a79": "0.0.0-b35265a79"
   },
@@ -571,9 +570,6 @@
         "pathe@2.0.3"
       ]
     },
-    "prettier@3.5.1": {
-      "integrity": "sha512-hPpFQvHwL3Qv5AdRvBFMhnKo4tYxp0ReXiPn2bxkiohEX6mBeBwEpBSQTkD458RaaDKQMYSp4hX4UtfUTA5wDw=="
-    },
     "printable-characters@1.0.42": {
       "integrity": "sha512-dKp+C4iXWK4vVYZmYSd0KBH5F/h1HoZRsbJ82AVKRO3PEo8L4lBS/vLwhVtpwwuYcoIsVY+1JYKR268yn480uQ=="
     },
@@ -746,7 +742,6 @@
         "npm:@types/bun@^1.2.2",
         "npm:@types/node@^22.13.4",
         "npm:bumpp@^10.0.3",
-        "npm:prettier@^3.5.1",
         "npm:typescript@^5.7.3",
         "npm:wrangler@0.0.0-b35265a79"
       ]

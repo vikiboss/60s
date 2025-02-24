@@ -19,6 +19,7 @@
     "start": "PORT=4398 node --no-warnings --experimental-transform-types --env-file=.env node.ts",
     "prerelease": "node --no-warnings --experimental-transform-types ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
     "release": "bumpp",
+    "update-lockfile": "bun install && deno install --allow-scripts && pnpm install",
     "docker:build": "docker build -t vikiboss/60s .",
     "docker:run": "docker run --name 60s -p 4399:4399 -d vikiboss/60s",
     "docker:re-run": "docker stop 60s && docker rm 60s && pnpm run docker:run"
