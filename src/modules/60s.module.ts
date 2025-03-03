@@ -6,7 +6,7 @@ class Service60s {
   #cache = new Map<string, DailyNewsItem>()
 
   handle(): RouterMiddleware<'/60s'> {
-    return async (ctx) => {
+    return async ctx => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -37,9 +37,7 @@ class Service60s {
       const now = Date.now()
       const data = await response.json()
 
-      if (!data?.news?.length || !data?.tip || !data?.audio?.news) {
-        return null
-      }
+      if (!data?.news?.length) return null
 
       return {
         ...data,
