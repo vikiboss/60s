@@ -9,7 +9,7 @@ const headers = {
 }
 
 class ServiceMaoyan {
-  handle(): RouterMiddleware<'/chemical'> {
+  handle(): RouterMiddleware<'/maoyan'> {
     return async (ctx) => {
       const { list, tips } = await this.fetchHTMLData()
 
