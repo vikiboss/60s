@@ -10,13 +10,8 @@ const headers = {
 
 class ServiceMaoyan {
   handle(): RouterMiddleware<'/maoyan'> {
-    return async (ctx) => {
+    return async ctx => {
       const { list, tips } = await this.fetchHTMLData()
-
-      let currentHourDate = new Date()
-      currentHourDate.setMinutes(0)
-      currentHourDate.setSeconds(0)
-      currentHourDate.setMilliseconds(0)
 
       const ret = {
         list: list
@@ -30,13 +25,15 @@ class ServiceMaoyan {
             box_office_desc: formatBoxOffice(e.rawValue),
           })),
         tip: tips,
-        update_time: Common.localeTime(currentHourDate),
-        update_time_at: currentHourDate.getTime(),
+        update_time: Common.localeTime(),
+        update_time_at: new Date().getTime(),
       }
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = `全球电影票房总榜（猫眼）\n\n${ret.list.map((e) => `${e.rank}. ${e.movie_name} (${e.release_year}) - ${e.box_office_desc}`).join('\n')}\n\n${ret.tip}`
+          ctx.response.body = `全球电影票房总榜（猫眼）\n\n${ret.list
+            .map(e => `${e.rank}. ${e.movie_name} (${e.release_year}) - ${e.box_office_desc}`)
+            .join('\n')}\n\n${ret.tip}`
           break
 
         case 'json':
@@ -48,7 +45,9 @@ class ServiceMaoyan {
   }
 
   async fetchHTMLData() {
-    const html = await (await fetch('https://piaofang.maoyan.com/i/globalBox/historyRank', { headers })).text()
+    const html = await (
+      await fetch('https://piaofang.maoyan.com/i/globalBox/historyRank', { headers })
+    ).text()
     const json = /var props = (\{.*?\});/.exec(html)?.[1] || '{}'
     const data = JSON.parse(json)?.data || {}
 
