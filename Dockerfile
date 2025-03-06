@@ -1,5 +1,5 @@
 # 使用更小的基础镜像和多阶段构建来减少最终镜像的大小
-FROM node:22-alpine AS builder
+FROM node:current-alpine AS builder
 
 # 设置工作目录，避免之后的 RUN 命令中需要不断地 mkdir 和 cd
 WORKDIR /app
@@ -18,7 +18,7 @@ RUN corepack enable && corepack prepare --activate && pnpm install --prod --froz
 COPY . .
 
 # 运行阶段
-FROM node:22-alpine AS runner
+FROM node:current-alpine AS runner
 
 # 维护信息
 LABEL maintainer="Viki <hi@viki.moe> (https://github.com/vikiboss)"
@@ -51,4 +51,4 @@ EXPOSE 4399
 #   CMD curl --silent --fail http://127.0.0.1:4399/health -H 'User-Agent: Docker Health Check' || exit 1
 
 # 运行应用
-CMD ["node", "--no-warnings", "--experimental-transform-types", "node.ts"]
+CMD ["node", "--disable-warning=ExperimentalWarning", "--experimental-transform-types", "node.ts"]
