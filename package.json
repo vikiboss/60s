@@ -3,16 +3,16 @@
   "type": "module",
   "version": "2.10.0",
   "updateTime": "2025/03/06 21:33:10",
-  "packageManager": "pnpm@10.4.1",
+  "packageManager": "pnpm@10.5.2",
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
   },
   "devDependencies": {
-    "@types/bun": "^1.2.2",
-    "@types/node": "^22.13.4",
+    "@types/bun": "^1.2.4",
+    "@types/node": "^22.13.9",
     "bumpp": "^10.0.3",
-    "typescript": "^5.7.3",
-    "wrangler": "0.0.0-b35265a79"
+    "typescript": "^5.8.2",
+    "wrangler": "0.0.0-f276a9cbe"
   },
   "scripts": {
     "dev": "DEV=1 PORT=4398 node --no-warnings --experimental-transform-types --watch --env-file=.env node.ts",
@@ -23,5 +23,12 @@
     "docker:build": "docker build -t vikiboss/60s .",
     "docker:run": "docker run --name 60s -p 4399:4399 -d vikiboss/60s",
     "docker:re-run": "docker stop 60s && docker rm 60s && pnpm run docker:run"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
   }
 }
