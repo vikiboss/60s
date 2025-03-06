@@ -1,7 +1,7 @@
 {
   "name": "60s-api",
   "type": "module",
-  "version": "2.9.4",
+  "version": "2.10.0",
   "updateTime": "2025/03/06 21:33:10",
   "packageManager": "pnpm@10.4.1",
   "dependencies": {
