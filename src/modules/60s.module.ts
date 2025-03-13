@@ -19,10 +19,7 @@ class Service60s {
 
         case 'json':
         default: {
-          ctx.response.body = Common.buildJson({
-            ...data,
-            image: `https://60s-static.viki.moe/images/${data.date}.png`,
-          })
+          ctx.response.body = Common.buildJson(data)
           break
         }
       }
@@ -54,6 +51,12 @@ class Service60s {
 
       return {
         ...data,
+        image: `https://60s-static.viki.moe/images/${data.date}.png`,
+        link: data.link,
+        created: data.created,
+        created_at: data.created_at,
+        updated: data.updated,
+        updated_at: data.updated_at,
         api_updated: Common.localeTime(now),
         api_updated_at: now,
       } as DailyNewsItem
