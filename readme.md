@@ -50,6 +50,7 @@
   - 🐦 链接 [OG](https://ogp.me/) 信息
   - 🌈 哈希/解压/压缩（包含 `md5`、`base64`、`URL`、`GZIP` 等）
 - 😄 消遣娱乐
+  - 💬 随机 KFC 段子（数据来源 [vikiboss/v50](https://github.com/vikiboss/v50)）
   - 💬 随机一言
   - ✨ 随机运势
   - ⚛️ 随机化合物

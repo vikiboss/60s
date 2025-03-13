@@ -19,6 +19,7 @@ import { serviceFanyi } from './modules/fanyi/fanyi.module.ts'
 import { serviceHash } from './modules/hash.module.ts'
 import { serviceHitokoto } from './modules/hitokoto/hitokoto.module.ts'
 import { serviceIP } from './modules/ip.module.ts'
+import { serviceKfc } from './modules/kfc.module.ts'
 import { serviceLuck } from './modules/luck/luck.module.ts'
 import { serviceMaoyan } from './modules/maoyan.module.ts'
 import { serviceOG } from './modules/og.module.ts'
@@ -70,6 +71,7 @@ appRouter.get('/exchange_rate', serviceExRate.handle())
 appRouter.get('/fabing', serviceFabing.handle())
 appRouter.get('/hitokoto', serviceHitokoto.handle())
 appRouter.get('/ip', serviceIP.handle())
+appRouter.get('/kfc', serviceKfc.handle())
 appRouter.get('/luck', serviceLuck.handle())
 appRouter.get('/maoyan', serviceMaoyan.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
