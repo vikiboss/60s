@@ -6,16 +6,16 @@ class ServiceExRate {
   #cache = new Map<string, RateItem>()
 
   handle(): RouterMiddleware<'/exchange_rate'> {
-    return async (ctx) => {
+    return async ctx => {
       const currency = ctx.request.url.searchParams.get('currency') || 'CNY'
 
       const data = await this.#fetch(currency)
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = `${Common.localeDate()} 的 ${currency} 汇率\n\n${Object.entries(data.rates)
+          ctx.response.body = `${Common.localeDate()} 的 ${currency} 汇率\n\n${data.rates
             .slice(0, 20)
-            .map((e) => `${e[0]} => ${e[1]}`)
+            .map(e => `${e.currency} => ${e.rate}`)
             .join('\n')}`
           break
 
