@@ -7,7 +7,7 @@ class Service60s {
 
   handle(): RouterMiddleware<'/60s'> {
     return async ctx => {
-      const data = await this.#fetch()
+      const data = await this.#fetch(ctx.request.url.searchParams.get('date'))
 
       switch (ctx.state.encoding) {
         case 'text': {
@@ -59,8 +59,8 @@ class Service60s {
     }
   }
 
-  async #fetch() {
-    const today = Common.localeDate(Date.now()).replace(/\//g, '-')
+  async #fetch(date?: string | null): Promise<DailyNewsItem> {
+    const today = date || Common.localeDate(Date.now()).replace(/\//g, '-')
     const yesterday = Common.localeDate(Date.now() - 24 * 60 * 60 * 1000).replace(/\//g, '-')
     const cachedItem = this.#cache.get(today)
 
