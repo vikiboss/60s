@@ -19,7 +19,10 @@ class Service60s {
 
         case 'json':
         default: {
-          ctx.response.body = Common.buildJson(data)
+          ctx.response.body = Common.buildJson({
+            ...data,
+            image: `https://60s-static.viki.moe/images/${data.date}.png`,
+          })
           break
         }
       }
