@@ -17,6 +17,10 @@ class Service60s {
           break
         }
 
+        case 'image':
+          ctx.response.redirect(data.image)
+          break
+
         case 'json':
         default: {
           ctx.response.body = Common.buildJson(data)
@@ -103,6 +107,7 @@ interface DailyNewsItem {
   }
   cover: string
   tip: string
+  image: string
   link: string
   updated: string
   updated_at: number
