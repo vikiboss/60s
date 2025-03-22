@@ -14,9 +14,14 @@ class ServiceEpic {
             .map((e, idx) => {
               const date = Common.localeTime(new Date(e.free_start_at), { seconds: false })
               const endDate = Common.localeTime(new Date(e.free_end_at), { seconds: false })
-              return `${idx + 1}. 《${e.title}》，${
-                e.is_free_now ? `现在免费，截至到 ${endDate}` : `于 ${date} 至 ${endDate} 免费`
-              }\n\n${e.description}`
+              const hasBookTitle = e.title.includes('《')
+              const title = hasBookTitle ? e.title : `《${e.title}》`
+
+              const freeDesc = e.is_free_now
+                ? `现在免费，截至到 ${endDate}`
+                : `于 ${date} 至 ${endDate} 免费`
+
+              return `${idx + 1}. ${title}，${freeDesc}\n\n${e.description}`
             })
             .join('\n\n')}`
           break
@@ -67,6 +72,10 @@ class ServiceEpic {
         ? decodeURIComponent(originalCover.split('?cover=')[1] || '')
         : originalCover
 
+      const isFreePrice = e.price.totalPrice.discountPrice === 0
+      const isMatchStart = new Date(e.effectiveDate).getTime() < Date.now()
+      const isMatchEnd = !e.expiryDate || new Date(e.expiryDate).getTime() >= Date.now()
+
       return {
         id: e.id || '',
         title: (e.title || '-').replace('Mystery Game', '神秘游戏'),
@@ -75,7 +84,7 @@ class ServiceEpic {
         original_price_desc: e.price.totalPrice.fmtPrice.originalPrice || '暂无价格',
         description: (e.description || '暂无描述').replace('Mystery Game', '神秘游戏'),
         seller: e?.seller?.name || '未知发行商',
-        is_free_now: !e.price.totalPrice.discountPrice,
+        is_free_now: isFreePrice && isMatchStart && isMatchEnd,
         free_start: Common.localeTime(promotionStartAt),
         free_start_at: promotionStartAt,
         free_end: Common.localeTime(promotionEndAt),
