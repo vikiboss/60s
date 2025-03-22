@@ -38,8 +38,10 @@ class ServiceEpic {
 
     const activeGames = allGames
       .filter(e => ['OTHERS', 'BASE_GAME'].some(type => type === e.offerType) && !!getFreeOffer(e))
-      .toSorted((a, b) =>
-        compareDate(getFreeOffer(a)?.startDate || '', getFreeOffer(b)?.startDate || '')
+      .toSorted(
+        (a, b) =>
+          compareDate(getFreeOffer(a)?.startDate || '', getFreeOffer(b)?.startDate || '') ||
+          a.title.localeCompare(b.title)
       )
 
     return activeGames.map(e => {
