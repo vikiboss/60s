@@ -98,6 +98,10 @@ npm install && node --experimental-strip-types node.ts
 npm install && npx wrangler publish
 ```
 
+## 60s 的数据更新策略
+
+![arch](./images/arch.png)
+
 ## 🧑‍🤝‍🧑 用户群
 
 使用过程中有任何问题或建议，欢迎加入企鹅群反馈: [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)。
