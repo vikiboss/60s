@@ -25,12 +25,14 @@
 
 主域名: https://60s-api.viki.moe （Deno Deploy，部分地区可能被墙）
 
-> [!INFO]
+> [!TIP]
 > 
 > 如果你只关注 60s，API 格式如下：
 >
 > 默认 JSON 格式：https://60s-api.viki.moe/v2/60s
+> 
 > 文字版本：https://60s-api.viki.moe/v2/60s?encoding=text
+> 
 > 图片版本：https://60s-api.viki.moe/v2/60s?encoding=image
 > 
 > 更多详情请看文档: https://docs.60s-api.viki.moe, 如果对你有帮助，请不要吝啬你的 Star～
