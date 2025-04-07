@@ -25,10 +25,15 @@
 
 主域名: https://60s-api.viki.moe （Deno Deploy，部分地区可能被墙）
 
-> - 备用域名 1: https://60s.b23.run (Deno Deploy)
-> - 备用域名 2: https://60s-api-cf.viki.moe (CF Workers)
-> - 备用域名 3: https://60s-api.114128.xyz (Deno Deploy)
-> - 备用域名 4: https://60s-api-cf.114128.xyz  (CF Workers)
+> [!INFO]
+> 
+> 如果你只关注 60s，API 格式如下：
+>
+> 默认 JSON 格式：https://60s-api.viki.moe/v2/60s
+> 文字版本：https://60s-api.viki.moe/v2/60s?encoding=text
+> 图片版本：https://60s-api.viki.moe/v2/60s?encoding=image
+> 
+> 更多详情请看文档: https://docs.60s-api.viki.moe, 如果对你有帮助，请不要吝啬你的 Star～
 
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界 (数据源来自微信公众号，凌晨更新)
