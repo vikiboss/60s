@@ -38,7 +38,7 @@
 > 更多详情请看文档: https://docs.60s-api.viki.moe, 如果对你有帮助，请不要吝啬你的 Star～
 
 - ⏰ 日更资讯
-  - 🌍 每天 60 秒读懂世界 (数据源来自微信公众号，凌晨更新)
+  - 🌍 每天 60 秒读懂世界 (数据源来自 [60s-static-host](https://github.com/vikiboss/60s-static-host) 仓库，正常情况下，每天凌晨更新)
   - 🏞️ 必应每日壁纸（Bing）
   - 💰 当日货币汇率
   - 📅 历史上的今天
