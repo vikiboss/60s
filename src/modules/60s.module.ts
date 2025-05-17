@@ -2,6 +2,13 @@ import { Common } from '../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
+const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六']
+
+function getDayOfWeek(date?: string) {
+  const day = date ? new Date(date) : new Date()
+  return `星期${WEEK_DAYS[day.getDay()]}`
+}
+
 class Service60s {
   #cache = new Map<string, DailyNewsItem>()
 
@@ -55,6 +62,7 @@ class Service60s {
 
       return {
         ...data,
+        day_of_week: getDayOfWeek(data.date),
         api_updated: Common.localeTime(now),
         api_updated_at: now,
       } as DailyNewsItem
@@ -91,6 +99,7 @@ export const service60s = new Service60s()
 
 interface DailyNewsItem {
   date: string
+  week: string
   news: {
     title: string
     link: string
