@@ -144,7 +144,8 @@ npm install && npx wrangler publish
 |            *杰             | 20.00 | Alipay |         -          |
 |            **杰            | 9.90  | Alipay |         -          |
 |            ---             |  ---  |  ---   |        ---         |
-|            Ko.             | 11.66  |   QQ   |         -          |
+|            Ko.             | 11.66 |   QQ   |         -          |
+|          yijiong           | 15.00 |   QQ   |  a cup of coffee   |
 
 
 ## 🪪 License （开源协议）
