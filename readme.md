@@ -33,7 +33,9 @@
 > 
 > 文字版本：https://60s-api.viki.moe/v2/60s?encoding=text
 > 
-> 图片版本：https://60s-api.viki.moe/v2/60s?encoding=image
+> 图片版本：https://60s-api.viki.moe/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
+> 
+> 代理图片版本：https://60s-api.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
 > 
 > 更多详情请看文档: https://docs.60s-api.viki.moe, 如果对你有帮助，请不要吝啬你的 Star～
 
