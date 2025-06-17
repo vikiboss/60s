@@ -50,10 +50,10 @@ class ServiceBing {
       return cache
     }
 
-    const api = 'https://cn.bing.com'
+    const api = 'https://cn.bing.com/'
     // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10
 
-    const rawContent = await (await fetch(api)).text()
+    const rawContent = await (await fetch(api, { headers: { 'User-Agent': Common.chromeUA } })).text()
     const rawJson = /var\s*_model\s*=\s*([^;]+);/.exec(rawContent)?.[1] || '{}'
     const images = JSON.parse(rawJson)?.MediaContents ?? []
 

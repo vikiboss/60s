@@ -3,7 +3,7 @@
   "type": "module",
   "version": "2.15.0",
   "updateTime": "2025/05/30 16:35:29",
-  "packageManager": "pnpm@10.5.2",
+  "packageManager": "pnpm@10.12.1",
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4"
   },
@@ -12,6 +12,7 @@
     "@types/node": "^22.13.9",
     "bumpp": "^10.0.3",
     "typescript": "^5.8.2",
+    "prettier": "^3.5.3",
     "wrangler": "0.0.0-f276a9cbe"
   },
   "scripts": {
