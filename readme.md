@@ -25,18 +25,13 @@
 
 主域名: https://60s-api.viki.moe （Deno Deploy，部分地区可能被墙）
 
-> [!TIP]
-> 
-> 如果你只关注 60s 新闻，其 API 格式如下：
->
-> 默认 JSON 格式：https://60s-api.viki.moe/v2/60s
-> 
-> 文字版本：https://60s-api.viki.moe/v2/60s?encoding=text
-> 
-> 图片版本：https://60s-api.viki.moe/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
-> 
-> 代理图片版本：https://60s-api.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
-> 
+如果你只关注 60s 新闻，其 API 格式如下：
+
+- 默认 JSON 格式：https://60s-api.viki.moe/v2/60s
+- 文字版本：https://60s-api.viki.moe/v2/60s?encoding=text
+- 图片版本：https://60s-api.viki.moe/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
+- 代理图片版本：https://60s-api.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
+
 > 更多详情请看文档: https://docs.60s-api.viki.moe, 如果对你有帮助，请不要吝啬你的 Star～
 
 - ⏰ 日更资讯
@@ -109,7 +104,14 @@ npm install && node --experimental-strip-types node.ts
 npm install && npx wrangler publish
 ```
 
-或者直接打开 [workers.cloudflare.com](https://workers.cloudflare.com/)，登录后按提示从本仓库的公开地址创建 Workers 项目，使用默认配置部署即可。（本仓库内已经放置了预先配好的 Workers 配置）
+如果你习惯可视化操作，也可以按照下方步骤操作：
+
+1. [fork](https://github.com/vikiboss/60s/fork) 本仓库
+2. 打开 [workers.cloudflare.com](https://workers.cloudflare.com/)
+3. 按照引导，通过 fork 的仓库创建 Workers 项目，使用默认配置直接部署即可
+4. （可选）绑定自己的域名，或者使用 Cloudflare 提供的免费域名
+  
+> 本仓库内已经放置了预先配好的 Workers 配置，你无需关心配置细节，后续如需更新，只需要同步主仓库的代码即可。
 
 ## 60s 的数据更新策略
 
