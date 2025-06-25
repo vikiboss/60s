@@ -141,6 +141,7 @@ npm install && npx wrangler publish
 |          Sundrops          | 1.66  | WeChat |   感谢友友的接口   |
 |        春风伴我余生        | 10.00 | WeChat |         -          |
 |             杰             | 1.00  | WeChat |         -          |
+|            Blue            | 6.66  | WeChat | Blue 祝开发者 6666 |
 |            ---             |  ---  |  ---   |        ---         |
 |            *斌             | 12.90 | Alipay |         -          |
 |            *杰             | 20.00 | Alipay |         -          |
