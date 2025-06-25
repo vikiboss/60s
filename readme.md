@@ -103,9 +103,13 @@ npm install && node --experimental-strip-types node.ts
 
 ### Cloudflare Workers
 
+> 要求本地 Node.js 环境
+
 ```bash
 npm install && npx wrangler publish
 ```
+
+或者直接打开 [workers.cloudflare.com](https://workers.cloudflare.com/)，登录后按提示从本仓库的公开地址创建 Workers 项目，使用默认配置部署即可。（本仓库内已经放置了预先配好的 Workers 配置）
 
 ## 60s 的数据更新策略
 
