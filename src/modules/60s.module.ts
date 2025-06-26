@@ -1,6 +1,7 @@
 import { Common } from '../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
+import { Lunar } from '../lunar.ts'
 
 const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六']
 
@@ -13,7 +14,7 @@ class Service60s {
   #cache = new Map<string, DailyNewsItem>()
 
   handle(): RouterMiddleware<'/60s'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch(ctx.request.url.searchParams.get('date'))
 
       switch (ctx.state.encoding) {
@@ -73,6 +74,7 @@ class Service60s {
       return {
         ...data,
         day_of_week: getDayOfWeek(data.date),
+        lunar_date: Lunar.toLunar(new Date(data.date)).formatted,
         api_updated: Common.localeTime(now),
         api_updated_at: now,
       } as DailyNewsItem
