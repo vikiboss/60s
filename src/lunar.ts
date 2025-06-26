@@ -315,7 +315,7 @@ export class Lunar {
     const lunarDate = `${lunarMonthStr}${lunarDayStr}`
     const solarDate = `${this.numberToChinese(date.getMonth() + 1, false)}月${this.numberToChinese(date.getDate(), false)}日`
     const weekDate = `星期${WEEKDAYS[date.getDay()]}`
-    const formatted = `农历${yearGanZhi}年${lunarDate}`
+    const formatted = `${yearGanZhi}年${lunarDate}`
 
     const result: LunarDateInfo = {
       solarYear: date.getFullYear(),
