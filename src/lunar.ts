@@ -28,6 +28,8 @@ export interface LunarDateInfo {
   zodiac: string
 
   // 格式化字符串
+  lunarMonthStr: string // 六月
+  lunarDayStr: string // 初二
   lunarDate: string // 六月初二
   solarDate: string // 六月二十六日
   weekDate: string // 星期四
@@ -308,8 +310,9 @@ export class Lunar {
     const zodiac = ZODIAC_ANIMALS[zodiacIndex < 0 ? zodiacIndex + 12 : zodiacIndex]
 
     // 格式化字符串
-    const monthName = this.getMonthName(lunarMonth, isLeapMonth)
-    const lunarDate = `${monthName}月${this.numberToChinese(lunarDay, true)}`
+    const lunarMonthStr = `${this.getMonthName(lunarMonth, isLeapMonth)}月`
+    const lunarDayStr = this.numberToChinese(lunarDay, true)
+    const lunarDate = `${lunarMonthStr}${lunarDayStr}`
     const solarDate = `${this.numberToChinese(date.getMonth() + 1, false)}月${this.numberToChinese(date.getDate(), false)}日`
     const weekDate = `星期${WEEKDAYS[date.getDay()]}`
     const formatted = `农历${yearGanZhi}年${lunarDate}`
@@ -332,6 +335,8 @@ export class Lunar {
 
       zodiac,
 
+      lunarMonthStr,
+      lunarDayStr,
       lunarDate,
       solarDate,
       weekDate,
