@@ -148,6 +148,7 @@ npm install && npx wrangler publish
 |        春风伴我余生        | 10.00 | WeChat |         -          |
 |             杰             | 1.00  | WeChat |         -          |
 |            Blue            | 6.66  | WeChat | Blue 祝开发者 6666 |
+|            聆听、           | 10.00  | WeChat | 喝杯咖啡，记得加冰 |
 |            ---             |  ---  |  ---   |        ---         |
 |            *斌             | 12.90 | Alipay |         -          |
 |            *杰             | 20.00 | Alipay |         -          |
