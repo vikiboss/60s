@@ -36,7 +36,7 @@ rootRouter.get('/', (ctx) => {
     {
       api_name: '60s-api',
       api_version: pkg.version,
-      api_docs: 'https://docs.60s-api.viki.moe',
+    //   api_docs: 'https://docs.60s-api.viki.moe',
       author: config.author,
       user_group: config.group,
       github_repo: config.github,
