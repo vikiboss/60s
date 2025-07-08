@@ -83,4 +83,4 @@ appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
 
 appRouter.all('/fanyi', serviceFanyi.handle())
-appRouter.all('/fanyi/langs', serviceFanyi.langs())
+//appRouter.all('/fanyi/langs', serviceFanyi.langs())
