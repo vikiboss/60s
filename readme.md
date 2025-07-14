@@ -26,7 +26,7 @@
 - 图片版本：https://60s.cccccc.plus/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
 - 代理图片版本：https://60s.cccccc.plus/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
 
-> 更多详情请看文档: https://docs.cccccc.plus, 如果对你有帮助，请不要吝啬你的 Star～
+> 更多详情请看文档: https://doc.cccccc.plus, 如果对你有帮助，请不要吝啬你的 Star～
 
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界 (数据源来自 [two2025/60s-static-host](https://github.com/two2025/60s-static-host) 仓库，源头是微信公众号，正常情况下每天凌晨更新)
