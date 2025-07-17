@@ -13,7 +13,7 @@
     "bumpp": "^10.0.3",
     "typescript": "^5.8.2",
     "prettier": "^3.5.3",
-    "wrangler": "0.0.0-f276a9cbe"
+    "wrangler": "3.19.0"
   },
   "scripts": {
     "dev": "DEV=1 PORT=4398 node --no-warnings --experimental-transform-types --watch --env-file=.env node.ts",

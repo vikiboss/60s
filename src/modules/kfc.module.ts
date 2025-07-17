@@ -27,7 +27,7 @@ class ServiceKfc {
 
   async fetchJson() {
     return await (
-      await fetch('https://cdn.jsdelivr.net/gh/vikiboss/v50@main/static/v50.json')
+      await fetch('https://cdn.jsdelivr.net/gh/two2025/v50@main/static/v50.json')
     ).json()
   }
 }

@@ -34,15 +34,16 @@ rootRouter.get('/', (ctx) => {
   ctx.response.headers.set('Content-Type', 'application/json; charset=utf-8')
   ctx.response.body = JSON.stringify(
     {
-      api_name: '60s-api',
-      api_version: pkg.version,
-      api_docs: 'https://docs.60s-api.viki.moe',
-      author: config.author,
-      user_group: config.group,
-      github_repo: config.github,
-      updated: pkg.updateTime,
-      updated_at: new Date(pkg.updateTime).getTime(),
-      endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
+        这是接口服务器: '啥也没有',
+    //   api_name: '60s-api',
+    //   api_version: pkg.version,
+       接口内容请查看: 'https://doc.cccccc.plus',
+    //   author: config.author,
+    //   user_group: config.group,
+    //   github_repo: config.github,
+    //   updated: pkg.updateTime,
+    //   updated_at: new Date(pkg.updateTime).getTime(),
+    //   endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
     },
     null,
     2,
@@ -83,4 +84,4 @@ appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
 
 appRouter.all('/fanyi', serviceFanyi.handle())
-appRouter.all('/fanyi/langs', serviceFanyi.langs())
+//appRouter.all('/fanyi/langs', serviceFanyi.langs())
