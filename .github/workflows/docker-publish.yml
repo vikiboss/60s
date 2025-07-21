@@ -1,25 +1,29 @@
 name: Docker Image CI/CD
 
 on:
-  workflow_dispatch: 
+  workflow_dispatch:
   push:
-    branches: [ "main", "master" ]  # 触发分支
-    tags: [ 'v*.*.*' ]              # 版本标签触发
-  pull_request:
-    branches: [ "main", "master" ]  # PR 触发
+    branches: [ "main", "master" ]
+    tags: [ 'v*.*.*' ]
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up QEMU (多架构支持)
+      # 确保描述文件存在
+      - name: Verify description file
+        run: |
+          if [ ! -f "./dockerhub-description.md" ]; then
+            echo "## Docker Image: ${{ github.repository }}" > ./dockerhub-description.md
+            echo "Automated build from GitHub Actions" >> ./dockerhub-description.md
+            echo "**Source**: [${{ github.repository }}](${{ github.server_url }}/${{ github.repository }})" >> ./dockerhub-description.md
+          fi
+          cat ./dockerhub-description.md
+
+      - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -31,32 +35,28 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels)
+      - name: Extract metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ${{ secrets.DOCKERHUB_USERNAME }}/${{ github.event.repository.name }}
           tags: |
             type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
             type=sha
 
-      - name: Build and push Docker image
+      - name: Build and push
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: ${{ github.event_name != 'pull_request' }}  # 仅在push时推送
+          push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          platforms: linux/amd64, linux/arm64  # 多架构支持
+          platforms: linux/amd64, linux/arm64
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
       - name: Update Docker Hub description
-        if: ${{ success() && github.event_name != 'pull_request' }}
         uses: peter-evans/dockerhub-description@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
