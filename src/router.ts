@@ -21,6 +21,7 @@ import { serviceHitokoto } from './modules/hitokoto/hitokoto.module.ts'
 import { serviceIP } from './modules/ip.module.ts'
 import { serviceKfc } from './modules/kfc.module.ts'
 import { serviceLuck } from './modules/luck/luck.module.ts'
+import { serviceLove } from './modules/love/love.module.ts'
 import { serviceMaoyan } from './modules/maoyan.module.ts'
 import { serviceOG } from './modules/og.module.ts'
 import { serviceTodayInHistory } from './modules/today-in-history.module.ts'
@@ -74,6 +75,7 @@ appRouter.get('/hitokoto', serviceHitokoto.handle())
 appRouter.get('/ip', serviceIP.handle())
 appRouter.get('/kfc', serviceKfc.handle())
 appRouter.get('/luck', serviceLuck.handle())
+appRouter.get('/love', serviceLove.handle())
 appRouter.get('/maoyan', serviceMaoyan.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
 appRouter.get('/toutiao', serviceToutiao.handle())
