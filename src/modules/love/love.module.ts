@@ -1,12 +1,12 @@
 import { Common } from '../../common.ts'
-import hitokotoData from './love.json' with { type: 'json' }
+import loveData from './love.json' with { type: 'json' }
 
 import type { RouterMiddleware } from '@oak/oak'
 
-class ServiceHitokoto {
+class ServiceLove {
   handle(): RouterMiddleware<'/love'> {
     return (ctx) => {
-      const love = Common.randomItem(hitokotoData)
+      const love = Common.randomItem(love)
       const index = hitokotoData.findIndex((item) => item === love)
 
       switch (ctx.state.encoding) {
@@ -26,4 +26,4 @@ class ServiceHitokoto {
   }
 }
 
-export const serviceHitokoto = new ServiceHitokoto()
+export const serviceLove = new ServiceLove()
