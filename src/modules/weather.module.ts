@@ -180,4 +180,4 @@ class ServiceWeather {
 
 export const serviceWeather = new ServiceWeather()
 
-await serviceWeather.fetchRealtime('雨花台').then(console.log)
+// await serviceWeather.fetchRealtime('雨花台').then(console.log)
