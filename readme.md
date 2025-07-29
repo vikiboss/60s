@@ -118,6 +118,8 @@ npm install && npx wrangler publish
 
 ![arch](./images/arch.png)
 
+- 可编辑版本请参考 [60s 更新策略 - Excalidraw](https://excalidraw.com/#json=VRffPBlMuFBkOlTbGe7IH,0C6yClfLME65ZhmQ30ywdg)
+
 ## 🧑‍🤝‍🧑 用户群
 
 使用过程中有任何问题或建议，欢迎加入企鹅群反馈: [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)。
