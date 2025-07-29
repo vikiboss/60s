@@ -25,16 +25,14 @@
 
 目前包含的接口如下，仍在持续增加中，全面的 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上。
 
-主域名: https://60s-api.viki.moe （Deno Deploy，部分地区可能被墙）
+主域名: https://60s.viki.moe （部分地区可能被墙），60s 新闻 API 格式如下：
 
-如果你只关注 60s 新闻，其 API 格式如下：
+- 默认 JSON 格式：https://60s.viki.moe/v2/60s
+- 文字版本：https://60s.viki.moe/v2/60s?encoding=text
+- 图片版本：https://60s.viki.moe/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
+- 代理图片版本：https://60s.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
 
-- 默认 JSON 格式：https://60s-api.viki.moe/v2/60s
-- 文字版本：https://60s-api.viki.moe/v2/60s?encoding=text
-- 图片版本：https://60s-api.viki.moe/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
-- 代理图片版本：https://60s-api.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
-
-> 更多详情请看文档: https://docs.60s-api.viki.moe, 如果对你有帮助，请不要吝啬你的 Star～
+更多 API 详情请看文档: https://docs.60s-api.viki.moe, 如果对你有帮助，请不要吝啬你的 Star～
 
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界 (数据源来自 [vikiboss/60s-static-host](https://github.com/vikiboss/60s-static-host) 仓库，源头是微信公众号，正常情况下每天凌晨更新)
@@ -100,7 +98,7 @@ npm install && node --experimental-strip-types node.ts
 
 ### Cloudflare Workers
 
-> 要求本地 Node.js 环境
+> 要求本地 Node.js 环境，受限于 Node.js 兼容性原因，不支持翻译接口
 
 ```bash
 npm install && npx wrangler publish
