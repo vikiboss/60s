@@ -1,4 +1,4 @@
-# ⏰ 60s API v2
+# ⏰ 60s API
 
 ![Update Status](https://github.com/vikiboss/60s-static-host/workflows/schedule/badge.svg) ![GitHub](https://img.shields.io/github/v/release/vikiboss/60s?label=GitHub) ![Docker](https://img.shields.io/docker/v/vikiboss/60s?style=flat&label=Docker) ![Node.js](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?logo=bun&logoColor=white) ![Deno](https://img.shields.io/badge/Deno-000000?logo=deno&logoColor=white) [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)
 
@@ -6,37 +6,38 @@
 
 一系列 **高质量、开源、可靠、全球 CDN 加速的** 开放 API 集合，使用 [Deno](https://deno.com/) 构建，托管在 [Deno Deploy](https://deno.com/deploy) 上，也支持 [Docker](https://docker.com)、[Cloudflare Workers](https://www.cloudflare.com/zh-cn/developer-platform/products/workers/)、[Bun](https://bun.sh/) 和 [Node.js](https://nodejs.org/) 部署。
 
-> [!WARNING]
-> v1 版本于 2025/1/15 停止更新并于 2025/7/2 切换到 60s-v1.viki.moe，v2 已切换到 60s.viki.moe。
-
 ## 🤔️ 缘起
 
 参考 [这篇文章](https://xlog.viki.moe/60s) 了解更多。
 
 ## ⚖️ API 实现原则和使用建议
 
-- 只采用官方、权威的数据源头，保证准确性和可用性
+- 尽可能采用官方、权威的数据源头，保证准确性和可用性
 - 对日更数据采取缓存加速策略，对用户无感、毫秒级响应
-- 为了追求更快的响应，可以查看源码，直接访问对应 API 的原 API 数据（但原始数据量大、字段繁多，不易处理）
+- 为了追求更快的响应，可查看源码直接使用对应 API 的原数据（但原始数据量大、字段繁多，不易处理）
 
 > 待续
 
-## 🍱 API 包含哪些？
+## 🌍 60s 看世界接口
 
-目前包含的接口如下，仍在持续增加中，全面的 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上。
+60s 新闻 API 格式和参数如下：
 
-主域名: https://60s.viki.moe （部分地区可能被墙），60s 新闻 API 格式如下：
+- JSON：https://60s.viki.moe/v2/60s
+- 文字：https://60s.viki.moe/v2/60s?encoding=text
+- 图片：https://60s.viki.moe/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
+- 代理图片：https://60s.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，作为备选）
 
-- 默认 JSON 格式：https://60s.viki.moe/v2/60s
-- 文字版本：https://60s.viki.moe/v2/60s?encoding=text
-- 图片版本：https://60s.viki.moe/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
-- 代理图片版本：https://60s.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
+更多详情请看文档: https://docs.60s-api.viki.moe
 
-更多 API 详情请看文档: https://docs.60s-api.viki.moe, 如果对你有帮助，请不要吝啬你的 Star～
+如果对你有帮助，请不要吝啬你的 Star～
+
+## 🍱 API 还包含哪些？
+
+完整 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，接口仍在持续增加中，欢迎贡献～
 
 - ⏰ 日更资讯
-  - 🌍 每天 60 秒读懂世界 (数据源来自 [vikiboss/60s-static-host](https://github.com/vikiboss/60s-static-host) 仓库，源头是微信公众号，正常情况下每天凌晨更新)
-  - 🏞️ 必应每日壁纸（Bing）
+  - 🌍 每天 60 秒读懂世界 (数据源自 [vikiboss/60s-static-host](https://github.com/vikiboss/60s-static-host) 仓库，源头是微信公众号，正常情况下每天 7、8 点更新)
+  - 🏞️ 必应每日壁纸
   - 💰 当日货币汇率
   - 📅 历史上的今天
 - 🎉 热门榜单
@@ -135,27 +136,29 @@ npm install && npx wrangler publish
 感谢以下小伙伴的赞赏（排名不分先后）：
 
 <!-- 表格 -->
-|           赞赏人           | 金额  |  途径  |        备注        |
-| :------------------------: | :---: | :----: | :----------------: |
-|           Update           | 6.66  | WeChat | 感谢大佬的开源分享 |
-|            匿名            | 0.01  | WeChat |         -          |
-|         月夜忆江南         | 5.00  | WeChat |         -          |
-|            匿名            | 1.66  | WeChat |         -          |
-|        GoooodJooB7         | 1.66  | WeChat |    谢谢大佬开源    |
-|            匿名            | 1.66  | WeChat |         -          |
-| 十七岁就学会吃饭的天才少年 | 5.00  | WeChat |         -          |
-|          Sundrops          | 1.66  | WeChat |   感谢友友的接口   |
-|        春风伴我余生        | 10.00 | WeChat |         -          |
-|             杰             | 1.00  | WeChat |         -          |
-|            Blue            | 6.66  | WeChat | Blue 祝开发者 6666 |
-|           聆听、           | 10.00 | WeChat | 喝杯咖啡，记得加冰 |
-|            ---             |  ---  |  ---   |        ---         |
-|            *斌             | 12.90 | Alipay |         -          |
-|            *杰             | 20.00 | Alipay |         -          |
-|            **杰            | 9.90  | Alipay |         -          |
-|            ---             |  ---  |  ---   |        ---         |
-|            Ko.             | 11.66 |   QQ   |         -          |
-|          yijiong           | 15.00 |   QQ   |  a cup of coffee   |
+|           赞赏人            |  金额  |  途径  |             备注             |
+| :-------------------------: | :----: | :----: | :--------------------------: |
+|           Update            |  6.66  | WeChat |      感谢大佬的开源分享      |
+|            匿名             |  0.01  | WeChat |              -               |
+|         月夜忆江南          |  5.00  | WeChat |              -               |
+|            匿名             |  1.66  | WeChat |              -               |
+|         GoooodJooB7         |  1.66  | WeChat |         谢谢大佬开源         |
+|            匿名             |  1.66  | WeChat |              -               |
+| 十七岁就学会吃饭的天才少年  |  5.00  | WeChat |              -               |
+|          Sundrops           |  1.66  | WeChat |        感谢友友的接口        |
+|        春风伴我余生         | 10.00  | WeChat |              -               |
+|             杰              |  1.00  | WeChat |              -               |
+|            Blue             |  6.66  | WeChat |      Blue 祝开发者 6666      |
+|           聆听、            | 10.00  | WeChat |      喝杯咖啡，记得加冰      |
+|            匿名             | 100.00 | WeChat |            好项目            |
+| 卤蛋 （HelloGitHub 发起人） | 88.88  | WeChat | 很喜欢你的项目，加油 ^ O ^ ~ |
+|             ---             |  ---   |  ---   |             ---              |
+|             *斌             | 12.90  | Alipay |              -               |
+|             *杰             | 20.00  | Alipay |              -               |
+|            **杰             |  9.90  | Alipay |              -               |
+|             ---             |  ---   |  ---   |             ---              |
+|             Ko.             | 11.66  |   QQ   |              -               |
+|           yijiong           | 15.00  |   QQ   |       a cup of coffee        |
 
 
 ## 🪪 License （开源协议）
