@@ -28,6 +28,7 @@ import { serviceTodayInHistory } from './modules/today-in-history.module.ts'
 import { serviceToutiao } from './modules/toutiao.module.ts'
 import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
+import { serviceWeather } from './modules/weather.module.ts'
 
 export const rootRouter = new Router()
 
@@ -88,3 +89,6 @@ appRouter.all('/fanyi', serviceFanyi.handle())
 appRouter.all('/fanyi/langs', serviceFanyi.langs())
 
 appRouter.get('/love', serviceLove.handle())
+
+appRouter.get('/weather', serviceWeather.handle())
+appRouter.get('/weather/7d', serviceWeather.handle7d())
