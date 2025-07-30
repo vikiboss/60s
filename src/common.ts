@@ -14,15 +14,20 @@ interface FormatOptions {
 type Primitive = boolean | number | string | null | undefined
 
 export class Common {
-  static chromeUA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69'
-  
+  static chromeUA =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69'
+
   static buildJson(data: boolean | number | string | object | null, code = 200, message = COMMON_MSG) {
-    return {
-      code,
-      message,
-      data,
-      __debug__: Common.getApiInfo(),
+    const res = { code, message, data }
+
+    if (config.debug) {
+      return {
+        ...res,
+        __debug__: Common.getApiInfo(),
+      }
     }
+
+    return res
   }
 
   static requireArguments(name: string | string[], ctx: RouterContext<any, Record<string, any>>) {
@@ -69,7 +74,7 @@ export class Common {
   }
 
   static useProxiedUrl(link: string) {
-    if (!globalThis.env.DEV) return link
+    if (!process.env.DEV) return link
     const url = new URL(link)
     url.searchParams.set('proxy-host', url.host)
     url.host = 'proxy.viki.moe'
