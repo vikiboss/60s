@@ -6,6 +6,17 @@ import { COMMON_MSG, config } from './config.ts'
 import type { BinaryToTextEncoding } from 'node:crypto'
 import type { Request, RouterContext } from '@oak/oak'
 
+import _dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+
+_dayjs.extend(utc)
+_dayjs.extend(timezone)
+
+export const TZ_SHANGHAI = 'Asia/Shanghai'
+
+export const dayjs = _dayjs
+
 interface FormatOptions {
   locale?: string
   timeZone?: string

@@ -1,5 +1,5 @@
 import { SolarTime } from 'tyme4ts'
-import { Common } from '../../common.ts'
+import { Common, dayjs, TZ_SHANGHAI } from '../../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
@@ -7,7 +7,7 @@ class ServiceLunar {
   handle(): RouterMiddleware<'/lunar'> {
     return (ctx) => {
       const date = ctx.request.url.searchParams.get('date')
-      const now = date ? new Date(date) : new Date()
+      const now = date ? dayjs(date).tz(TZ_SHANGHAI).toDate() : new Date(Common.localeTime())
 
       const solarTime = SolarTime.fromYmdHms(
         now.getFullYear(),

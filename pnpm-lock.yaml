@@ -11,6 +11,9 @@ importers:
       '@oak/oak':
         specifier: npm:@jsr/oak__oak@^17.1.4
         version: '@jsr/oak__oak@17.1.4'
+      dayjs:
+        specifier: ^1.11.13
+        version: 1.11.13
       tyme4ts:
         specifier: ^1.3.4
         version: 1.3.4
@@ -499,6 +502,9 @@ packages:
   cookie@1.0.2:
     resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
     engines: {node: '>=18'}
+
+  dayjs@1.11.13:
+    resolution: {integrity: sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg==}
 
   defu@6.1.4:
     resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
@@ -1120,6 +1126,8 @@ snapshots:
   consola@3.4.0: {}
 
   cookie@1.0.2: {}
+
+  dayjs@1.11.13: {}
 
   defu@6.1.4: {}
 
