@@ -32,7 +32,6 @@ class ServiceLunar {
       const data = {
         solar: {
           year: now.getFullYear(),
-          season: solarMonth.getSeason().getIndex() + 1,
           month: now.getMonth() + 1,
           day: now.getDate(),
           hour: solarTime.getHour(),
@@ -43,6 +42,7 @@ class ServiceLunar {
           week_of_year: solarWeek.getIndexInYear() + 1,
           week_of_month_index: solarWeek.getIndex(),
           week_of_year_index: solarWeek.getIndexInYear(),
+          season: solarMonth.getSeason().getIndex() + 1,
           season_index: solarMonth.getSeason().getIndex(),
           season_desc: solarMonth.getSeason().getName(),
           season_name: ['春', '夏', '秋', '冬'][solarMonth.getSeason().getIndex()],
