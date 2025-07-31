@@ -21,6 +21,7 @@ import { serviceHitokoto } from './modules/hitokoto/hitokoto.module.ts'
 import { serviceIP } from './modules/ip.module.ts'
 import { serviceKfc } from './modules/kfc.module.ts'
 import { serviceLuck } from './modules/luck/luck.module.ts'
+import { serviceLove } from './modules/love/love.module.ts'
 import { serviceMaoyan } from './modules/maoyan.module.ts'
 import { serviceOG } from './modules/og.module.ts'
 import { serviceTodayInHistory } from './modules/today-in-history.module.ts'
@@ -28,6 +29,7 @@ import { serviceToutiao } from './modules/toutiao.module.ts'
 import { serviceWeather } from './modules/weather.module.ts'
 import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
+import { serviceWeather } from './modules/weather.module.ts'
 
 export const rootRouter = new Router()
 
@@ -35,15 +37,16 @@ rootRouter.get('/', (ctx) => {
   ctx.response.headers.set('Content-Type', 'application/json; charset=utf-8')
   ctx.response.body = JSON.stringify(
     {
-      api_name: '60s-api',
-      api_version: pkg.version,
-      api_docs: 'https://docs.60s-api.viki.moe',
-      author: config.author,
-      user_group: config.group,
-      github_repo: config.github,
-      updated: pkg.updateTime,
-      updated_at: new Date(pkg.updateTime).getTime(),
-      endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
+        这是接口服务器: '啥也没有',
+    //   api_name: '60s-api',
+    //   api_version: pkg.version,
+       接口内容请查看: 'https://doc.cccccc.plus',
+    //   author: config.author,
+    //   user_group: config.group,
+    //   github_repo: config.github,
+    //   updated: pkg.updateTime,
+    //   updated_at: new Date(pkg.updateTime).getTime(),
+    //   endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
     },
     null,
     2,
@@ -85,6 +88,9 @@ appRouter.all('/hash', serviceHash.handle())
 
 appRouter.all('/fanyi', serviceFanyi.handle())
 appRouter.all('/fanyi/langs', serviceFanyi.langs())
+
+
+appRouter.get('/love', serviceLove.handle())
 
 appRouter.get('/weather', serviceWeather.handle())
 appRouter.get('/weather/7d', serviceWeather.handle7d())

@@ -49,20 +49,20 @@ class Service60s {
   }
 
   getUrl(date: string): string {
-    return `https://raw.githubusercontent.com/vikiboss/60s-static-host/refs/heads/main/static/60s/${date}.json`
+    return `https://raw.githubusercontent.com/two2025/60s-static-host/refs/heads/main/static/60s/${date}.json`
   }
 
-  getVercelUrl(date: string): string {
+ /* getVercelUrl(date: string): string {
     return `https://60s-static.viki.moe/60s/${date}.json`
-  }
+  }*/
 
   getJsDelivrUrl(date: string): string {
-    return `https://cdn.jsdelivr.net/gh/vikiboss/60s-static-host/static/60s/${date}.json`
+    return `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`
   }
 
   async tryUrl(date: string) {
     const response = await fetch(this.getUrl(date))
-      .catch(() => fetch(this.getVercelUrl(date)))
+    //   .catch(() => fetch(this.getVercelUrl(date)))
       .catch(() => fetch(this.getJsDelivrUrl(date)))
 
     if (response.ok) {
