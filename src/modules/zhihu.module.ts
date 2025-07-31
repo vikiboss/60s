@@ -24,14 +24,8 @@ class ServiceZhihuHot {
   }
 
   async #fetch() {
-    const api = 'https://www.zhihu.com/api/v3/feed/topstory/hot-lists/total?limit=1000'
-
-    const response = await fetch(api, {
-      headers: {
-        cookie: globalThis.env.ZHIHU_COOKIE || '',
-      },
-    })
-
+    const api = 'https://api.zhihu.com/topstory/hot-lists/total?limit=30'
+    const response = await fetch(api)
     const { data = [] } = await response.json()
 
     return (data as Item[]).map((e) => ({

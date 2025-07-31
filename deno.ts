@@ -10,8 +10,6 @@ declare global {
   }
 }
 
-globalThis.env = Deno.env.toObject()
-
 Deno.serve(
   {
     port: config.port,

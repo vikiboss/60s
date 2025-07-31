@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceEpic {
   handle(): RouterMiddleware<'/epic'> {
-    return async ctx => {
+    return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
@@ -17,9 +17,7 @@ class ServiceEpic {
               const hasBookTitle = e.title.includes('《')
               const title = hasBookTitle ? e.title : `《${e.title}》`
 
-              const freeDesc = e.is_free_now
-                ? `现在免费，截至到 ${endDate}`
-                : `于 ${date} 至 ${endDate} 免费`
+              const freeDesc = e.is_free_now ? `现在免费，截至到 ${endDate}` : `于 ${date} 至 ${endDate} 免费`
 
               return `${idx + 1}. ${title}，${freeDesc}\n\n${e.description}`
             })
@@ -42,20 +40,16 @@ class ServiceEpic {
     const allGames = (data?.data?.Catalog?.searchStore?.elements || []) as GameItem[]
 
     const activeGames = allGames
-      .filter(e => ['OTHERS', 'BASE_GAME'].some(type => type === e.offerType) && !!getFreeOffer(e))
+      .filter((e) => ['OTHERS', 'BASE_GAME'].some((type) => type === e.offerType) && !!getFreeOffer(e))
       .toSorted(
         (a, b) =>
           compareDate(getFreeOffer(a)?.startDate || '', getFreeOffer(b)?.startDate || '') ||
-          a.title.localeCompare(b.title)
+          a.title.localeCompare(b.title),
       )
 
-    return activeGames.map(e => {
+    return activeGames.map((e) => {
       const slug =
-        e.productSlug ||
-        e.catalogNs?.mappings?.[0]?.pageSlug ||
-        e.offerMappings?.[0]?.pageSlug ||
-        e.urlSlug ||
-        ''
+        e.productSlug || e.catalogNs?.mappings?.[0]?.pageSlug || e.offerMappings?.[0]?.pageSlug || e.urlSlug || ''
 
       const offer = getFreeOffer(e)
       const { startDate, endDate } = offer || {}
@@ -63,14 +57,13 @@ class ServiceEpic {
       const promotionStartAt = startDate ? new Date(startDate).getTime() : new Date('1970/1/1')
       const promotionEndAt = endDate ? new Date(endDate).getTime() : new Date('1970/1/1')
 
-      const originalCover =
-        e.keyImages?.find(e => e.type === 'OfferImageWide')?.url || e.keyImages[0]?.url || ''
+      const originalCover = e.keyImages?.find((e) => e.type === 'OfferImageWide')?.url || e.keyImages[0]?.url || ''
 
       const cover = originalCover.startsWith('http')
         ? originalCover
         : originalCover.includes('?cover=')
-        ? decodeURIComponent(originalCover.split('?cover=')[1] || '')
-        : originalCover
+          ? decodeURIComponent(originalCover.split('?cover=')[1] || '')
+          : originalCover
 
       const isFreePrice = e.price.totalPrice.discountPrice === 0
       const isMatchStart = new Date(e.effectiveDate).getTime() < Date.now()
@@ -99,14 +92,14 @@ export const serviceEpic = new ServiceEpic()
 
 function getFreeOffer(e: GameItem) {
   const promotion =
-    e.promotions?.upcomingPromotionalOffers.find(e =>
-      e.promotionalOffers.find(e => e.discountSetting.discountPercentage === 0)
+    e.promotions?.upcomingPromotionalOffers.find((e) =>
+      e.promotionalOffers.find((e) => e.discountSetting.discountPercentage === 0),
     ) ||
-    e.promotions?.promotionalOffers.find(e =>
-      e.promotionalOffers.find(e => e.discountSetting.discountPercentage === 0)
+    e.promotions?.promotionalOffers.find((e) =>
+      e.promotionalOffers.find((e) => e.discountSetting.discountPercentage === 0),
     )
 
-  return promotion?.promotionalOffers.find(e => e.discountSetting.discountPercentage === 0)
+  return promotion?.promotionalOffers.find((e) => e.discountSetting.discountPercentage === 0)
 }
 
 function compareDate(a: string, b: string) {

@@ -1,25 +1,28 @@
-# ⏰ 60s API v2
+# ⏰ 60s API
 
 ![Update Status](https://github.com/vikiboss/60s-static-host/workflows/schedule/badge.svg) ![GitHub](https://img.shields.io/github/v/release/two2025/60s?label=GitHub) ![Docker](https://img.shields.io/docker/v/two2025/60s?style=flat&label=Docker) ![Node.js](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?logo=bun&logoColor=white) ![Deno](https://img.shields.io/badge/Deno-000000?logo=deno&logoColor=white) [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)
 
-一系列 **高质量、开源、可靠、全球 CDN 加速的** 开放 API 集合，使用 [Deno](https://deno.com/) 构建，托管在 [Deno Deploy](https://deno.com/deploy) 上，也支持 [Docker](https://docker.com)、[Cloudflare Workers](https://www.cloudflare.com/zh-cn/developer-platform/products/workers/)、[Bun](https://bun.sh/) 和 [Node.js](https://nodejs.org/) 部署。
+<a href="https://hellogithub.com/repository/vikiboss/60s" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=8e9af473df2244f59d84b79915298fcc&claim_uid=wXMelR56paDoO2x&theme=dark" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 
 ## ⚖️ API 实现原则和使用建议
 
-- 只采用官方、权威的数据源头，保证准确性和可用性
+- 尽可能采用官方、权威的数据源头，保证准确性和可用性
 - 对日更数据采取缓存加速策略，对用户无感、毫秒级响应
-- 为了追求更快的响应，可以查看源码，直接访问对应 API 的原 API 数据（但原始数据量大、字段繁多，不易处理）
+- 为了追求更快的响应，可查看源码直接使用对应 API 的原数据（但原始数据量大、字段繁多，不易处理）
 
 > 待续
 
-## 🍱 API 包含哪些？
+## 🌍 60s 看世界接口
+
 
 目前包含的接口如下，仍在持续增加中，全面的 API 文档已公开托管在 [Apifox](https://doc.cccccc.plus) 上。
 
-主域名: https://60s.cccccc.plus （Deno Deploy，部分地区可能被墙）
+主域名: https://60s.cccccc.plus 
 
-如果你只关注 60s 新闻，其 API 格式如下：
+
+更多详情请看文档: https://doc.cccccc.plus
+
 
 - 默认 JSON 格式：https://60s.cccccc.plus/v2/60s
 - 文字版本：https://60s.cccccc.plus/v2/60s?encoding=text
@@ -31,6 +34,7 @@
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界 (数据源来自 [two2025/60s-static-host](https://github.com/two2025/60s-static-host) 仓库，源头是微信公众号，正常情况下每天凌晨更新)
   - 🏞️ 必应每日壁纸（Bing）
+
   - 💰 当日货币汇率
   - 📅 历史上的今天
 - 🎉 热门榜单
@@ -92,7 +96,7 @@ npm install && node --experimental-strip-types node.ts
 
 ### Cloudflare Workers
 
-> 要求本地 Node.js 环境
+> 要求本地 Node.js 环境，受限于 Node.js 兼容性原因，不支持翻译接口
 
 ```bash
 npm install && npx wrangler publish
@@ -110,6 +114,8 @@ npm install && npx wrangler publish
 ## 60s 的数据更新策略
 
 ![arch](./images/arch.png)
+
+- 可编辑版本请参考 [60s 更新策略 - Excalidraw](https://excalidraw.com/#json=VRffPBlMuFBkOlTbGe7IH,0C6yClfLME65ZhmQ30ywdg)
 
 ## 🧑‍🤝‍🧑 用户群
 
