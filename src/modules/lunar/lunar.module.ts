@@ -31,10 +31,10 @@ class ServiceLunar {
 
       const data = {
         solar: {
-          year: solarTime.getYear(),
+          year: now.getFullYear(),
           season: solarMonth.getSeason().getIndex() + 1,
-          month: solarTime.getMonth(),
-          day: solarTime.getDay(),
+          month: now.getMonth() + 1,
+          day: now.getDate(),
           hour: solarTime.getHour(),
           minute: solarTime.getMinute(),
           second: solarTime.getSecond(),
@@ -96,6 +96,16 @@ class ServiceLunar {
           count: solarWeek.getIndex() + 1,
           index: solarWeek.getIndex(),
         },
+        holiday: solarDay.getLegalHoliday()
+          ? {
+              name: solarDay.getLegalHoliday()?.getName(),
+              is_work: solarDay.getLegalHoliday()?.isWork(),
+            }
+          : undefined,
+        festival: solarDay.getFestival()?.getName(),
+        phase: lunarDay.getPhase().getName(),
+        constellation: solarDay.getConstellation().getName(),
+        constellation_desc: solarDay.getConstellation().getName() + '座',
         taboo: {
           day: {
             recommends: lunarDay.getRecommends().map((e) => e.getName()),
@@ -117,18 +127,6 @@ class ServiceLunar {
             }
           }),
         },
-        holiday: solarDay.getLegalHoliday()
-          ? {
-              name: solarDay.getLegalHoliday()?.getName(),
-              is_work: solarDay.getLegalHoliday()?.isWork(),
-            }
-          : undefined,
-        festivals: solarDay.getFestival()?.getName(),
-        phase: lunarDay.getPhase().getName(),
-        solar_term: solarTime.getTerm().getName(),
-        solar_term_day: solarDay.getTerm().getName(),
-        constellation: solarDay.getConstellation().getName(),
-        constellation_desc: solarDay.getConstellation().getName() + '座',
       }
 
       switch (ctx.state.encoding) {
