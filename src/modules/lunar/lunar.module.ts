@@ -131,17 +131,15 @@ class ServiceLunar {
         constellation_desc: solarDay.getConstellation().getName() + '座',
       }
 
-      return (ctx) => {
-        switch (ctx.state.encoding) {
-          case 'text':
-            ctx.response.body = data
-            break
+      switch (ctx.state.encoding) {
+        case 'text':
+          ctx.response.body = data
+          break
 
-          case 'json':
-          default:
-            ctx.response.body = Common.buildJson(data)
-            break
-        }
+        case 'json':
+        default:
+          ctx.response.body = Common.buildJson(data)
+          break
       }
     }
   }
