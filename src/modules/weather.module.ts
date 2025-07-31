@@ -89,9 +89,7 @@ class ServiceWeather {
     //   ? `https://d1.weather.com.cn/dingzhi/${parsed.location_id}.html?_=${Date.now()}`
     // : `https://d1.weather.com.cn/sk_2d/${parsed.location_id}.html?_=${Date.now()}`
 
-    const dataList = (
-      await (await fetch(url, this.options({ name: parsed.formatted, code: parsed.location_id }))).text()
-    )
+    const dataList = (await (await fetch(url, this.options({ name: parsed.town, code: parsed.location_id }))).text())
       .split(/[=;]/)
       .filter((e) => !e.includes('var'))
       .map((e) => JSON.parse(e.trim()))
@@ -101,21 +99,18 @@ class ServiceWeather {
     // .replace(new RegExp(`;\\s*var(.*)+$`), '')
 
     const [dataDZ, alarmDZ, dataSK, dataZS, fc] = dataList
+    const info = dataDZ?.weatherinfo || {}
 
     return {
-      weather: dataDZ?.weatherinfo?.weather,
-      weather_code_day: dataDZ?.weatherinfo?.weathercode,
-      weather_code_night: dataDZ?.weatherinfo?.weathercoden,
-      temperature_day: +dataDZ?.weatherinfo?.temp?.replace('℃', ''),
-      temperature_night: +dataDZ?.weatherinfo?.tempn?.replace('℃', ''),
-      wind_strength: dataDZ?.weatherinfo?.ws ?? dataDZ?.weatherinfo?.WS,
-      wind_direction: dataDZ?.weatherinfo?.wd ?? dataDZ?.weatherinfo?.WD,
-      forecast_time: dataDZ?.weatherinfo?.fctime
-        ? this.parseForecastTime(dataDZ?.weatherinfo?.fctime ?? '').toLocaleString('zh-CN')
-        : null,
-      forecast_time_at: dataDZ?.weatherinfo?.fctime
-        ? this.parseForecastTime(dataDZ?.weatherinfo?.fctime ?? '').getTime()
-        : null,
+      weather: info?.weather,
+      weather_code_day: info?.weathercode,
+      weather_code_night: info?.weathercoden,
+      temperature_day: +info?.temp?.replace('℃', ''),
+      temperature_night: +info?.tempn?.replace('℃', ''),
+      wind_strength: info?.ws ?? info?.WS,
+      wind_direction: info?.wd ?? info?.WD,
+      forecast_time: info?.fctime ? this.parseTime(info.fctime).toLocaleString('zh-CN') : null,
+      forecast_time_at: info?.fctime ? this.parseTime(info.fctime).getTime() : null,
 
       raw: dataList,
     }
@@ -164,7 +159,7 @@ class ServiceWeather {
     }
   }
 
-  parseForecastTime(time: string) {
+  parseTime(time: string) {
     const cleanTime = time.replace(/\D/g, '')
     const year = cleanTime.substring(0, 4)
     const month = cleanTime.substring(4, 6)
