@@ -24,14 +24,14 @@ class ServiceFanyi {
 
       const data = await this.#fetch(text, from, to)
       const isSuccess = data.code === 0
-      const responseItem = data?.translateResult?.[0]?.[0] || {}
+      const responseItems = data?.translateResult?.flat() || []
 
       ctx.response.status = isSuccess ? 200 : 500
-      const [sourceType, targetType] = data.type.split('2')
+      const [sourceType, targetType] = data?.type?.split('2') || []
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = isSuccess ? data.translateResult[0][0]?.tgt || '' : '[翻译服务异常]'
+          ctx.response.body = isSuccess ? responseItems.map((e) => e.tgt).join('') || '' : '[翻译服务异常]'
           break
 
         case 'json':
@@ -39,16 +39,16 @@ class ServiceFanyi {
           ctx.response.body = isSuccess
             ? Common.buildJson({
                 source: {
-                  text: responseItem?.src || '',
+                  text: responseItems.map((e) => e.src).join('') || '',
                   type: sourceType,
                   type_desc: langMap[sourceType]?.[0]?.label || '',
-                  pronounce: responseItem?.srcPronounce || '',
+                  pronounce: responseItems.map((e) => e.srcPronounce).join('') || '',
                 },
                 target: {
-                  text: responseItem?.tgt || '',
+                  text: responseItems.map((e) => e.tgt).join('') || '',
                   type: targetType,
                   type_desc: langMap[targetType]?.[0]?.label || '',
-                  pronounce: responseItem?.tgtPronounce || '',
+                  pronounce: responseItems.map((e) => e.tgtPronounce).join('') || '',
                 },
               })
             : Common.buildJson(null, 500, `翻译服务异常，调试信息: ${JSON.stringify(data)}`)
