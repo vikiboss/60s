@@ -1,4 +1,4 @@
-import { SolarTime } from 'tyme4ts'
+import { SolarTime, LegalHoliday, Week } from 'tyme4ts'
 import { Common, dayjs, TZ_SHANGHAI } from '../../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
@@ -12,7 +12,7 @@ class ServiceLunar {
       const solarTime = SolarTime.fromYmdHms(
         now.getFullYear(),
         now.getMonth() + 1,
-        now.getDay(),
+        now.getDate(),
         now.getHours(),
         now.getMinutes(),
         now.getSeconds(),
@@ -29,6 +29,8 @@ class ServiceLunar {
       const lunarMonth = lunarDay.getLunarMonth()
       const lunarYear = lunarMonth.getLunarYear()
 
+      const holiday = solarDay.getLegalHoliday()
+
       const data = {
         solar: {
           year: now.getFullYear(),
@@ -37,16 +39,17 @@ class ServiceLunar {
           hour: solarTime.getHour(),
           minute: solarTime.getMinute(),
           second: solarTime.getSecond(),
-          is_leap_year: solarYear.isLeap(),
+          day_of_year: solarDay.getIndexInYear() + 1,
+          week: solarDay.getDay(),
+          week_cn: Week.fromIndex(solarDay.getDay()).getName(),
+          week_cn_desc: `星期${Week.fromIndex(solarDay.getDay()).getName()}`,
           week_of_month: solarWeek.getIndex() + 1,
           week_of_year: solarWeek.getIndexInYear() + 1,
-          week_of_month_index: solarWeek.getIndex(),
-          week_of_year_index: solarWeek.getIndexInYear(),
           season: solarMonth.getSeason().getIndex() + 1,
-          season_index: solarMonth.getSeason().getIndex(),
           season_desc: solarMonth.getSeason().getName(),
           season_name: ['春', '夏', '秋', '冬'][solarMonth.getSeason().getIndex()],
           season_name_desc: ['春天', '夏天', '秋天', '冬天'][solarMonth.getSeason().getIndex()],
+          is_leap_year: solarYear.isLeap(),
         },
         lunar: {
           year: lunarYear.getName().replace('农历', '').replace('年', ''),
@@ -58,6 +61,15 @@ class ServiceLunar {
           day_desc: lunarDay.getName(),
           hour_desc: lunarHour.getName(),
           is_leap_month: lunarMonth.isLeap(),
+        },
+        term: {
+          today: solarDay.getTermDay().getDayIndex() === 0 ? solarDay.getTermDay().getName() : null,
+          stage: {
+            name: solarDay.getTerm().getName(),
+            position: solarDay.getTermDay().getDayIndex() + 1,
+            isJie: solarDay.getTerm().isJie(),
+            isQi: solarDay.getTerm().isQi(),
+          },
         },
         zodiac: {
           year: lunarYear.getSixtyCycle().getEarthBranch().getZodiac().getName(),
@@ -91,39 +103,63 @@ class ServiceLunar {
             desc: lunarHour.getSixtyCycle().getName() + '时',
           },
         },
-        solar_week: {
-          week: solarWeek.getName(),
-          count: solarWeek.getIndex() + 1,
-          index: solarWeek.getIndex(),
-        },
-        holiday: solarDay.getLegalHoliday()
+        legal_holiday: holiday
           ? {
-              name: solarDay.getLegalHoliday()?.getName(),
-              is_work: solarDay.getLegalHoliday()?.isWork(),
+              name: holiday?.getName(),
+              is_work: holiday?.isWork(),
             }
-          : undefined,
-        festival: solarDay.getFestival()?.getName(),
-        phase: lunarDay.getPhase().getName(),
-        constellation: solarDay.getConstellation().getName(),
-        constellation_desc: solarDay.getConstellation().getName() + '座',
+          : null,
+        festival: {
+          solar: solarDay.getFestival()?.getName() ?? null,
+          lunar: lunarDay.getFestival()?.getName() ?? null,
+          desc:
+            [solarDay.getFestival()?.getName(), lunarDay.getFestival()?.getName()].filter(Boolean).join('、') || null,
+        },
+        phase: {
+          name: lunarDay.getPhase().getName(),
+          position: lunarDay.getPhase().getIndex(),
+        },
+        constellation: {
+          name: solarDay.getConstellation().getName(),
+          desc: solarDay.getConstellation().getName() + '座',
+        },
+        legal_holiday_list: getHoliday(now),
         taboo: {
           day: {
-            recommends: lunarDay.getRecommends().map((e) => e.getName()),
-            avoids: lunarDay.getAvoids().map((e) => e.getName()),
+            recommends: lunarDay
+              .getRecommends()
+              .map((e) => e.getName())
+              .join('.'),
+            avoids: lunarDay
+              .getAvoids()
+              .map((e) => e.getName())
+              .join('.'),
           },
           hour: {
             hour: lunarHour.getName().replace('时', ''),
             hour_desc: lunarHour.getName(),
-            avoids: lunarHour.getAvoids().map((e) => e.getName()),
-            recommends: lunarHour.getRecommends().map((e) => e.getName()),
+            avoids: lunarHour
+              .getAvoids()
+              .map((e) => e.getName())
+              .join('.'),
+            recommends: lunarHour
+              .getRecommends()
+              .map((e) => e.getName())
+              .join('.'),
           },
           hours: Array.from({ length: 12 }, (_, i) => {
             const hour = lunarHour.next(i)
             return {
               hour: hour.getName().replace('时', ''),
-              recommends: hour.getRecommends().map((e) => e.getName()),
-              avoids: hour.getAvoids().map((e) => e.getName()),
               hour_desc: hour.getName(),
+              recommends: hour
+                .getRecommends()
+                .map((e) => e.getName())
+                .join('.'),
+              avoids: hour
+                .getAvoids()
+                .map((e) => e.getName())
+                .join('.'),
             }
           }),
         },
@@ -144,3 +180,27 @@ class ServiceLunar {
 }
 
 export const serviceLunar = new ServiceLunar()
+
+function getHoliday(now: Date) {
+  const list = (LegalHoliday.DATA.match(/.{1,13}/g) || [])
+    .filter((e) => e.startsWith(now.getFullYear().toString()))
+    .map((e: string) => {
+      return {
+        date: e.slice(0, 8),
+        name: LegalHoliday.NAMES[e[9]] || '-',
+        is_work: LegalHoliday.NAMES[e[8]] === '0',
+        is_after: e[10] === '+',
+        is_before: e[10] === '-',
+        offset: +e.slice(11, 13),
+      }
+    })
+    .filter((e) => !e.is_work)
+
+  return Object.entries(Object.groupBy(list, (e) => e.name)).map(([name, items = []]) => {
+    return {
+      name,
+      start: items[0]?.date?.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
+      end: items[items.length - 1]?.date?.replace(/(\d{4})(\d{2})(\d{2})/, '$1-$2-$3'),
+    }
+  })
+}
