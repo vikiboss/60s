@@ -16,15 +16,15 @@ class ServiceLunar {
             : date
         : undefined
 
-      const now = dayjs(initDate).tz(TZ_SHANGHAI).toDate()
+      const now = dayjs(initDate).tz(TZ_SHANGHAI)
 
       const solarTime = SolarTime.fromYmdHms(
-        now.getFullYear(),
-        now.getMonth() + 1,
-        now.getDate(),
-        now.getHours(),
-        now.getMinutes(),
-        now.getSeconds(),
+        now.year(),
+        now.month() + 1,
+        now.date(),
+        now.hour(),
+        now.minute(),
+        now.second(),
       )
 
       const solarDay = solarTime.getSolarDay()
@@ -42,17 +42,17 @@ class ServiceLunar {
 
       const data = {
         solar: {
-          year: now.getFullYear(),
-          month: now.getMonth() + 1,
-          day: now.getDate(),
-          hour: now.getHours(),
-          minute: now.getMinutes(),
-          second: now.getSeconds(),
+          year: now.year(),
+          month: now.month() + 1,
+          day: now.date(),
+          hour: now.hour(),
+          minute: now.minute(),
+          second: now.second(),
           full: dayjs(now).format('YYYY-MM-DD'),
           full_with_time: dayjs(now).format('YYYY-MM-DD HH:mm:ss'),
-          week: now.getDay(),
-          week_desc: `星期${Week.fromIndex(now.getDay()).getName()}`,
-          week_desc_short: Week.fromIndex(now.getDay()).getName(),
+          week: now.day(),
+          week_desc: `星期${Week.fromIndex(now.day()).getName()}`,
+          week_desc_short: Week.fromIndex(now.day()).getName(),
           season: solarMonth.getSeason().getIndex() + 1,
           season_desc: solarMonth.getSeason().getName(),
           season_desc_short: solarMonth.getSeason().getName().replace('季度', ''),
@@ -79,16 +79,16 @@ class ServiceLunar {
           week_of_month: solarWeek.getIndex() + 1,
           percents: {
             year: solarDay.getIndexInYear() / (solarYear.isLeap() ? 366 : 365),
-            month: now.getDate() / solarMonth.getDayCount(),
-            week: now.getDay() / 7,
-            day: (now.getTime() - dayjs(now).startOf('day').toDate().getTime()) / (24 * 60 * 60 * 1000),
+            month: now.date() / solarMonth.getDayCount(),
+            week: now.day() / 7,
+            day: (now.valueOf() - dayjs(now).startOf('day').toDate().valueOf()) / (24 * 60 * 60 * 1000),
           },
           percents_formatted: {
             year: ((solarDay.getIndexInYear() / (solarYear.isLeap() ? 366 : 365)) * 100).toFixed(2) + '%',
-            month: ((now.getDate() / solarMonth.getDayCount()) * 100).toFixed(2) + '%',
-            week: ((now.getDay() / 7) * 100).toFixed(2) + '%',
+            month: ((now.date() / solarMonth.getDayCount()) * 100).toFixed(2) + '%',
+            week: ((now.day() / 7) * 100).toFixed(2) + '%',
             day:
-              (((now.getTime() - dayjs(now).startOf('day').toDate().getTime()) / (24 * 60 * 60 * 1000)) * 100).toFixed(
+              (((now.valueOf() - dayjs(now).startOf('day').toDate().valueOf()) / (24 * 60 * 60 * 1000)) * 100).toFixed(
                 2,
               ) + '%',
           },
@@ -195,7 +195,7 @@ class ServiceLunar {
         },
         julian_day: solarDay.getJulianDay().getDay(),
         constants: {
-          legal_holiday_list: getHoliday(now),
+          legal_holiday_list: getHoliday(now.year()),
           phase_list: Phase.NAMES.map((e, idx) => ({ name: e, lunar_day: idx + 1 })),
           zodiac_list: Zodiac.NAMES,
           constellation_list: getConstellation(),
@@ -218,9 +218,9 @@ class ServiceLunar {
 
 export const serviceLunar = new ServiceLunar()
 
-function getHoliday(now: Date) {
+function getHoliday(year: number) {
   const list = (LegalHoliday.DATA.match(/.{1,13}/g) || [])
-    .filter((e) => e.startsWith(now.getFullYear().toString()))
+    .filter((e) => e.startsWith(year.toString()))
     .map((e: string) => {
       return {
         date: e.slice(0, 8),
