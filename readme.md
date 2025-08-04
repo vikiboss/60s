@@ -25,7 +25,7 @@
 - JSON：https://60s.viki.moe/v2/60s
 - 文字：https://60s.viki.moe/v2/60s?encoding=text
 - 图片：https://60s.viki.moe/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
-- 代理图片：https://60s.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，作为备选）
+- 代理图片：https://60s.viki.moe/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备选）
 
 更多详情请看文档: https://docs.60s-api.viki.moe
 
