@@ -29,8 +29,6 @@
 
 更多详情请看文档: https://docs.60s-api.viki.moe
 
-如果对你有帮助，请不要吝啬你的 Star～
-
 ## 🍱 API 还包含哪些？
 
 完整 API 文档已公开托管在 [Apifox](https://docs.60s-api.viki.moe) 上，接口仍在持续增加中，欢迎贡献～
@@ -53,7 +51,10 @@
   - 🌍 在线翻译（支持 109 种语言）
   - 📡 公网 IP 地址
   - 🐦 链接 [OG](https://ogp.me/) 信息
-  - 🌈 哈希/解压/压缩（包含 `md5`、`base64`、`URL`、`GZIP` 等）
+  - 🌈 哈希/解压/压缩（包含 `md5`/`base64`/`URL`/`GZIP` 等）
+  - 🌦️ 实时天气查询（支持全国城市/地区查询，数据来源 [中国天气网](https://weather.com.cn/)）
+  - 🗓️ 农历日期转换（公历农历互转、天干地支、生肖、节气、节假日等，使用 [tyme4ts](https://github.com/6tail/tyme4ts) 库处理）
+  - 🤖️ 每日 AI 快讯（来自 [AI 工具集](https://ai-bot.cn/daily-ai-news/)）
 - 😄 消遣娱乐
   - 💬 随机 KFC 段子（数据来源 [vikiboss/v50](https://github.com/vikiboss/v50)）
   - 💬 随机一言

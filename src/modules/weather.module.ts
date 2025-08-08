@@ -1,15 +1,6 @@
-import { Common } from '../common.ts'
+import { Common, dayjs } from '../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
-
-// fetch("https://d1.weather.com.cn/sk_2d/101190101.html", {
-//   "headers": {
-//     "cookie": "f_city=%E5%8D%97%E4%BA%AC%7C101190101%7C",
-//     "Referer": "https://www.weather.com.cn/",
-//   },
-// }).then(e=>e.text()).then(console.log);
-
-// var dataSK={"nameen":"nanjing","cityname":"南京","city":"101190101","temp":"31.8","tempf":"89.2","WD":"北风","wde":"N","WS":"2级","wse":"8km\/h","SD":"65%","sd":"65%","qy":"999","njd":"14km","time":"09:35","rain":"0","rain24h":"0","aqi":"33","aqi_pm25":"33","weather":"多云","weathere":"Cloudy","weathercode":"d01","limitnumber":"","date":"07月14日(星期一)"}
 
 class ServiceWeather {
   private options = (options?: { name: string; code: string }) => {
@@ -29,13 +20,9 @@ class ServiceWeather {
       const realtime = await this.fetchRealtime(query)
 
       switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = { realtime, location }
-          break
-
         case 'json':
         default:
-          ctx.response.body = Common.buildJson({ realtime, location })
+          ctx.response.body = Common.buildJson({ location, realtime })
           break
       }
     }
@@ -43,16 +30,13 @@ class ServiceWeather {
 
   handle7d(): RouterMiddleware<'/weather/7d'> {
     return async (ctx) => {
-      // const data = await this.#fetch()
+      const query = ctx.request.url.searchParams.get('query') || ''
+      const forecast = await this.fetch7d(query)
 
       switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = 'weather: todo'
-          break
-
         case 'json':
         default:
-          ctx.response.body = Common.buildJson('weather: todo')
+          ctx.response.body = Common.buildJson(forecast)
           break
       }
     }
@@ -81,6 +65,10 @@ class ServiceWeather {
   async fetchRealtime(search: string) {
     const parsed = await this.fetchLocation(search)
 
+    if (parsed.is_town) {
+      throw new Error('实时天气暂不支持具体地点查询，请使用省市查询')
+    }
+
     // const url = `https://d1.weather.com.cn/dingzhi/${parsed.location_id}.html?_=${Date.now()}`
     // const url = `https://d1.weather.com.cn/sk_2d/${parsed.location_id}.html?_=${Date.now()}`
     const url = `https://d1.weather.com.cn/weather_index/${parsed.location_id}.html?_=${Date.now()}`
@@ -98,36 +86,92 @@ class ServiceWeather {
     // .replace(new RegExp(`var\\s*cityDZ${parsed.location_id}\\s*=\\s*`), '')
     // .replace(new RegExp(`;\\s*var(.*)+$`), '')
 
-    const [dataDZ, alarmDZ, dataSK, dataZS, fc] = dataList
+    const [dataDZ, _alarmDZ, dataSK, dataZS, _fc] = dataList
     const info = dataDZ?.weatherinfo || {}
+    const skInfo = dataSK || {}
+    const zsInfo = dataZS?.zs || {}
 
     return {
-      weather: info?.weather,
-      weather_code_day: info?.weathercode,
-      weather_code_night: info?.weathercoden,
-      temperature_day: +info?.temp?.replace('℃', ''),
-      temperature_night: +info?.tempn?.replace('℃', ''),
-      wind_strength: info?.ws ?? info?.WS,
-      wind_direction: info?.wd ?? info?.WD,
-      forecast_time: info?.fctime ? this.parseTime(info.fctime).toLocaleString('zh-CN') : null,
-      forecast_time_at: info?.fctime ? this.parseTime(info.fctime).getTime() : null,
-
-      raw: dataList,
+      weather: info?.weather || skInfo?.weather,
+      weather_desc: this.parseWeatherCode(info?.weathercode || skInfo?.weathercode),
+      weather_code: info?.weathercode || skInfo?.weathercode,
+      temperature: +(info?.temp?.replace('℃', '') || skInfo?.temp || 0),
+      temperature_feels_like: +(skInfo?.tempf || 0),
+      humidity: +(skInfo?.SD?.replace('%', '') || skInfo?.sd?.replace('%', '') || 0),
+      wind_direction: info?.wd || skInfo?.WD,
+      wind_strength: info?.ws || skInfo?.WS,
+      wind_speed: skInfo?.wse,
+      pressure: +(skInfo?.qy || 0),
+      visibility: skInfo?.njd,
+      aqi: +(skInfo?.aqi || 0),
+      pm25: +(skInfo?.aqi_pm25 || 0),
+      rainfall: +(skInfo?.rain || 0),
+      rainfall_24h: +(skInfo?.rain24h || 0),
+      updated: dayjs(this.parseTime(info?.fctime || skInfo?.time)).format('YYYY-MM-DD HH:mm:ss'),
+      updated_at: skInfo?.time || info?.fctime,
+      life_index: {
+        comfort: { level: zsInfo?.co_hint, desc: zsInfo?.co_des_s },
+        clothing: { level: zsInfo?.ct_hint, desc: zsInfo?.ct_des_s },
+        umbrella: { level: zsInfo?.ys_hint, desc: zsInfo?.ys_des_s },
+        uv: { level: zsInfo?.uv_hint, desc: zsInfo?.uv_des_s },
+        car_wash: { level: zsInfo?.xc_hint, desc: zsInfo?.xc_des_s },
+        travel: { level: zsInfo?.tr_hint, desc: zsInfo?.tr_des_s },
+        sport: { level: zsInfo?.yd_hint, desc: zsInfo?.yd_des_s },
+      },
+      // alerts: alarmDZ?.w || [],
     }
   }
 
-  async fetch7d() {
-    const api = ''
-    const { data = {} } = await (await fetch(api)).json()
+  async fetch7d(search: string) {
+    const location = await this.fetchLocation(search)
 
-    //
+    if (location.is_town) {
+      throw new Error('7 天预报暂不支持具体地点查询，请使用省市查询')
+    }
+
+    const url = `https://d1.weather.com.cn/weather_index/${location.location_id}.html?_=${Date.now()}`
+
+    const dataList = (
+      await (await fetch(url, this.options({ name: location.town, code: location.location_id }))).text()
+    )
+      .split(/[=;]/)
+      .filter((e) => !e.includes('var'))
+      .map((e) => JSON.parse(e.trim()))
+
+    const [, , , , fc] = dataList
+
+    if (!fc?.f || !Array.isArray(fc.f)) {
+      throw new Error('7天预报数据获取失败')
+    }
+
+    const forecast = fc.f.map((day: any, index: number) => ({
+      date: day.fi || '',
+      date_desc: day.fj || (index === 0 ? '今天' : ''),
+      weather_day: this.parseWeatherCode(day.fa),
+      weather_night: this.parseWeatherCode(day.fb),
+      weather_code_day: day.fa,
+      weather_code_night: day.fb,
+      temperature_high: parseInt(day.fc) || 0,
+      temperature_low: parseInt(day.fd) || 0,
+      wind_direction_day: day.fe || '',
+      wind_direction_night: day.ff || '',
+      wind_strength_day: day.fg || '',
+      wind_strength_night: day.fh || '',
+      rainfall: parseFloat(day.fm) || 0,
+      humidity: parseInt(day.fn) || 0,
+    }))
+
+    return {
+      location,
+      forecast,
+    }
   }
 
   parseLocationId(location: string) {
     // 101240504015
     // 101270101002~sichuan~二仙桥街道~erxianqiaojiedao~成华~chenghua~028~610000~sichuan~四川
 
-    const [locationId, _, town, townId, city, cityId, areaCode, zipCode, __, province] = location.split('~')
+    const [locationId, _, town, _townId, city, _cityId, areaCode, zipCode, __, province] = location.split('~')
 
     const isProvince = town === city && city === province
     const isCity = town === city && city !== province
@@ -168,6 +212,85 @@ class ServiceWeather {
     const minute = cleanTime.substring(10, 12) || '00'
     const second = cleanTime.substring(12, 14) || '00'
     return new Date(+year, +month - 1, +day, +hour, +minute, +second)
+  }
+
+  parseWeatherCode(code: string): string {
+    const weatherMap: Record<string, string> = {
+      '00': '晴',
+      d00: '晴',
+      n00: '晴',
+      '01': '多云',
+      d01: '多云',
+      n01: '多云',
+      '02': '阴',
+      d02: '阴',
+      n02: '阴',
+      '03': '阵雨',
+      d03: '阵雨',
+      n03: '阵雨',
+      '04': '雷阵雨',
+      d04: '雷阵雨',
+      n04: '雷阵雨',
+      '05': '雷阵雨伴有冰雹',
+      d05: '雷阵雨伴有冰雹',
+      n05: '雷阵雨伴有冰雹',
+      '06': '雨夹雪',
+      d06: '雨夹雪',
+      n06: '雨夹雪',
+      '07': '小雨',
+      d07: '小雨',
+      n07: '小雨',
+      '08': '中雨',
+      d08: '中雨',
+      n08: '中雨',
+      '09': '大雨',
+      d09: '大雨',
+      n09: '大雨',
+      '10': '暴雨',
+      d10: '暴雨',
+      n10: '暴雨',
+      '11': '大暴雨',
+      d11: '大暴雨',
+      n11: '大暴雨',
+      '12': '特大暴雨',
+      d12: '特大暴雨',
+      n12: '特大暴雨',
+      '13': '阵雪',
+      d13: '阵雪',
+      n13: '阵雪',
+      '14': '小雪',
+      d14: '小雪',
+      n14: '小雪',
+      '15': '中雪',
+      d15: '中雪',
+      n15: '中雪',
+      '16': '大雪',
+      d16: '大雪',
+      n16: '大雪',
+      '17': '暴雪',
+      d17: '暴雪',
+      n17: '暴雪',
+      '18': '雾',
+      d18: '雾',
+      n18: '雾',
+      '19': '冻雨',
+      d19: '冻雨',
+      n19: '冻雨',
+      '20': '沙尘暴',
+      d20: '沙尘暴',
+      n20: '沙尘暴',
+      '53': '霾',
+      d53: '霾',
+      n53: '霾',
+      '301': '雨',
+      d301: '雨',
+      n301: '雨',
+      '302': '雪',
+      d302: '雪',
+      n302: '雪',
+    }
+
+    return weatherMap[code] || '未知'
   }
 }
 

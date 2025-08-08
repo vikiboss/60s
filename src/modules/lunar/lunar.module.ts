@@ -194,11 +194,30 @@ class ServiceLunar {
           }),
         },
         julian_day: solarDay.getJulianDay().getDay(),
+        nayin: {
+          year: getNayin(lunarYear.getSixtyCycle().getName()),
+          month: getNayin(lunarMonth.getSixtyCycle().getName()),
+          day: getNayin(lunarDay.getSixtyCycle().getName()),
+          hour: getNayin(lunarHour.getSixtyCycle().getName()),
+        },
+        baizi: {
+          year_baizi: getBaiziDescription(lunarYear.getSixtyCycle().getName()),
+          day_baizi: getBaiziDescription(lunarDay.getSixtyCycle().getName()),
+        },
+        fortune: {
+          today_luck: getDailyFortune(lunarDay.getSixtyCycle().getName()),
+          career: getCareerFortune(lunarDay.getSixtyCycle().getName()),
+          money: getMoneyFortune(lunarDay.getSixtyCycle().getName()),
+          love: getLoveFortune(lunarDay.getSixtyCycle().getName()),
+        },
         constants: {
           legal_holiday_list: getHoliday(now.year()),
           phase_list: Phase.NAMES.map((e, idx) => ({ name: e, lunar_day: idx + 1 })),
           zodiac_list: Zodiac.NAMES,
           constellation_list: getConstellation(),
+          heaven_stems: ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'],
+          earth_branches: ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'],
+          solar_terms: getSolarTerms(),
         },
       }
 
@@ -224,8 +243,8 @@ function getHoliday(year: number) {
     .map((e: string) => {
       return {
         date: e.slice(0, 8),
-        name: LegalHoliday.NAMES[e[9]] || '-',
-        is_work: LegalHoliday.NAMES[e[8]] === '0',
+        name: LegalHoliday.NAMES[Number(e[9])] || '-',
+        is_work: LegalHoliday.NAMES[Number(e[8])] === '0',
         is_after: e[10] === '+',
         is_before: e[10] === '-',
         offset: +e.slice(11, 13),
@@ -271,4 +290,161 @@ function getConstellation() {
       end_day: endDay,
     }
   })
+}
+
+function getNayin(ganzhi: string): string {
+  const nayinMap: Record<string, string> = {
+    甲子: '海中金',
+    乙丑: '海中金',
+    丙寅: '炉中火',
+    丁卯: '炉中火',
+    戊辰: '大林木',
+    己巳: '大林木',
+    庚午: '路旁土',
+    辛未: '路旁土',
+    壬申: '剑锋金',
+    癸酉: '剑锋金',
+    甲戌: '山头火',
+    乙亥: '山头火',
+    丙子: '涧下水',
+    丁丑: '涧下水',
+    戊寅: '城头土',
+    己卯: '城头土',
+    庚辰: '白蜡金',
+    辛巳: '白蜡金',
+    壬午: '杨柳木',
+    癸未: '杨柳木',
+    甲申: '泉中水',
+    乙酉: '泉中水',
+    丙戌: '屋上土',
+    丁亥: '屋上土',
+    戊子: '霹雳火',
+    己丑: '霹雳火',
+    庚寅: '松柏木',
+    辛卯: '松柏木',
+    壬辰: '长流水',
+    癸巳: '长流水',
+    甲午: '砂石金',
+    乙未: '砂石金',
+    丙申: '山下火',
+    丁酉: '山下火',
+    戊戌: '平地木',
+    己亥: '平地木',
+    庚子: '壁上土',
+    辛丑: '壁上土',
+    壬寅: '金箔金',
+    癸卯: '金箔金',
+    甲辰: '覆灯火',
+    乙巳: '覆灯火',
+    丙午: '天河水',
+    丁未: '天河水',
+    戊申: '大驿土',
+    己酉: '大驿土',
+    庚戌: '钗环金',
+    辛亥: '钗环金',
+    壬子: '桑柘木',
+    癸丑: '桑柘木',
+    甲寅: '大溪水',
+    乙卯: '大溪水',
+    丙辰: '沙中土',
+    丁巳: '沙中土',
+    戊午: '天上火',
+    己未: '天上火',
+    庚申: '石榴木',
+    辛酉: '石榴木',
+    壬戌: '大海水',
+    癸亥: '大海水',
+  }
+  return nayinMap[ganzhi] || '未知'
+}
+
+function getBaiziDescription(ganzhi: string): string {
+  const baiziMap: Record<string, string> = {
+    甲子: '海中金命，做事有始有终，个性沉稳。',
+    乙丑: '海中金命，为人忠厚老实，心地善良。',
+    丙寅: '炉中火命，性格急躁但有才华。',
+    丁卯: '炉中火命，聪明伶俐，善于交际。',
+    戊辰: '大林木命，心胸宽广，有领导能力。',
+    己巳: '大林木命，智慧过人，善于理财。',
+  }
+  return baiziMap[ganzhi] || '性格温和，为人正直诚信。'
+}
+
+function getDailyFortune(ganzhi: string): string {
+  const fortunes = [
+    '今日运势平稳，适合处理日常事务',
+    '今日贵人运佳，有望得到他人帮助',
+    '今日财运亨通，投资理财可获利',
+    '今日感情运势不错，单身者有桃花',
+    '今日工作顺利，上司赏识',
+    '今日健康运佳，精神饱满',
+    '今日学习运好，适合进修',
+  ]
+  const hash = ganzhi.charCodeAt(0) + ganzhi.charCodeAt(1)
+  return fortunes[hash % fortunes.length]
+}
+
+function getCareerFortune(ganzhi: string): string {
+  const careers = [
+    '事业稳步上升，把握机会',
+    '工作中有贵人相助',
+    '适合团队合作，发挥所长',
+    '创新思维得到认可',
+    '领导能力突出，升职有望',
+  ]
+  const hash = ganzhi.charCodeAt(0) * 2 + ganzhi.charCodeAt(1)
+  return careers[hash % careers.length]
+}
+
+function getMoneyFortune(ganzhi: string): string {
+  const money = [
+    '财运平稳，收支平衡',
+    '正财运佳，工资奖金丰厚',
+    '偏财运不错，可小试投资',
+    '理财有道，积累渐丰',
+    '支出较多，节俭为宜',
+  ]
+  const hash = ganzhi.charCodeAt(0) + ganzhi.charCodeAt(1) * 3
+  return money[hash % money.length]
+}
+
+function getLoveFortune(ganzhi: string): string {
+  const love = [
+    '感情稳定，恋人关系和谐',
+    '桃花运旺，单身者有缘分',
+    '夫妻恩爱，家庭和睦',
+    '感情需要沟通，避免误会',
+    '情感丰富，表达爱意的好时机',
+  ]
+  const hash = ganzhi.charCodeAt(0) * 5 + ganzhi.charCodeAt(1)
+  return love[hash % love.length]
+}
+
+function getSolarTerms(): Array<{ name: string; desc: string }> {
+  return [
+    { name: '立春', desc: '春季开始' },
+    { name: '雨水', desc: '降雨增多' },
+    { name: '惊蛰', desc: '春雷乍响' },
+    { name: '春分', desc: '昼夜等长' },
+    { name: '清明', desc: '天清地明' },
+    { name: '谷雨', desc: '雨生百谷' },
+    { name: '立夏', desc: '夏季开始' },
+    { name: '小满', desc: '麦粒渐满' },
+    { name: '芒种', desc: '麦类收割' },
+    { name: '夏至', desc: '白昼最长' },
+    { name: '小暑', desc: '天气渐热' },
+    { name: '大暑', desc: '一年最热' },
+    { name: '立秋', desc: '秋季开始' },
+    { name: '处暑', desc: '暑热结束' },
+    { name: '白露', desc: '露水增多' },
+    { name: '秋分', desc: '昼夜等长' },
+    { name: '寒露', desc: '露水渐凉' },
+    { name: '霜降', desc: '开始降霜' },
+    { name: '立冬', desc: '冬季开始' },
+    { name: '小雪', desc: '开始降雪' },
+    { name: '大雪', desc: '降雪增多' },
+    { name: '冬至', desc: '白昼最短' },
+    { name: '小寒', desc: '天气渐冷' },
+    { name: '大寒', desc: '一年最冷' },
+  ]
 }
