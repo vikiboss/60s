@@ -91,4 +91,4 @@ appRouter.all('/fanyi', serviceFanyi.handle())
 appRouter.all('/fanyi/langs', serviceFanyi.langs())
 
 appRouter.get('/weather', serviceWeather.handle())
-appRouter.get('/weather/7d', serviceWeather.handle7d())
+appRouter.get('/weather/forecast', serviceWeather.handleForecast())

@@ -173,7 +173,7 @@ export class Lunar {
         zhiIndex = (year - 4) % 12
         break
 
-      case 'month':
+      case 'month': {
         if (month === undefined) throw new Error('Month is required for month GanZhi')
         // 修复：月干支计算 - 基于年干确定正月天干
         const yearGanIndex = (year - 4) % 10
@@ -181,14 +181,16 @@ export class Lunar {
         ganIndex = (monthGanBase + month - 1) % 10
         zhiIndex = (month + 1) % 12 // 正月对应寅
         break
+      }
 
-      case 'day':
+      case 'day': {
         if (!date) throw new Error('Date is required for day GanZhi')
         // 日干支：基于基准日期计算
         const daysDiff = Math.floor((date.getTime() - LUNAR_BASE.ganzhiBaseDate.getTime()) / MS_PER_DAY)
         ganIndex = (LUNAR_BASE.ganzhiBaseGan + daysDiff) % 10
         zhiIndex = (LUNAR_BASE.ganzhiBaseZhi + daysDiff) % 12
         break
+      }
 
       default:
         throw new Error('Invalid GanZhi type')

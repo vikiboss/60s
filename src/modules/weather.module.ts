@@ -28,10 +28,10 @@ class ServiceWeather {
     }
   }
 
-  handle7d(): RouterMiddleware<'/weather/7d'> {
+  handleForecast(): RouterMiddleware<'/weather/forecast'> {
     return async (ctx) => {
       const query = ctx.request.url.searchParams.get('query') || ''
-      const forecast = await this.fetch7d(query)
+      const forecast = await this.fetchForecast(query)
 
       switch (ctx.state.encoding) {
         case 'json':
@@ -122,7 +122,7 @@ class ServiceWeather {
     }
   }
 
-  async fetch7d(search: string) {
+  async fetchForecast(search: string) {
     const location = await this.fetchLocation(search)
 
     if (location.is_town) {
