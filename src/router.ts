@@ -29,6 +29,7 @@ import { serviceWeather } from './modules/weather.module.ts'
 import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
 import { serviceLunar } from './modules/lunar/lunar.module.ts'
+import { serviceAINews } from './modules/ai-news.module.ts'
 
 export const rootRouter = new Router()
 
@@ -81,6 +82,7 @@ appRouter.get('/toutiao', serviceToutiao.handle())
 appRouter.get('/weibo', serviceWeibo.handle())
 appRouter.get('/zhihu', serviceZhihu.handle())
 appRouter.get('/lunar', serviceLunar.handle())
+appRouter.get('/ai-news', serviceAINews.handle())
 
 appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
