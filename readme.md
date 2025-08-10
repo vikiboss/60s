@@ -8,7 +8,7 @@
 
 ## 🤔️ 缘起
 
-参考 [这篇文章](https://xlog.viki.moe/60s) 了解更多。
+参考 [这篇文章](https://xlog.viki.moe/60s) 了解更多
 
 ## ⚖️ API 实现原则和使用建议
 
