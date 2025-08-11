@@ -11,14 +11,16 @@
 - 对日更数据采取缓存加速策略，对用户无感、毫秒级响应
 - 为了追求更快的响应，可查看源码直接使用对应 API 的原数据（但原始数据量大、字段繁多，不易处理）
 
-> 待续
+> 待续。
 
 ## 🌍 60s 看世界接口
+
 
 
 目前包含的接口如下，仍在持续增加中，全面的 API 文档已公开托管在 [Apifox](https://doc.cccccc.plus) 上。
 
 主域名: https://60s.cccccc.plus 
+
 
 
 更多详情请看文档: https://doc.cccccc.plus
@@ -28,6 +30,7 @@
 - 文字版本：https://60s.cccccc.plus/v2/60s?encoding=text
 - 图片版本：https://60s.cccccc.plus/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
 - 代理图片版本：https://60s.cccccc.plus/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
+
 
 > 更多详情请看文档: https://doc.cccccc.plus, 如果对你有帮助，请不要吝啬你的 Star～
 
@@ -50,7 +53,10 @@
   - 🌍 在线翻译（支持 109 种语言）
   - 📡 公网 IP 地址
   - 🐦 链接 [OG](https://ogp.me/) 信息
-  - 🌈 哈希/解压/压缩（包含 `md5`、`base64`、`URL`、`GZIP` 等）
+  - 🌈 哈希/解压/压缩（包含 `md5`/`base64`/`URL`/`GZIP` 等）
+  - 🌦️ 实时天气查询（支持全国城市/地区查询，数据来源 [中国天气网](https://weather.com.cn/)）
+  - 🗓️ 农历日期转换（公历农历互转、天干地支、生肖、节气、节假日等，使用 [tyme4ts](https://github.com/6tail/tyme4ts) 库处理）
+  - 🤖️ 每日 AI 快讯（来自 [AI 工具集](https://ai-bot.cn/daily-ai-news/)）
 - 😄 消遣娱乐
   - 💬 随机 KFC 段子
   - 💬 随机一言
@@ -123,7 +129,9 @@ npm install && npx wrangler publish
 
 ## 💰 赞赏
 
+
 如果觉得这个项目对你有帮助，欢迎请 **原作者** 喝咖啡 ☕️ ～
+
 
 > 采取**自愿**原则, 收到的赞赏将用于提高开发者积极性和开发环境。
 

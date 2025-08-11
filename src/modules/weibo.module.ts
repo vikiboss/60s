@@ -11,7 +11,7 @@ class ServiceWeibo {
         case 'text':
           ctx.response.body = `微博实时热搜\n\n${data
             .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value})`)
+            .map((e, i) => `${i + 1}. ${e.title}`)
             .join('\n')}`
           break
 
@@ -24,44 +24,46 @@ class ServiceWeibo {
   }
 
   async #fetch() {
-    const api = 'https://weibo.com/ajax/side/hotSearch'
+    const api =
+      'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
     const { data = {} } = await (await fetch(api)).json()
-    return (((data?.realtime || []) as Item[]).filter((e) => !e.is_ad) || []).map((e) => ({
-      title: e.word,
-      hot_value: e.num,
-      link: `https://s.weibo.com/weibo?q=${encodeURIComponent(e.word)}`,
-    }))
+    return (((data?.cards?.[0]?.card_group || []) as Item[]).filter((e) => !e.pic.includes('stick')) || []).map(
+      (e) => ({
+        title: e.desc,
+        hot_value: 0,
+        link: `https://s.weibo.com/weibo?q=${encodeURIComponent(e.desc)}`,
+      }),
+    )
   }
 }
 
 export const serviceWeibo = new ServiceWeibo()
 
 interface Item {
-  word: string
-  label_name?: string
-  emoticon: string
-  topic_flag: number
-  icon_width?: number
-  flag_desc?: string
-  num: number
-  flag?: number
-  icon_desc?: string
-  icon_desc_color?: string
-  icon_height?: number
-  small_icon_desc?: string
-  realpos?: number
   icon?: string
-  word_scheme?: string
-  small_icon_desc_color?: string
-  note: string
-  rank: number
-  icon_type?: string
-  is_ad?: number
-  topic_ad?: number
-  dot_icon?: number
-  id?: number
-  monitors?: {
-    app: object
-    pc: object
+  icon_width?: number
+  itemid: string
+  actionlog: {
+    act_code: number
+    fid: string
+    luicode: string
+    lfid: string
+    uicode: string
+    act_type: number
+    ext: string
+  }
+  desc: string
+  card_type: number
+  pic: string
+  icon_height?: number
+  scheme: string
+  desc_extr?: number | string
+  promotion?: {
+    monitor_url: Array<{
+      third_party_click: string
+      third_party_show: string
+      type: string
+      monitor_name?: string
+    }>
   }
 }
