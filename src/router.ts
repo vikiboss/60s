@@ -29,11 +29,9 @@ import { serviceToutiao } from './modules/toutiao.module.ts'
 import { serviceWeather } from './modules/weather.module.ts'
 import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
-
 import { serviceLunar } from './modules/lunar/lunar.module.ts'
 import { serviceAINews } from './modules/ai-news.module.ts'
 
-import { serviceWeather } from './modules/weather.module.ts'
 
 
 export const rootRouter = new Router()
