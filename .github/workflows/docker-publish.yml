@@ -1,7 +1,7 @@
 name: Docker Image CI/CD
 
 on:
-  workflow_dispatch:
+  #workflow_dispatch:
   push:
     branches: [ "main", "master" ]
     tags: [ 'v*.*.*' ]
