@@ -28,7 +28,7 @@ class ServiceExRate {
   }
 
   async #fetch(currency = 'CNY') {
-    const dayKey = Common.localeDate()
+    const dayKey = `${Common.localeDate()}-${currency}`
     const cache = this.#cache.get(dayKey)
 
     if (cache) {
