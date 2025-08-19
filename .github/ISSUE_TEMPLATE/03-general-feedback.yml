@@ -37,7 +37,7 @@ body:
   - type: dropdown
     id: related-module
     attributes:
-      label: "相关模块"
+      label: "相关模块（可选）"
       description: "您的反馈涉及哪个模块？"
       options:
         - "整个项目"
@@ -54,7 +54,7 @@ body:
   - type: input
     id: contact
     attributes:
-      label: "联系方式"
+      label: "联系方式（可选）"
       description: "如需进一步沟通，请提供联系方式（可选）"
       placeholder: "邮箱、微信、QQ等"
     validations:
@@ -63,7 +63,7 @@ body:
   - type: textarea
     id: reference
     attributes:
-      label: "参考资料"
+      label: "参考资料（可选）"
       description: "如有相关链接或参考资料，请提供"
       placeholder: |
         - 相关文档链接
@@ -87,7 +87,7 @@ body:
   - type: textarea
     id: additional-info
     attributes:
-      label: "其他信息"
+      label: "其他信息（可选）"
       description: "任何其他您认为有用的信息"
     validations:
       required: false

@@ -48,7 +48,7 @@ body:
   - type: dropdown
     id: priority
     attributes:
-      label: "优先级"
+      label: "优先级（可选）"
       description: "您认为这个功能的优先级是？"
       options:
         - "高 - 急需此功能"
@@ -60,7 +60,7 @@ body:
   - type: textarea
     id: interface-spec
     attributes:
-      label: "接口规格"
+      label: "接口规格（可选）"
       description: "如果是API相关的功能，请描述期望的接口格式"
       placeholder: |
         请求：GET /your-api
@@ -80,7 +80,7 @@ body:
   - type: textarea
     id: examples
     attributes:
-      label: "使用示例"
+      label: "使用示例（可选）"
       description: "请提供一些使用示例或参考"
       placeholder: |
         例如：
@@ -93,7 +93,7 @@ body:
   - type: textarea
     id: alternatives
     attributes:
-      label: "替代方案"
+      label: "替代方案（可选）"
       description: "您是否考虑过其他解决方案？"
       placeholder: "目前我通过...方式解决，但是..."
     validations:
@@ -102,7 +102,7 @@ body:
   - type: textarea
     id: additional-context
     attributes:
-      label: "其他信息"
+      label: "其他信息（可选）"
       description: "任何其他有助于实现这个功能的信息"
     validations:
       required: false

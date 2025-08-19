@@ -21,7 +21,7 @@ body:
   - type: textarea
     id: reproduce
     attributes:
-      label: "复现步骤"
+      label: "复现步骤（可选）"
       description: "请提供复现问题的具体步骤"
       placeholder: |
         1. 访问...
@@ -34,7 +34,7 @@ body:
   - type: textarea
     id: expected
     attributes:
-      label: "期望行为"
+      label: "期望行为（可选）"
       description: "描述您期望的正常行为"
       placeholder: "期望应该..."
     validations:
@@ -43,7 +43,7 @@ body:
   - type: input
     id: version
     attributes:
-      label: "版本信息"
+      label: "版本信息（可选）"
       description: "如果知道具体版本，请填写"
       placeholder: "例如：v2.18.0"
     validations:
@@ -52,7 +52,7 @@ body:
   - type: textarea
     id: logs
     attributes:
-      label: "错误日志"
+      label: "错误日志（可选）"
       description: "如有错误日志，请粘贴在此"
       render: shell
     validations:
@@ -61,7 +61,7 @@ body:
   - type: textarea
     id: environment
     attributes:
-      label: "环境信息"
+      label: "环境信息（可选）"
       description: "请提供相关的环境信息"
       placeholder: |
         - 操作系统：
@@ -73,7 +73,7 @@ body:
   - type: textarea
     id: additional
     attributes:
-      label: "其他信息"
+      label: "其他信息（可选）"
       description: "任何其他有助于解决问题的信息"
     validations:
       required: false
