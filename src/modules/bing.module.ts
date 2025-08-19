@@ -1,4 +1,4 @@
-import { Common } from '../common.ts'
+import { Common, dayjs } from '../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
@@ -21,7 +21,7 @@ class ServiceBing {
 
       if (!data) {
         ctx.response.status = 500
-        ctx.response.body = Common.buildJson(null, 500, '获取数据失败')
+        ctx.response.body = Common.buildJson(null, 500, '获取数据失败，可能是部署区域无法获取到 CN Bing 的数据')
         return
       }
 
@@ -42,6 +42,18 @@ class ServiceBing {
     }
   }
 
+  getUrl(url: string) {
+    const id = (new URL(url).searchParams.get('id') || '').replace(/_\d+x\d+\.jpg$/, '')
+    return `https://cn.bing.com/th?id=${id}_1920x1080.jpg`
+  }
+
+  // https://cn.bing.com//th?id=OHR.GipuzcoaSummer_ZH-CN1926924422_UHD.jpg
+  // https://cn.bing.com/th?id=OHR.GipuzcoaSummer_ZH-CN1926924422_1920x1080.jpg
+  get4kUrl(url: string) {
+    const id = (new URL(url).searchParams.get('id') || '').replace(/_\d+x\d+\.jpg$/, '')
+    return `https://cn.bing.com/th?id=${id}_UHD.jpg`
+  }
+
   async #fetch() {
     const dailyUniqueKey = Common.localeDate()
     const cache = this.#cache.get(dailyUniqueKey)
@@ -50,19 +62,32 @@ class ServiceBing {
       return cache
     }
 
-    // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10
-
     const options = { headers: { 'User-Agent': Common.chromeUA } }
-
     const rawContent = await fetch('https://cn.bing.com/?setmkt=zh-cn&setlang=zh-cn', options).then((e) => e.text())
-    // .catch(() => fetch('https://proxy.viki.moe?proxy-host=cn.bing.com', options).then((e) => e.text()))
-
-    console.log('[DEBUG] Bing: \n\n', rawContent, '\n\n')
 
     const rawJson = /var\s*_model\s*=\s*([^;]+);/.exec(rawContent)?.[1] || '{}'
     const images = JSON.parse(rawJson)?.MediaContents ?? []
 
-    if (!images.length) return null
+    const now = dayjs()
+
+    if (!images.length) {
+      const api = 'https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1'
+      const { images = [] } = await fetch(api, options).then((e) => e.json())
+      const image = images[0]
+      if (!image) return null
+
+      return {
+        title: image.title || '',
+        headline: image.title || '',
+        description: image.title || '',
+        main_text: image.title || '',
+        cover: image?.url ? this.getUrl(`https://cn.bing.com${image.url}`) : '',
+        cover_4k: image?.url ? this.get4kUrl(`https://cn.bing.com${image.url}`) : '',
+        copyright: image.copyright || '',
+        update_date: now.format('YYYY-MM-DD HH:mm:ss'),
+        update_date_at: now.valueOf(),
+      }
+    }
 
     const { ImageContent = {} } = images[0] || {}
 
@@ -91,20 +116,19 @@ class ServiceBing {
       TriviaId: string
     }
 
-    const today = Common.localeDate()
-
     const data = {
       title: Title,
       headline: Headline,
       description: Description,
       main_text: QuickFact?.MainText || '',
-      cover: Image?.Wallpaper ? `https://cn.bing.com${Image.Wallpaper.replaceAll('1920x1200', '1920x1080')}` : '',
+      cover: Image?.Wallpaper ? this.getUrl(`https://cn.bing.com${Image.Wallpaper}`) : '',
+      cover_4k: Image?.Wallpaper ? this.get4kUrl(`https://cn.bing.com${Image.Wallpaper}`) : '',
       copyright: Copyright,
-      update_date: today,
-      update_date_at: Date.now(),
+      update_date: now.format('YYYY-MM-DD HH:mm:ss'),
+      update_date_at: now.valueOf(),
     }
 
-    this.#cache.set(today, data)
+    this.#cache.set(dailyUniqueKey, data)
 
     return data
   }
