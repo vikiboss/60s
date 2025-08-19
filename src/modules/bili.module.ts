@@ -9,7 +9,7 @@ class ServiceBili {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = `Bilibili 实时热搜\n\n${data
+          ctx.response.body = `B站实时热搜\n\n${data
             .slice(0, 20)
             .map((e, i) => `${i + 1}. ${e.title}`)
             .join('\n')}`
@@ -25,7 +25,13 @@ class ServiceBili {
 
   async #fetch() {
     const api = 'https://app.bilibili.com/x/v2/search/trending/ranking'
-    const { data = {} } = await (await fetch(api)).json()
+    const proxyUrl = 'https://proxy.viki.moe/x/v2/search/trending/ranking?proxy-host=app.bilibili.com'
+
+    const options = { headers: { 'User-Agent': Common.chromeUA } }
+
+    const { data = {} } = await fetch(api, options)
+      .then((e) => e.json())
+      .catch(() => fetch(proxyUrl, options).then((e) => e.json()))
 
     // deno-lint-ignore no-explicit-any
     return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map((item) => {

@@ -50,58 +50,63 @@ class ServiceBing {
       return cache
     }
 
-    const api = 'https://cn.bing.com/'
     // https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=10
 
-    const rawContent = await (await fetch(api, { headers: { 'User-Agent': Common.chromeUA } })).text()
+    const options = { headers: { 'User-Agent': Common.chromeUA } }
+
+    const rawContent = await fetch('https://cn.bing.com/', options)
+      .then((e) => e.text())
+      .catch(() => fetch('https://bing.com/', options).then((e) => e.text()))
+      .catch(() => fetch('https://proxy.viki.moe?proxy-host=cn.bing.com', options).then((e) => e.text()))
+
     const rawJson = /var\s*_model\s*=\s*([^;]+);/.exec(rawContent)?.[1] || '{}'
     const images = JSON.parse(rawJson)?.MediaContents ?? []
 
-    if (images.length) {
-      const { ImageContent = {} } = images[0] || {}
+    if (!images.length) return null
 
-      const { Description, Image, Headline, Title, Copyright, QuickFact } = (ImageContent || {}) as {
-        Description: string
-        Image: {
-          Url: string
-          Wallpaper: string
-          Downloadable: boolean
-        }
-        Headline: string
-        Title: string
-        Copyright: string
-        SocialGood: null
-        MapLink: {
-          Url: string
-          Link: string
-        }
-        QuickFact: {
-          MainText: string
-          LinkUrl: string
-          LinkText: string
-        }
-        TriviaUrl: string
-        BackstageUrl: string
-        TriviaId: string
+    const { ImageContent = {} } = images[0] || {}
+
+    const { Description, Image, Headline, Title, Copyright, QuickFact } = (ImageContent || {}) as {
+      Description: string
+      Image: {
+        Url: string
+        Wallpaper: string
+        Downloadable: boolean
       }
-
-      const today = Common.localeDate()
-
-      const data = {
-        title: Title,
-        headline: Headline,
-        description: Description,
-        main_text: QuickFact?.MainText || '',
-        cover: Image?.Wallpaper ? `https://cn.bing.com${Image.Wallpaper.replaceAll('1920x1200', '1920x1080')}` : '',
-        copyright: Copyright,
-        update_date: today,
-        update_date_at: Date.now(),
+      Headline: string
+      Title: string
+      Copyright: string
+      SocialGood: null
+      MapLink: {
+        Url: string
+        Link: string
       }
-
-      this.#cache.set(today, data)
-
-      return data
+      QuickFact: {
+        MainText: string
+        LinkUrl: string
+        LinkText: string
+      }
+      TriviaUrl: string
+      BackstageUrl: string
+      TriviaId: string
     }
+
+    const today = Common.localeDate()
+
+    const data = {
+      title: Title,
+      headline: Headline,
+      description: Description,
+      main_text: QuickFact?.MainText || '',
+      cover: Image?.Wallpaper ? `https://cn.bing.com${Image.Wallpaper.replaceAll('1920x1200', '1920x1080')}` : '',
+      copyright: Copyright,
+      update_date: today,
+      update_date_at: Date.now(),
+    }
+
+    this.#cache.set(today, data)
+
+    return data
   }
 }
 
