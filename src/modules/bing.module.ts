@@ -44,14 +44,14 @@ class ServiceBing {
 
   getUrl(url: string) {
     const id = (new URL(url).searchParams.get('id') || '').replace(/_\d+x\d+\.jpg$/, '')
-    return `https://cn.bing.com/th?id=${id}_1920x1080.jpg`
+    return `https://bing.com/th?id=${id}_1920x1080.jpg`
   }
 
   // https://cn.bing.com//th?id=OHR.GipuzcoaSummer_ZH-CN1926924422_UHD.jpg
   // https://cn.bing.com/th?id=OHR.GipuzcoaSummer_ZH-CN1926924422_1920x1080.jpg
   get4kUrl(url: string) {
     const id = (new URL(url).searchParams.get('id') || '').replace(/_\d+x\d+\.jpg$/, '')
-    return `https://cn.bing.com/th?id=${id}_UHD.jpg`
+    return `https://bing.com/th?id=${id}_UHD.jpg`
   }
 
   async #fetch() {
@@ -63,7 +63,7 @@ class ServiceBing {
     }
 
     const options = { headers: { 'User-Agent': Common.chromeUA } }
-    const rawContent = await fetch('https://cn.bing.com/?setmkt=zh-cn&setlang=zh-cn', options).then((e) => e.text())
+    const rawContent = await fetch('https://global.bing.com/?setmkt=zh-cn', options).then((e) => e.text())
 
     const rawJson = /var\s*_model\s*=\s*([^;]+);/.exec(rawContent)?.[1] || '{}'
     const images = JSON.parse(rawJson)?.MediaContents ?? []
@@ -71,7 +71,7 @@ class ServiceBing {
     const now = dayjs()
 
     if (!images.length) {
-      const api = 'https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1'
+      const api = 'https://global.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&setmkt=zh-cn'
       const { images = [] } = await fetch(api, options).then((e) => e.json())
       const image = images[0]
       if (!image) return null
@@ -81,8 +81,8 @@ class ServiceBing {
         headline: image.title || '',
         description: image.title || '',
         main_text: image.title || '',
-        cover: image?.url ? this.getUrl(`https://cn.bing.com${image.url}`) : '',
-        cover_4k: image?.url ? this.get4kUrl(`https://cn.bing.com${image.url}`) : '',
+        cover: image?.url ? this.getUrl(`https://bing.com${image.url}`) : '',
+        cover_4k: image?.url ? this.get4kUrl(`https://bing.com${image.url}`) : '',
         copyright: image.copyright || '',
         update_date: now.format('YYYY-MM-DD HH:mm:ss'),
         update_date_at: now.valueOf(),
@@ -121,8 +121,8 @@ class ServiceBing {
       headline: Headline,
       description: Description,
       main_text: QuickFact?.MainText || '',
-      cover: Image?.Wallpaper ? this.getUrl(`https://cn.bing.com${Image.Wallpaper}`) : '',
-      cover_4k: Image?.Wallpaper ? this.get4kUrl(`https://cn.bing.com${Image.Wallpaper}`) : '',
+      cover: Image?.Wallpaper ? this.getUrl(`https://bing.com${Image.Wallpaper}`) : '',
+      cover_4k: Image?.Wallpaper ? this.get4kUrl(`https://bing.com${Image.Wallpaper}`) : '',
       copyright: Copyright,
       update_date: now.format('YYYY-MM-DD HH:mm:ss'),
       update_date_at: now.valueOf(),
