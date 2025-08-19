@@ -54,10 +54,11 @@ class ServiceBing {
 
     const options = { headers: { 'User-Agent': Common.chromeUA } }
 
-    const rawContent = await fetch('https://cn.bing.com/', options)
-      .then((e) => e.text())
-      .catch(() => fetch('https://bing.com/', options).then((e) => e.text()))
-      .catch(() => fetch('https://proxy.viki.moe?proxy-host=cn.bing.com', options).then((e) => e.text()))
+    const rawContent = await fetch('https://cn.bing.com/', options).then((e) => e.text())
+    // .catch(() => fetch('https://bing.com/', options).then((e) => e.text()))
+    // .catch(() => fetch('https://proxy.viki.moe?proxy-host=cn.bing.com', options).then((e) => e.text()))
+
+    console.log('[DEBUG] Bing: \n\n', rawContent, '\n\n')
 
     const rawJson = /var\s*_model\s*=\s*([^;]+);/.exec(rawContent)?.[1] || '{}'
     const images = JSON.parse(rawJson)?.MediaContents ?? []

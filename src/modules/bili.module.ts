@@ -25,13 +25,16 @@ class ServiceBili {
 
   async #fetch() {
     const api = 'https://app.bilibili.com/x/v2/search/trending/ranking'
-    const proxyUrl = 'https://proxy.viki.moe/x/v2/search/trending/ranking?proxy-host=app.bilibili.com'
+    // const proxyUrl = 'https://proxy.viki.moe/x/v2/search/trending/ranking?proxy-host=app.bilibili.com'
 
     const options = { headers: { 'User-Agent': Common.chromeUA } }
 
-    const { data = {} } = await fetch(api, options)
-      .then((e) => e.json())
-      .catch(() => fetch(proxyUrl, options).then((e) => e.json()))
+    const res = await fetch(api, options).then((e) => e.text())
+    // .catch(() => fetch(proxyUrl, options).then((e) => e.json()))
+
+    console.log('[DEBUG] Bili: \n\n', res, '\n\n')
+
+    const { data } = JSON.parse(res)
 
     // deno-lint-ignore no-explicit-any
     return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map((item) => {
