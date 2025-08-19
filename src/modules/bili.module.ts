@@ -24,25 +24,30 @@ class ServiceBili {
   }
 
   async #fetch() {
-    const api = 'https://app.bilibili.com/x/v2/search/trending/ranking'
-    // const proxyUrl = 'https://proxy.viki.moe/x/v2/search/trending/ranking?proxy-host=app.bilibili.com'
+    try {
+      const api = 'https://api.bilibili.com/x/web-interface/wbi/search/square?limit=50'
 
-    const options = { headers: { 'User-Agent': Common.chromeUA } }
+      const { data = {} } = await (await fetch(api)).json()
 
-    const res = await fetch(api, options).then((e) => e.text())
-    // .catch(() => fetch(proxyUrl, options).then((e) => e.json()))
+      // deno-lint-ignore no-explicit-any
+      return (data?.trending?.list as Item[]).map((item) => {
+        return {
+          title: item.keyword || item.show_name,
+          link: `https://search.bilibili.com/all?keyword=${encodeURIComponent(item.keyword)}`,
+        }
+      })
+    } catch {
+      const api = 'https://app.bilibili.com/x/v2/search/trending/ranking?limit=50'
+      const { data = {} } = await (await fetch(api)).json()
 
-    console.log('[DEBUG] Bili: \n\n', res, '\n\n')
-
-    const { data } = JSON.parse(res)
-
-    // deno-lint-ignore no-explicit-any
-    return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map((item) => {
-      return {
-        title: item.keyword || item.show_name,
-        link: `https://search.bilibili.com/all?keyword=${encodeURIComponent(item.keyword)}`,
-      }
-    })
+      // deno-lint-ignore no-explicit-any
+      return ((data?.list?.filter((e: any) => e?.is_commercial === '0') || []) as Item[]).map((item) => {
+        return {
+          title: item.keyword || item.show_name,
+          link: `https://search.bilibili.com/all?keyword=${encodeURIComponent(item.keyword)}`,
+        }
+      })
+    }
   }
 }
 
