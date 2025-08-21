@@ -1,7 +1,7 @@
-import { Common } from '../common.ts'
+import { Common, dayjs, TZ_SHANGHAI } from '../common.ts'
+import { SolarDay } from 'tyme4ts'
 
 import type { RouterMiddleware } from '@oak/oak'
-import { Lunar } from '../lunar.ts'
 
 const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六']
 
@@ -67,18 +67,22 @@ class Service60s {
       .catch(() => fetch(this.getJsDelivrUrl(date)))
 
     if (response.ok) {
-      const now = Date.now()
       const data = await response.json()
 
       if (!data?.news?.length) return null
 
+      const now = dayjs().tz(TZ_SHANGHAI)
+
       return {
         ...data,
         day_of_week: getDayOfWeek(data.date),
-        lunar_date: Lunar.toLunar(new Date(data.date)).formatted,
-        api_updated: Common.localeTime(now),
-        api_updated_at: now,
-      } as DailyNewsItem
+        lunar_date: SolarDay.fromYmd(now.year(), now.month() + 1, now.date())
+          .getLunarDay()
+          .toString()
+          .replace('农历', ''),
+        api_updated: Common.localeTime(now.valueOf()),
+        api_updated_at: now.valueOf(),
+      } satisfies DailyNewsItem
     } else {
       return null
     }

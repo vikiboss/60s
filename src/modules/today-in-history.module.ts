@@ -1,8 +1,10 @@
-import { Common } from '../common.ts'
+import { Common, dayjs } from '../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceTodayInHistory {
+  private cache = new Map<string, HistoryItem[]>()
+
   handle(): RouterMiddleware<'/today_in_history'> {
     return async (ctx) => {
       const data = await this.#fetch()
@@ -24,14 +26,56 @@ class ServiceTodayInHistory {
   }
 
   async #fetch() {
-    const { data = [] } = await (await fetch('https://baike.deno.dev/today_in_history')).json()
-    const items = data as Item[]
-    const [month = 0, day = 0] = items[0].date?.split('-') || []
+    type AnyObject<T = any> = Record<number | string | symbol, T>
+
+    const now = dayjs()
+    const today = now.format(`YYYY/M/D`)
+    const todayField = now.format('MMDD')
+    const monthAndDay = now.format('M-D')
+
+    if (this.cache.has(today)) {
+      return {
+        date: monthAndDay,
+        month: now.month() + 1,
+        day: now.date(),
+        items: this.cache.get(today)!.map((e) => ({
+          title: e.title,
+          year: e.year,
+          description: e.desc,
+          event_type: e.type,
+          link: e.link,
+        })),
+      }
+    }
+
+    const res = await fetch(this.getHistoryApi())
+    const monthEvents: AnyObject<AnyObject<AnyObject[]>> = await res.json()
+    const todayEvents = monthEvents?.[String(now.format('MM'))]?.[todayField] ?? []
+
+    todayEvents.sort((a, b) => a.year - b.year)
+
+    const modifiedTodayEvents = todayEvents.map((e) => {
+      let desc = this.transformChars(e.desc as string)
+
+      if (!desc.endsWith('.') && !desc.endsWith('。')) desc += '...'
+
+      return {
+        title: this.transformChars(e.title as string),
+        year: e.year as string,
+        date: monthAndDay,
+        desc: desc,
+        type: e.type as 'birth' | 'death' | 'event',
+        link: e.link as string,
+      }
+    })
+
+    this.cache.set(today, modifiedTodayEvents)
+
     return {
-      date: month ? `${month}月${day}日` : '',
-      month: +month,
-      day: +day,
-      items: items.map((e) => {
+      date: monthAndDay,
+      month: now.month() + 1,
+      day: now.date(),
+      items: modifiedTodayEvents.map((e) => {
         return {
           title: e.title,
           year: e.year,
@@ -42,15 +86,25 @@ class ServiceTodayInHistory {
       }),
     }
   }
+
+  private getHistoryApi = () => {
+    const month = new Date().getMonth() + 1
+    const filename = `${String(month).padStart(2, '0')}.json`
+    return `https://baike.baidu.com/cms/home/eventsOnHistory/${filename}`
+  }
+
+  private transformChars = (text: string) => {
+    return text.replace(/<.*?>/g, '').replace(/&#(\d+);/g, (_, $1) => String.fromCharCode($1))
+  }
 }
 
 export const serviceTodayInHistory = new ServiceTodayInHistory()
 
-interface Item {
+interface HistoryItem {
   title: string
   year: string
-  desc: string
   date: string
-  type: string
+  desc: string
+  type: 'birth' | 'death' | 'event'
   link: string
 }

@@ -85,6 +85,7 @@ export class Common {
   }
 
   static useProxiedUrl(link: string) {
+    // deno-lint-ignore no-process-global
     if (!process.env.DEV) return link
     const url = new URL(link)
     url.searchParams.set('proxy-host', url.host)
