@@ -42,6 +42,14 @@ class ServiceBing {
     }
   }
 
+  handleRandom(): RouterMiddleware<'/bing/random'> {
+    return async (ctx) => {}
+  }
+
+  handleAll(): RouterMiddleware<'/bing/random'> {
+    return async (ctx) => {}
+  }
+
   getUrl(url: string) {
     const id = (new URL(url).searchParams.get('id') || '').replace(/_\d+x\d+\.jpg$/, '')
     return `https://bing.com/th?id=${id}_1920x1080.jpg`
