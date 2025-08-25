@@ -5,22 +5,37 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceFabing {
   handle(): RouterMiddleware<'/fabing'> {
-    return (ctx) => {
-      const name = ctx.request.url.searchParams.get('name') || '主人'
-      const sayingRaw = Common.randomItem(fabingData)
-      const index = fabingData.findIndex((item) => item === sayingRaw)
-      const saying = sayingRaw.replaceAll('[name]', name)
+    return async (ctx) => {
+      const name = (await Common.getParam('name', ctx.request)) || '主人'
+      const id = await Common.getParam('id', ctx.request)
+      
+      let result: string
+      
+      if (id) {
+        // 获取指定ID的发病文学
+        const index = parseInt(id)
+        if (index >= 0 && index < fabingData.length) {
+          result = fabingData[index].replaceAll('[name]', name)
+        } else {
+          ctx.response.status = 404
+          ctx.response.body = Common.buildJson(null, 404, `未找到ID为 ${index} 的发病文学`)
+          return
+        }
+      } else {
+        // 随机获取发病文学（默认行为）
+        result = Common.randomItem(fabingData).replaceAll('[name]', name)
+      }
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = saying
+          ctx.response.body = result
           break
 
         case 'json':
         default:
           ctx.response.body = Common.buildJson({
-            index,
-            saying,
+            index: fabingData.findIndex(item => item.replaceAll('[name]', name) === result),
+            saying: result,
           })
           break
       }

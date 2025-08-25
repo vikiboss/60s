@@ -679,6 +679,7 @@ export function get_ab(dpf: string, ua: string): string {
   const ab = get_raw_ab(lm_get_ab)
   return ab
 }
+
 ;(async () => {
   const douyinUrl = `https://v.douyin.com/luFQ-afUTxY/`
   const urlPattern = /https:\/\/v\.douyin\.com\/[a-zA-Z0-9_\-]+\//

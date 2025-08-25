@@ -10,7 +10,6 @@ class ServiceWeibo {
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = `微博实时热搜\n\n${data
-            .slice(0, 20)
             .map((e, i) => `${i + 1}. ${e.title}`)
             .join('\n')}`
           break
