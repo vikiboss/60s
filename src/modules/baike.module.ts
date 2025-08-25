@@ -5,16 +5,15 @@ import type { RouterMiddleware } from '@oak/oak'
 class ServiceBaike {
   handle(): RouterMiddleware<'/baike'> {
     return async (ctx) => {
-      const word = ctx.request.url.searchParams.get('word')
+      const word = await Common.getParam('word', ctx.request)
 
       if (!word) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, '缺少 query 参数 word')
+        Common.requireArguments('word', ctx)
         return
       }
 
       try {
-        const data = await this.#fetch(ctx.request.url.searchParams.get('word') ?? '')
+        const data = await this.#fetch(word)
 
         switch (ctx.state.encoding) {
           case 'text':

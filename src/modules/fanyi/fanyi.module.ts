@@ -19,8 +19,8 @@ class ServiceFanyi {
         return
       }
 
-      const from = ctx.request.url.searchParams.get('from') || 'auto'
-      const to = ctx.request.url.searchParams.get('to') || 'auto'
+      const from = (await Common.getParam('from', ctx.request)) || 'auto'
+      const to = (await Common.getParam('to', ctx.request)) || 'auto'
 
       const data = await this.#fetch(text, from, to)
       const isSuccess = data.code === 0

@@ -15,7 +15,7 @@ class ServiceWeather {
 
   handle(): RouterMiddleware<'/weather'> {
     return async (ctx) => {
-      const query = ctx.request.url.searchParams.get('query') || ''
+      const query = await Common.getParam('query', ctx.request)
       const location = await this.fetchLocation(query)
       const realtime = await this.fetchRealtime(query)
 
@@ -30,7 +30,7 @@ class ServiceWeather {
 
   handleForecast(): RouterMiddleware<'/weather/forecast'> {
     return async (ctx) => {
-      const query = ctx.request.url.searchParams.get('query') || ''
+      const query = await Common.getParam('query', ctx.request)
       const forecast = await this.fetchForecast(query)
 
       switch (ctx.state.encoding) {
