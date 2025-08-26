@@ -2,11 +2,11 @@ import { Common, dayjs } from '../common.ts'
 import { filesize } from 'filesize'
 import type { RouterMiddleware } from '@oak/oak'
 
-class ServiceNem {
+class ServiceNcm {
   private cache = new Map<string, { data: any; timestamp: number }>()
   private readonly CACHE_DURATION = 30 * 60 * 1000 // 30 minutes
 
-  handleRank(): RouterMiddleware<'/nem-rank'> {
+  handleRank(): RouterMiddleware<'/ncm-rank'> {
     return async (ctx) => {
       const data = await this.#fetchRank()
 
@@ -25,7 +25,7 @@ class ServiceNem {
     }
   }
 
-  handleRankDetail(): RouterMiddleware<'/nem-rank/:id'> {
+  handleRankDetail(): RouterMiddleware<'/ncm-rank/:id'> {
     return async (ctx) => {
       const id = ctx.params?.id || '3778678' // 默认热歌榜
       const size = +(ctx.request.url.searchParams.get('size') || '36')
@@ -81,7 +81,7 @@ class ServiceNem {
     }
 
     const response = await fetch(api, options)
-    const { list = [] } = (await response.json()) as NemRankRes
+    const { list = [] } = (await response.json()) as NcmRankRes
 
     const processedData = list.map((rank) => ({
       id: rank.id,
@@ -171,7 +171,7 @@ class ServiceNem {
     }
 
     const response = await fetch(api, options)
-    const { result } = ((await response.json()) || {}) as NemRankItemRes
+    const { result } = ((await response.json()) || {}) as NcmRankItemRes
 
     const processedData = (result?.tracks || []).map((track, index) => ({
       id: track.id,
@@ -249,9 +249,9 @@ class ServiceNem {
   }
 }
 
-export const serviceNem = new ServiceNem()
+export const serviceNcm = new ServiceNcm()
 
-export interface NemRankRes {
+export interface NcmRankRes {
   code: number
   list: {
     subscribers: any[]
@@ -314,7 +314,7 @@ export interface NemRankRes {
   }
 }
 
-export interface NemRankItemRes {
+export interface NcmRankItemRes {
   result: {
     subscribers: any[]
     subscribed: boolean
