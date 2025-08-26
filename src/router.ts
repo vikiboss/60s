@@ -31,7 +31,7 @@ import { serviceZhihu } from './modules/zhihu.module.ts'
 import { serviceLunar } from './modules/lunar/lunar.module.ts'
 import { serviceAINews } from './modules/ai-news.module.ts'
 import { serviceAwesomeJs } from './modules/awesome-js/awesome-js.module.ts'
-import { serviceNcm } from './modules/nem.module.ts'
+import { serviceNem } from './modules/nem.module.ts'
 
 export const rootRouter = new Router()
 
@@ -96,5 +96,5 @@ appRouter.all('/fanyi/langs', serviceFanyi.langs())
 appRouter.get('/weather', serviceWeather.handle())
 appRouter.get('/weather/forecast', serviceWeather.handleForecast())
 
-appRouter.get('/nem-top-list', serviceNcm.handleTopList())
-appRouter.get('/nem-top-list/:id', serviceNcm.handleTopListDetail())
+appRouter.get('/nem-rank', serviceNem.handleRank())
+appRouter.get('/nem-rank/:id', serviceNem.handleRankDetail())
