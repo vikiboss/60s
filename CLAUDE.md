@@ -237,6 +237,7 @@ const apiInfo = Common.getApiInfo()
 - `GET /v2/duanzi` - 搞笑段子
 - `GET /v2/fabing` - 发病文学
 - `GET /v2/answer` - 答案之书
+- `GET /v2/dad-joke` - 冷笑话（谐音梗）
 
 > **注意**: API具体数量和分类会动态更新，以实际 `/v2/router.ts` 文件中的路由定义为准
 
