@@ -5,7 +5,7 @@ class ServiceNcm {
     private cache = new Map<string, { data: any; timestamp: number }>()
     private readonly CACHE_DURATION = 30 * 60 * 1000
 
-    handleToplist(): RouterMiddleware<'/ncm-toplist'> {
+    handleTopList(): RouterMiddleware<'/nem-top-list'> {
         return async (ctx) => {
             const data = await this.#fetchToplist()
 
@@ -24,7 +24,7 @@ class ServiceNcm {
         }
     }
 
-    handleToplistDetail(): RouterMiddleware<'/ncm-toplist/:id'> {
+    handleTopListDetail(): RouterMiddleware<'/nem-top-list/:id'> {
         return async (ctx) => {
             const id = ctx.params?.id || '3778678'
             const data = await this.#fetchPlaylist(id)
