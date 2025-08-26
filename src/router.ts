@@ -31,6 +31,7 @@ import { serviceZhihu } from './modules/zhihu.module.ts'
 import { serviceLunar } from './modules/lunar/lunar.module.ts'
 import { serviceAINews } from './modules/ai-news.module.ts'
 import { serviceAwesomeJs } from './modules/awesome-js/awesome-js.module.ts'
+import { serviceNcm } from './modules/ncm.module.ts'
 
 export const rootRouter = new Router()
 
@@ -94,3 +95,7 @@ appRouter.all('/fanyi/langs', serviceFanyi.langs())
 
 appRouter.get('/weather', serviceWeather.handle())
 appRouter.get('/weather/forecast', serviceWeather.handleForecast())
+
+appRouter.get('/ncm-toplist', serviceNcm.handleToplist())
+appRouter.get('/ncm-toplist/:id', serviceNcm.handleToplistDetail())
+
