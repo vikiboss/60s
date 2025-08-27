@@ -35,10 +35,10 @@ class ServiceQRCode {
 
         case 'json': {
           ctx.response.body = Common.buildJson({
-            base64: rawBase64,
-            data_uri: dataURI,
             mime_type: 'image/gif',
             text: text,
+            base64: rawBase64,
+            data_uri: dataURI,
           })
           break
         }
