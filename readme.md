@@ -118,8 +118,8 @@ curl https://60s.viki.moe/v2/60s?encoding=image-proxy
 ?id=123          # 获取指定ID
 
 # 示例调用
-curl "https://60s.viki.moe/v2/js-questions?random=true"
-curl "https://60s.viki.moe/v2/weather?query=beijing"
+curl "https://60s.viki.moe/v2/60s?encoding=text"
+curl "https://60s.viki.moe/v2/epic"
 curl "https://60s.viki.moe/v2/fanyi" -d '{"text":"Hello","to":"zh"}'
 ```
 
