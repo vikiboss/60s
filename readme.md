@@ -105,6 +105,7 @@ curl https://60s.viki.moe/v2/60s?encoding=image-proxy
 | 🤣 搞笑段子  | `/v2/duanzi`     | 精选笑话        | 解压神器      |
 | 🤭 发病文学  | `/v2/fabing`     | 网络流行文体    | 年轻人语言    |
 | 📖 答案之书  | `/v2/answer`     | 随机人生建议    | 心灵鸡汤      |
+| 🥶 冷笑话    | `/v2/dad-joke`  | 随机冷笑话         | 放松解压   |
 
 ### 🔧 常用参数说明
 
