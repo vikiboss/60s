@@ -1,3 +1,4 @@
+import { Buffer } from 'node:buffer'
 import { Common } from '../../common.ts'
 import qrcode, { type Params } from 'yaqrcode'
 
