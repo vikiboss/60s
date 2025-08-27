@@ -4,7 +4,9 @@ import { Router } from '@oak/oak/router'
 import { config } from './config.ts'
 
 import { service60s } from './modules/60s.module.ts'
+import { serviceAINews } from './modules/ai-news.module.ts'
 import { serviceAnswer } from './modules/answer/answer.module.ts'
+import { serviceAwesomeJs } from './modules/awesome-js/awesome-js.module.ts'
 import { serviceBaike } from './modules/baike.module.ts'
 import { serviceBili } from './modules/bili.module.ts'
 import { serviceBing } from './modules/bing.module.ts'
@@ -21,17 +23,16 @@ import { serviceHitokoto } from './modules/hitokoto/hitokoto.module.ts'
 import { serviceIP } from './modules/ip.module.ts'
 import { serviceKfc } from './modules/kfc.module.ts'
 import { serviceLuck } from './modules/luck/luck.module.ts'
+import { serviceLunar } from './modules/lunar/lunar.module.ts'
 import { serviceMaoyan } from './modules/maoyan.module.ts'
+import { serviceNcm } from './modules/ncm.module.ts'
 import { serviceOG } from './modules/og.module.ts'
+import { serviceQRCode } from './modules/qrcode/qrcode.module.ts'
 import { serviceTodayInHistory } from './modules/today-in-history.module.ts'
 import { serviceToutiao } from './modules/toutiao.module.ts'
 import { serviceWeather } from './modules/weather.module.ts'
 import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
-import { serviceLunar } from './modules/lunar/lunar.module.ts'
-import { serviceAINews } from './modules/ai-news.module.ts'
-import { serviceAwesomeJs } from './modules/awesome-js/awesome-js.module.ts'
-import { serviceNcm } from './modules/ncm.module.ts'
 
 export const rootRouter = new Router()
 
@@ -86,6 +87,7 @@ appRouter.get('/zhihu', serviceZhihu.handle())
 appRouter.get('/lunar', serviceLunar.handle())
 appRouter.get('/ai-news', serviceAINews.handle())
 appRouter.get('/awesome-js', serviceAwesomeJs.handle())
+appRouter.get('/qrcode', serviceQRCode.handle())
 
 appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
