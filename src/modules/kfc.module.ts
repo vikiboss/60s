@@ -3,13 +3,17 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceKfc {
+  private lastFetchTime = 0
+  private cacheDuration = 7 * 24 * 60 * 60 * 1000 // 缓存 7 天
+  private cache: string[] = []
+
   handle(): RouterMiddleware<'/kfc'> {
-    return async ctx => {
+    return async (ctx) => {
       const id = await Common.getParam('id', ctx.request)
-      const list = await this.fetchJson()
-      
+      const list = await this.#fetch()
+
       let result: string
-      
+
       if (id) {
         // 获取指定ID的段子
         const index = parseInt(id)
@@ -41,10 +45,20 @@ class ServiceKfc {
     }
   }
 
-  async fetchJson() {
-    return await (
-      await fetch('https://cdn.jsdelivr.net/gh/vikiboss/v50@main/static/v50.json')
-    ).json()
+  async #fetch() {
+    if (this.cache && Date.now() - this.lastFetchTime <= this.cacheDuration) {
+      return this.cache
+    }
+
+    const response = await fetch('https://cdn.jsdelivr.net/gh/vikiboss/v50@main/static/v50.json')
+    const data = await response.json()
+
+    if (data?.length > 0) {
+      this.cache = data as string[]
+      this.lastFetchTime = Date.now()
+    }
+
+    return data || []
   }
 }
 
