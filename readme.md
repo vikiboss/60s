@@ -14,6 +14,8 @@
 
 ### 📡 API 调用方式
 
+> 部分地区访问主域名可能超时，可尝试自行部署，或使用他人分享的 [公共实例](https://docs.60s-api.viki.moe/7306811m0)
+
 ```bash
 # JSON 格式 (默认)
 curl https://60s.viki.moe/v2/60s
