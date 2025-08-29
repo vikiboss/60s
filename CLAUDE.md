@@ -203,6 +203,7 @@ const apiInfo = Common.getApiInfo()
 - `GET /v2/today_in_history` - 历史上的今天
 - `GET /v2/ai-news` - AI快讯
 - `GET /v2/exchange_rate` - 汇率查询
+- `GET /v2/hacker-news` - Hacker News 前沿资讯
 
 ### 热门榜单类
 - `GET /v2/bili` - 哔哩哔哩热搜
