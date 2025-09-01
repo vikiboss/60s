@@ -237,6 +237,7 @@ npm install && npx wrangler publish
 |             Ko.             | 11.66  |   QQ   |              -               |
 |           yijiong           | 15.00  |   QQ   |       a cup of coffee        |
 
+如有遗漏，欢迎通过 issue 或者反馈 QQ 群反馈～
 
 ## 🪪 License （开源协议）
 
