@@ -124,7 +124,7 @@ curl https://60s.viki.moe/v2/60s?encoding=image-proxy
 # 示例调用
 curl "https://60s.viki.moe/v2/60s?encoding=text"
 curl "https://60s.viki.moe/v2/epic"
-curl "https://60s.viki.moe/v2/fanyi?text=Hello&from=zh-CHS&to=ja"
+curl "https://60s.viki.moe/v2/fanyi?text=Hello&to=ja"
 ```
 
 ## 🚀 快速开始
