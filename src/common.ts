@@ -105,7 +105,7 @@ export class Common {
     let value = request.url.searchParams.get(name) || ''
     try {
       if (!value) {
-        value = (await request.source?.clone()?.json())[name] || ''
+        value = (await request.body.json())[name] || ''
       }
     } catch {
       // ignored
