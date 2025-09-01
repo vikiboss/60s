@@ -34,6 +34,7 @@ import { serviceWeather } from './modules/weather.module.ts'
 import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
 import { serviceDadJoke } from './modules/dad-joke/dad-joke.module.ts'
+import { serviceHackerNews } from './modules/hacker-news.module.ts'
 
 export const rootRouter = new Router()
 
@@ -90,6 +91,7 @@ appRouter.get('/ai-news', serviceAINews.handle())
 appRouter.get('/awesome-js', serviceAwesomeJs.handle())
 appRouter.get('/qrcode', serviceQRCode.handle())
 appRouter.get('/dad-joke', serviceDadJoke.handle())
+appRouter.get('/hacker-news/:type', serviceHackerNews.handle())
 
 appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
