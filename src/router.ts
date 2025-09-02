@@ -35,6 +35,7 @@ import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
 import { serviceDadJoke } from './modules/dad-joke/dad-joke.module.ts'
 import { serviceHackerNews } from './modules/hacker-news.module.ts'
+import { serviceRednote } from './modules/rednote.module.ts'
 
 export const rootRouter = new Router()
 
@@ -104,3 +105,5 @@ appRouter.get('/weather/forecast', serviceWeather.handleForecast())
 
 appRouter.get('/ncm-rank', serviceNcm.handleRank())
 appRouter.get('/ncm-rank/:id', serviceNcm.handleRankDetail())
+
+appRouter.get('/rednote', serviceRednote.handle())
