@@ -9,9 +9,11 @@ import type { Request, RouterContext } from '@oak/oak'
 import _dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc.js'
 import timezone from 'dayjs/plugin/timezone.js'
+import isBetween from 'dayjs/plugin/isBetween.js'
 
 _dayjs.extend(utc)
 _dayjs.extend(timezone)
+_dayjs.extend(isBetween)
 
 export const TZ_SHANGHAI = 'Asia/Shanghai'
 
