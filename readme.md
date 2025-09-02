@@ -80,7 +80,7 @@ curl https://60s.viki.moe/v2/60s?encoding=image-proxy
 | 📰 头条热搜   | `/v2/toutiao`                      | 今日头条热点   | 实时     |
 | 🎬 猫眼票房   | `/v2/maoyan`                       | 实时电影票房   | 实时     |
 | 🎵 网易云榜单 | `/v2/ncm-rank`、`/v2/ncm-rank/:id` | 网易云音乐榜单 | 实时     |
-| 🍠 小红书热搜 | `/v2/rednote`                      | 小红书热门榜单 | 实时     |
+| 🍠 小红书热点 | `/v2/rednote`                      | 小红书热门话题 | 实时     |
 
 ### 🛠️ 实用工具类
 
