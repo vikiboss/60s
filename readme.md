@@ -98,19 +98,18 @@ curl https://60s.viki.moe/v2/60s?encoding=image-proxy
 
 ### 🎈 趣味娱乐类
 
-| API         | 端点                      | 描述            | 特色          |
-| ----------- |-------------------------| --------------- | ------------- |
-| 💬 KFC 段子  | `/v2/kfc`               | 随机搞笑段子    | 经典网络梗    |
-| 💭 一言语录  | `/v2/hitokoto`          | 随机励志语录    | 多分类语句    |
-| 💻 JS 趣味题 | `/v2/awesome-js`        | JavaScript 题库 | 100+ 精选题目 |
-| ✨ 今日运势  | `/v2/luck`              | 随机运势预测    | 趣味占卜      |
-| ⚛️ 化学元素  | `/v2/chemical`          | 随机化学知识    | 科普教育      |
-| 🎤 唱歌音频  | `/v2/changya`           | 随机歌曲片段    | 娱乐互动      |
-| 🤣 搞笑段子  | `/v2/duanzi`            | 精选笑话        | 解压神器      |
-| 🤭 发病文学  | `/v2/fabing`            | 网络流行文体    | 年轻人语言    |
-| 📖 答案之书  | `/v2/answer`            | 随机人生建议    | 心灵鸡汤      |
-| 🥶 冷笑话    | `/v2/dad-joke`          | 随机冷笑话      | 放松解压      |
-| 🗓️ 摸鱼日历  | `/v2/slacking-calendar` | 节假日倒计时     | 🐮🐎摸鱼提醒  |
+| API         | 端点             | 描述            | 特色          |
+| ----------- | ---------------- | --------------- | ------------- |
+| 💬 KFC 段子  | `/v2/kfc`        | 随机搞笑段子    | 经典网络梗    |
+| 💭 一言语录  | `/v2/hitokoto`   | 随机励志语录    | 多分类语句    |
+| 💻 JS 趣味题 | `/v2/awesome-js` | JavaScript 题库 | 100+ 精选题目 |
+| ✨ 今日运势  | `/v2/luck`       | 随机运势预测    | 趣味占卜      |
+| ⚛️ 化学元素  | `/v2/chemical`   | 随机化学知识    | 科普教育      |
+| 🎤 唱歌音频  | `/v2/changya`    | 随机歌曲片段    | 娱乐互动      |
+| 🤣 搞笑段子  | `/v2/duanzi`     | 精选笑话        | 解压神器      |
+| 🤭 发病文学  | `/v2/fabing`     | 网络流行文体    | 年轻人语言    |
+| 📖 答案之书  | `/v2/answer`     | 随机人生建议    | 心灵鸡汤      |
+| 🥶 冷笑话    | `/v2/dad-joke`   | 随机冷笑话      | 放松解压      |
 
 ### 🔧 常用参数说明
 
@@ -189,19 +188,28 @@ npm install && npx wrangler publish
 
 ## 🤝 社区与支持
 
-### 💬 交流群组
+### 🙏 致谢
+
+本项目的部分代码、灵感、实现方式等参考了以下优秀开源项目，排名不分先后：
+
+- [DIYgod/RSSHub](https://github.com/DIYgod/RSSHub)
+- [Rankslive/RanksLiveApi](https://github.com/Rankslive/RanksLiveApi)
+
+### 💬 交流
+
 - **QQ 群**: [![加入群聊](https://img.shields.io/badge/%E4%BC%81%E9%B5%9D%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG) (问题反馈、使用交流)
 - **GitHub**: [Issues](https://github.com/vikiboss/60s/issues) (Bug 报告、功能建议)
 - **文档**: [API 文档](https://docs.60s-api.viki.moe) (详细使用说明)
 
 ### 🎯 项目起源
-本项目源于 [这篇文章](https://xlog.viki.moe/60s) 中提到的想法，致力于为开发者提供简单可靠的数据接口服务。
 
-### 📈 项目数据
+本项目最早源于 [这篇文章](https://xlog.viki.moe/60s) 中提到的想法。
+
+### 📈 项目 Star 历史
 
 [![Star History Chart](https://api.star-history.com/svg?repos=vikiboss/60s&type=Date)](https://star-history.com/#vikiboss/60s&Date)
 
-## 💰 赞赏
+## 💰 赞赏项目
 
 如果觉得这个项目对你有帮助，欢迎请我喝咖啡 ☕️
 
@@ -215,31 +223,36 @@ npm install && npx wrangler publish
 感谢以下小伙伴的赞赏（排名不分先后）：
 
 <!-- 表格 -->
-|           赞赏人            |  金额  |  途径  |             备注             |
-| :-------------------------: | :----: | :----: | :--------------------------: |
-|           Update            |  6.66  | WeChat |      感谢大佬的开源分享      |
-|            匿名             |  0.01  | WeChat |              -               |
-|         月夜忆江南          |  5.00  | WeChat |              -               |
-|            匿名             |  1.66  | WeChat |              -               |
-|         GoooodJooB7         |  1.66  | WeChat |         谢谢大佬开源         |
-|            匿名             |  1.66  | WeChat |              -               |
-| 十七岁就学会吃饭的天才少年  |  5.00  | WeChat |              -               |
-|          Sundrops           |  1.66  | WeChat |        感谢友友的接口        |
-|        春风伴我余生         | 10.00  | WeChat |              -               |
-|             杰              |  1.00  | WeChat |              -               |
-|            Blue             |  6.66  | WeChat |      Blue 祝开发者 6666      |
-|           聆听、            | 10.00  | WeChat |      喝杯咖啡，记得加冰      |
-|            匿名             | 100.00 | WeChat |            好项目            |
-| 卤蛋 （HelloGitHub 发起人） | 88.88  | WeChat | 很喜欢你的项目，加油 ^ O ^ ~ |
-|             ---             |  ---   |  ---   |             ---              |
-|             *斌             | 12.90  | Alipay |              -               |
-|             *杰             | 20.00  | Alipay |              -               |
-|            **杰             |  9.90  | Alipay |              -               |
-|             ---             |  ---   |  ---   |             ---              |
-|             Ko.             | 11.66  |   QQ   |              -               |
-|           yijiong           | 15.00  |   QQ   |       a cup of coffee        |
+|           赞赏人            |  金额  |  途径  |                  备注                  |
+| :-------------------------: | :----: | :----: | :------------------------------------: |
+|           Update            |  6.66  | WeChat |           感谢大佬的开源分享           |
+|            匿名             |  0.01  | WeChat |                   -                    |
+|         月夜忆江南          |  5.00  | WeChat |                   -                    |
+|            匿名             |  1.66  | WeChat |                   -                    |
+|         GoooodJooB7         |  1.66  | WeChat |              谢谢大佬开源              |
+|            匿名             |  1.66  | WeChat |                   -                    |
+| 十七岁就学会吃饭的天才少年  |  5.00  | WeChat |                   -                    |
+|          Sundrops           |  1.66  | WeChat |             感谢友友的接口             |
+|        春风伴我余生         | 10.00  | WeChat |                   -                    |
+|             杰              |  1.00  | WeChat |                   -                    |
+|            Blue             |  6.66  | WeChat |           Blue 祝开发者 6666           |
+|           聆听、            | 10.00  | WeChat |           喝杯咖啡，记得加冰           |
+|            匿名             | 100.00 | WeChat |                 好项目                 |
+| 卤蛋 （HelloGitHub 发起人） | 88.88  | WeChat |      很喜欢你的项目，加油 ^ O ^ ~      |
+|             Lee             |  6.66  | WeChat |                感谢分享                |
+|          世界和平           |   66.00   | WeChat |           世界需要更多的英雄           |
+|         севастополь         |  6.66  | WeChat |                买包辣条                |
+|             爪              |  2.00  | WeChat |                   -                    |
+|             LMQ             | 18.80  | WeChat | 大佬的响应速度，我泪目了，请大佬喝咖啡 |
+|             ---             |  ---   |  ---   |                  ---                   |
+|             *斌             | 12.90  | Alipay |                   -                    |
+|             *杰             | 20.00  | Alipay |                   -                    |
+|            **杰             |  9.90  | Alipay |                   -                    |
+|             ---             |  ---   |  ---   |                  ---                   |
+|             Ko.             | 11.66  |   QQ   |                   -                    |
+|           yijiong           | 15.00  |   QQ   |            a cup of coffee             |
 
-如有遗漏，欢迎通过 issue 或者反馈 QQ 群反馈～
+> 如有遗漏，欢迎通过 issue 或者 QQ 群 595941841 反馈～
 
 ## 🪪 License （开源协议）
 
