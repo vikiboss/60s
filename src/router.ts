@@ -36,6 +36,7 @@ import { serviceZhihu } from './modules/zhihu.module.ts'
 import { serviceDadJoke } from './modules/dad-joke/dad-joke.module.ts'
 import { serviceHackerNews } from './modules/hacker-news.module.ts'
 import { serviceRednote } from './modules/rednote.module.ts'
+// import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
 export const rootRouter = new Router()
 
@@ -93,6 +94,7 @@ appRouter.get('/awesome-js', serviceAwesomeJs.handle())
 appRouter.get('/qrcode', serviceQRCode.handle())
 appRouter.get('/dad-joke', serviceDadJoke.handle())
 appRouter.get('/hacker-news/:type', serviceHackerNews.handle())
+// appRouter.get('/slacking-calendar', serviceSlackingCalendar.handle())
 
 appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
