@@ -24,31 +24,23 @@ class ServiceRednote {
         headers: xhsHeaders,
       })
 
-      if (!response.ok) {
-        throw new Error(`小红书 API 请求失败! HTTP状态: ${response.status}`)
-      }
-
       const apiData = (await response.json()) as RednoteRawResponse
 
-      console.log('小红书热搜 API 返回数据:', JSON.stringify(apiData))
-
-      let hotList: RednoteItem[] = []
-
-      if (apiData?.data?.items && Array.isArray(apiData.data.items)) {
-        hotList = apiData.data.items.map((item, idx) => {
-          return {
-            rank: idx + 1,
-            title: item.title,
-            word_type: item.word_type,
-            score: item.score,
-            // type: item.type,
-          }
-        })
-      }
+      const hotList: RednoteItem[] = apiData.data.items.map((item, idx) => {
+        return {
+          rank: idx + 1,
+          title: item.title,
+          score: item.score,
+          word_type: item.word_type,
+          work_type_icon: item.icon || '',
+          link: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(item.title)}&type=51`,
+          // type: item.type,
+        }
+      })
 
       switch (ctx.state.encoding) {
         case 'text': {
-          ctx.response.body = `小红书热搜\n\n${hotList.map((e) => `${e.rank}. ${e.title} (${e.score})`).join('\n')}`
+          ctx.response.body = `小红书实时热点\n\n${hotList.map((e) => `${e.rank}. ${e.title} (${e.score})`).join('\n')}`
           break
         }
 
