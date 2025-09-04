@@ -43,6 +43,26 @@ class ServiceBaidu {
     }
   }
 
+  handleTieba(): RouterMiddleware<'/baidu/tieba'> {
+    return async (ctx) => {
+      const data = await this.#fetchTieba()
+
+      switch (ctx.state.encoding) {
+        case 'text':
+          ctx.response.body = `百度贴吧热门话题\n\n${data
+            .slice(0, 20)
+            .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
+            .join('\n')}`
+          break
+
+        case 'json':
+        default:
+          ctx.response.body = Common.buildJson(data)
+          break
+      }
+    }
+  }
+
   #normalizeHtml(html: string) {
     return html.replace(/\\-/g, '-')
   }
@@ -101,6 +121,23 @@ class ServiceBaidu {
       url: e.url.startsWith('http') ? e.url : `https://www.baidu.com${e.url}`,
     }))
   }
+
+  async #fetchTieba() {
+    const options = { headers: { 'User-Agent': Common.chromeUA } }
+    const response = await fetch('https://tieba.baidu.com/hottopic/browse/topicList', options)
+    const data = await response.json()
+
+    return ((data?.data?.bang_topic?.topic_list || []) as TiebaItem[]).map((e, i) => ({
+      rank: i + 1,
+      title: e.topic_name,
+      desc: e.topic_desc,
+      abstract: e.abstract,
+      score: e.discuss_num || 0,
+      score_desc: this.#formatScore(String(e.discuss_num || 0)),
+      avatar: e.topic_avatar || e.topic_default_avatar || null,
+      url: e.topic_url,
+    }))
+  }
 }
 
 export const serviceBaidu = new ServiceBaidu()
@@ -136,4 +173,21 @@ interface TeleplayItem {
   show: string[]
   url: string
   word: string
+}
+
+interface TiebaItem {
+  topic_id: number
+  topic_name: string
+  topic_desc: string
+  abstract: string
+  topic_pic: string
+  tag: number
+  discuss_num: number
+  idx_num: number
+  create_time: number
+  content_num: number
+  topic_avatar: string
+  is_video_topic: string
+  topic_url: string
+  topic_default_avatar: string
 }
