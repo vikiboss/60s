@@ -11,6 +11,7 @@ class ServiceBili {
         case 'text':
           ctx.response.body = `B站实时热搜\n\n${data
             .map((e, i) => `${i + 1}. ${e.title}`)
+            .slice(0, 20)
             .join('\n')}`
           break
 

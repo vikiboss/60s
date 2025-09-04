@@ -35,6 +35,7 @@ class ServiceHackerNews {
         case 'text': {
           ctx.response.body = `Hacker News（${HackerNewsTypeMap[type]}）\n\n${data
             .map((e, idx) => `${idx + 1}. ${e.title}\n${e.score} points by ${e.author}\n${e.link}\n${e.created}`)
+            .slice(0, 20)
             .join('\n\n')}`
           break
         }

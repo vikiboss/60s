@@ -40,7 +40,10 @@ class ServiceRednote {
 
       switch (ctx.state.encoding) {
         case 'text': {
-          ctx.response.body = `小红书实时热点\n\n${hotList.map((e) => `${e.rank}. ${e.title} (${e.score})`).join('\n')}`
+          ctx.response.body = `小红书实时热点\n\n${hotList
+            .slice(0, 20)
+            .map((e) => `${e.rank}. ${e.title} (${e.score})`)
+            .join('\n')}`
           break
         }
 

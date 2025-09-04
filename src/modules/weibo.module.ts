@@ -11,6 +11,7 @@ class ServiceWeibo {
         case 'text':
           ctx.response.body = `微博实时热搜\n\n${data
             .map((e, i) => `${i + 1}. ${e.title}`)
+            .slice(0, 20)
             .join('\n')}`
           break
 

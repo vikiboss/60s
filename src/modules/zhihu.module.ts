@@ -11,6 +11,7 @@ class ServiceZhihuHot {
         case 'text':
           ctx.response.body = `知乎实时热搜\n\n${data
             .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value_desc})`)
+            .slice(0, 20)
             .join('\n')}`
           break
 

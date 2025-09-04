@@ -14,6 +14,7 @@ class ServiceNcm {
         case 'text':
           ctx.response.body = `网易云音乐榜单\n\n${data
             .map((e, i) => `${i + 1}. ${e.name} (${e.update_frequency})`)
+            .slice(0, 20)
             .join('\n')}`
           break
 
