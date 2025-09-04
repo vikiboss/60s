@@ -11,6 +11,7 @@ class ServiceToutiao {
         case 'text':
           ctx.response.body = `头条实时热搜\n\n${data
             .map((e, idx) => `${idx + 1}. ${e.title} (${e.hot_value})`)
+            .slice(0, 20)
             .join('\n')}`
           break
 

@@ -4,10 +4,10 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceChemical {
   handle(): RouterMiddleware<'/chemical'> {
-    return async ctx => {
+    return async (ctx) => {
       const id = await Common.getParam('id', ctx.request)
 
-      let finalId = id || Common.randomInt(1, 60_000_000).toString()
+      const finalId = id || Common.randomInt(1, 60_000_000).toString()
 
       const res = await fetch(`https://www.chemspider.com/Chemical-Structure.${finalId}.html`)
       const html = await res.text()
