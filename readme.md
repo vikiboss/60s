@@ -101,6 +101,7 @@ curl https://60s.viki.moe/v2/60s?encoding=image-proxy
 | 🌈 哈希工具  | `/v2/hash`                           | 多种编码解码         | MD5/Base64/URL 等            |
 | 🩺 健康分析  | `/v2/health`                         | 身体健康综合分析参考 | BMI/理想体重/三围/建议       |
 | 🔒 密码相关  | `/v2/password`、`/v2/password/check` | 生成密码/密码检查    | 高度可定制/强度分析/破解时间 |
+| 🎨 颜色相关  | `/v2/color`、`/v2/color/palette`     | 随机颜色/色彩搭配    | 生成、分析颜色/系列配色推荐  |
 
 ### 🎈 趣味娱乐类
 
