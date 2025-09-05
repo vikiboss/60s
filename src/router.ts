@@ -39,6 +39,7 @@ import { serviceRednote } from './modules/rednote.module.ts'
 import { serviceBaidu } from './modules/baidu.module.ts'
 import { serviceDongchedi } from './modules/dongchedi.module.ts'
 import { serviceHealth } from './modules/health.module.ts'
+import { servicePassword } from './modules/password/password.module.ts'
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
 export const rootRouter = new Router()
@@ -101,6 +102,9 @@ appRouter.get('/rednote', serviceRednote.handle())
 appRouter.get('/dongchedi', serviceDongchedi.handle())
 
 appRouter.all('/health', serviceHealth.handle())
+
+appRouter.all('/password', servicePassword.handle())
+appRouter.all('/password/check', servicePassword.handleCheck())
 
 appRouter.get('/baidu/realtime', serviceBaidu.handleRealtime())
 appRouter.get('/baidu/teleplay', serviceBaidu.handleTeleplay())
