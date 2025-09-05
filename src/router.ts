@@ -38,6 +38,7 @@ import { serviceHackerNews } from './modules/hacker-news.module.ts'
 import { serviceRednote } from './modules/rednote.module.ts'
 import { serviceBaidu } from './modules/baidu.module.ts'
 import { serviceDongchedi } from './modules/dongchedi.module.ts'
+import { serviceHealth } from './modules/health.module.ts'
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
 export const rootRouter = new Router()
@@ -98,6 +99,8 @@ appRouter.get('/dad-joke', serviceDadJoke.handle())
 appRouter.get('/hacker-news/:type', serviceHackerNews.handle())
 appRouter.get('/rednote', serviceRednote.handle())
 appRouter.get('/dongchedi', serviceDongchedi.handle())
+
+appRouter.all('/health', serviceHealth.handle())
 
 appRouter.get('/baidu/realtime', serviceBaidu.handleRealtime())
 appRouter.get('/baidu/teleplay', serviceBaidu.handleTeleplay())
