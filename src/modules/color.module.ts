@@ -71,12 +71,7 @@ class ServiceColor {
 
   handlePalette(): RouterMiddleware<'/color/palette'> {
     return async (ctx) => {
-      const hex = await Common.getParam('color', ctx.request)
-
-      if (!hex) {
-        Common.requireArguments('color', ctx)
-        return
-      }
+      const hex = (await Common.getParam('color', ctx.request)) || this.generateRandomColor()
 
       const normalizedHex = this.normalizeHex(hex)
 
