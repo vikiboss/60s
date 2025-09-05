@@ -17,12 +17,12 @@ interface PasswordResult {
   password: string
   length: number
   config: {
-    includeNumbers: boolean
-    includeSymbols: boolean
-    includeLowercase: boolean
-    includeUppercase: boolean
-    excludeSimilar: boolean
-    excludeAmbiguous: boolean
+    include_numbers: boolean
+    include_symbols: boolean
+    include_lowercase: boolean
+    include_uppercase: boolean
+    exclude_similar: boolean
+    exclude_ambiguous: boolean
   }
   character_sets: {
     lowercase: string
@@ -237,12 +237,12 @@ class ServicePassword {
       password,
       length: password.length,
       config: {
-        includeNumbers: params.includeNumbers,
-        includeSymbols: params.includeSymbols,
-        includeLowercase: params.includeLowercase,
-        includeUppercase: params.includeUppercase,
-        excludeSimilar: params.excludeSimilar,
-        excludeAmbiguous: params.excludeAmbiguous,
+        include_numbers: params.includeNumbers,
+        include_symbols: params.includeSymbols,
+        include_lowercase: params.includeLowercase,
+        include_uppercase: params.includeUppercase,
+        exclude_similar: params.excludeSimilar,
+        exclude_ambiguous: params.excludeAmbiguous,
       },
       character_sets: {
         lowercase: params.includeLowercase ? lowercase : '',
@@ -578,12 +578,12 @@ class ServicePassword {
 ⏱️ 破解时间: ${result.generation_info.time_to_crack}
 
 ⚙️ 生成配置:
-• 包含数字: ${result.config.includeNumbers ? '是' : '否'}
-• 包含符号: ${result.config.includeSymbols ? '是' : '否'}
-• 包含小写: ${result.config.includeLowercase ? '是' : '否'}
-• 包含大写: ${result.config.includeUppercase ? '是' : '否'}
-• 排除相似字符: ${result.config.excludeSimilar ? '是' : '否'}
-• 排除模糊字符: ${result.config.excludeAmbiguous ? '是' : '否'}
+• 包含数字: ${result.config.include_numbers ? '是' : '否'}
+• 包含符号: ${result.config.include_symbols ? '是' : '否'}
+• 包含小写: ${result.config.include_lowercase ? '是' : '否'}
+• 包含大写: ${result.config.include_uppercase ? '是' : '否'}
+• 排除相似字符: ${result.config.exclude_similar ? '是' : '否'}
+• 排除模糊字符: ${result.config.exclude_ambiguous ? '是' : '否'}
 
 💡 ${result.generation_info.strength_desc}
     `.trim()
