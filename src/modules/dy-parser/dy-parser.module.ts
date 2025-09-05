@@ -3,9 +3,8 @@ import { Common } from '../../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceDyParser {
-  handle(): RouterMiddleware<'/dyParser'> {
-    return async (ctx) => {
-    }
+  handle(): RouterMiddleware<'/dy-parser'> {
+    return async (ctx) => {}
   }
 }
 
