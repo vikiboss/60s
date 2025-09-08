@@ -2,7 +2,7 @@
   "name": "60s-api",
   "type": "module",
   "version": "2.30.2",
-  "updateTime": "2025/09/08 11:31:07",
+  "updateTime": "2025/09/08 11:34:43",
   "packageManager": "pnpm@10.15.0",
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.4",
