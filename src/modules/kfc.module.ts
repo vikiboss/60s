@@ -21,7 +21,7 @@ class ServiceKfc {
           result = list[index]
         } else {
           ctx.response.status = 404
-          ctx.response.body = Common.buildJson(null, 404, `未找到ID为 ${index} 的段子`)
+          ctx.response.body = Common.buildJson(null, 404, `未找到 ID 为 ${index} 的 KFC 文案`)
           return
         }
       } else {

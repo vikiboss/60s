@@ -1,15 +1,14 @@
 import crypto from 'node:crypto'
 import { Common } from '../../common.ts'
 
-// stored from 'https://api-overmind.youdao.com/openapi/get/luna/dict/luna-front/prod/langType'
-import langs from './langs.json' with { type: 'json' }
-
 import type { RouterMiddleware } from '@oak/oak'
 
-const langMap = Object.groupBy(langs, (e) => e.code)
-
 class ServiceFanyi {
+  langMap = new Map<string, { label: string; code: string; alphabet: string }>()
+
   handle(): RouterMiddleware<'/fanyi'> {
+    this.initLangs()
+
     return async (ctx) => {
       const text = await Common.getParam('text', ctx.request)
 
@@ -47,13 +46,13 @@ class ServiceFanyi {
                 source: {
                   text: responseItems.map((e) => e.src).join('') || '',
                   type: sourceType,
-                  type_desc: langMap[sourceType]?.[0]?.label || '',
+                  type_desc: this.langMap.get(sourceType)?.label || '',
                   pronounce: responseItems.map((e) => e.srcPronounce).join('') || '',
                 },
                 target: {
                   text: responseItems.map((e) => e.tgt).join('') || '',
                   type: targetType,
-                  type_desc: langMap[targetType]?.[0]?.label || '',
+                  type_desc: this.langMap.get(targetType)?.label || '',
                   pronounce: responseItems.map((e) => e.tgtPronounce).join('') || '',
                 },
               })
@@ -64,12 +63,27 @@ class ServiceFanyi {
   }
 
   isLangValid(from: string, to: string) {
-    return (from === 'auto' || langMap[from]) && (to === 'auto' || langMap[to])
+    return (from === 'auto' || this.langMap.has(from)) && (to === 'auto' || this.langMap.has(to))
+  }
+
+  async initLangs() {
+    const api = 'https://api-overmind.youdao.com/openapi/get/luna/dict/luna-front/prod/langType'
+    const { data = {} } = (await (await fetch(api)).json()) || {}
+    const langs = [...(data?.value?.textTranslate?.common || []), ...(data?.value?.textTranslate?.specify || [])]
+
+    for (const lang of langs) {
+      this.langMap.set(lang.code, lang)
+    }
+
+    const date = new Date().toLocaleString('zh-CN')
+    console.log(`[${date}] [fanyi] 语言列表初始化完成，共 ${this.langMap.size} 种语言`)
   }
 
   langs(): RouterMiddleware<'/fanyi/langs'> {
     return (ctx) => {
-      ctx.response.body = Common.buildJson(langs)
+      ctx.response.body = Common.buildJson(
+        [...this.langMap.values()].toSorted((a, b) => a.alphabet.localeCompare(b.alphabet)),
+      )
     }
   }
 
