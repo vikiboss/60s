@@ -88,22 +88,24 @@ curl https://60s.viki.moe/v2/60s?encoding=image-proxy
 
 ### 🛠️ 实用工具类
 
-| API            | 端点                 | 描述                 | 特色功能            |
-| -------------- | -------------------- | -------------------- | ------------------- |
-| 🌍 在线翻译     | `/v2/fanyi`          | 多语言翻译           | 支持 109 种语言     |
-| 🖼️ 转二维码     | `/v2/qrcode`         | 生成二维码           | 支持 URL/文本等     |
-| 🌦️ 天气查询     | `/v2/weather`        | 实时天气预报         | 全国城市覆盖        |
-| 📡 IP 查询      | `/v2/ip`             | IP地址定位           | 精确地理位置        |
-| 🗓️ 农历转换     | `/v2/lunar`          | 公历农历互转         | 天干地支/节气       |
-| ❓ 百科查询     | `/v2/baike`          | 百度百科词条         | 智能搜索            |
-| 🎮 Epic 游戏    | `/v2/epic`           | Epic Games 免费游戏  | 每周更新            |
-| 🐦 OG 信息      | `/v2/og`             | 网页元信息提取       | 社交分享优化        |
-| 🌈 哈希工具     | `/v2/hash`           | 多种编码解码         | MD5/Base64/URL 等   |
-| 🩺 健康分析     | `/v2/health`         | 身体健康综合分析参考 | BMI/理想体重/建议   |
-| 🔒 随机密码     | `/v2/password`       | 随机密码             | 高度可定制/强度分析 |
-| 🔒 密码强度检测 | `/v2/password/check` | 检查密码强度         | 评分/破解时间       |
-| 🎨 随机颜色     | `/v2/color`          | 随机颜色             | 生成、分析颜色      |
-| 🎨 色彩搭配     | `/v2/color/palette`  | 配套色彩搭配         | 系列配色推荐        |
+| API            | 端点                   | 描述                 | 特色功能            |
+| -------------- | ---------------------- | -------------------- | ------------------- |
+| 🌍 在线翻译     | `/v2/fanyi`            | 多语言翻译           | 支持 109 种语言     |
+| 🌐 翻译语言列表 | `/v2/fanyi/langs`      | 支持语言代码列表     | 完整语言映射        |
+| 🖼️ 转二维码     | `/v2/qrcode`           | 生成二维码           | 支持 URL/文本等     |
+| 🌦️ 实时天气     | `/v2/weather`          | 实时天气信息         | 智能城市搜索        |
+| 📊 天气预报     | `/v2/weather/forecast` | 多日天气预报         | 逐小时/多日预报     |
+| 📡 IP 查询      | `/v2/ip`               | IP地址定位           | 精确地理位置        |
+| 🗓️ 农历转换     | `/v2/lunar`            | 公历农历互转         | 天干地支/节气       |
+| ❓ 百科查询     | `/v2/baike`            | 百度百科词条         | 智能搜索            |
+| 🎮 Epic 游戏    | `/v2/epic`             | Epic Games 免费游戏  | 每周更新            |
+| 🐦 OG 信息      | `/v2/og`               | 网页元信息提取       | 社交分享优化        |
+| 🌈 哈希工具     | `/v2/hash`             | 多种编码解码         | MD5/Base64/URL 等   |
+| 🩺 健康分析     | `/v2/health`           | 身体健康综合分析参考 | BMI/理想体重/建议   |
+| 🔒 随机密码     | `/v2/password`         | 随机密码             | 高度可定制/强度分析 |
+| 🔒 密码强度检测 | `/v2/password/check`   | 检查密码强度         | 评分/破解时间       |
+| 🎨 随机颜色     | `/v2/color`            | 随机颜色             | 生成、分析颜色      |
+| 🎨 色彩搭配     | `/v2/color/palette`    | 配套色彩搭配         | 系列配色推荐        |
 
 ### 🎈 趣味娱乐类
 
@@ -135,6 +137,8 @@ curl https://60s.viki.moe/v2/60s?encoding=image-proxy
 curl "https://60s.viki.moe/v2/60s?encoding=text"
 curl "https://60s.viki.moe/v2/epic"
 curl "https://60s.viki.moe/v2/fanyi?text=Hello&to=ja"
+curl "https://60s.viki.moe/v2/weather?location=深圳"
+curl "https://60s.viki.moe/v2/weather/forecast?location=北京&days=5"
 ```
 
 ## 🚀 快速开始
