@@ -44,6 +44,7 @@ class ServiceDongchedi {
     return ((data?.props?.pageProps?.hotSearchList || []) as HotItem[]).map((e, idx) => ({
       rank: idx + 1,
       title: e.title,
+      url: `https://www.dongchedi.com/search?keyword=${encodeURIComponent(e.title)}`,
       // is_hot: e.is_hot,
       score: e.score,
       score_desc: this.#formateScore(e.score),
