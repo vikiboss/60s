@@ -70,11 +70,20 @@ class ServiceIP {
   handle(): RouterMiddleware<'/ip'> {
     return async (ctx) => {
       let ip = this.getClientIP(ctx.request.headers) || ctx.request.ip
+      const inputIp = ctx.request.url.searchParams.get('ip') || ''
+
+      // 优先使用请求参数中的 IP
+      if (inputIp) {
+        ip = inputIp
+      }
 
       // 如果是本地 IP，尝试获取公网 IP
-      if (this.isLocalIP(ip)) {
+      if (!inputIp && this.isLocalIP(ip)) {
         const publicIP = await this.getPublicIP()
-        if (publicIP) ip = publicIP
+
+        if (publicIP) {
+          ip = publicIP
+        }
       }
 
       switch (ctx.state.encoding) {
