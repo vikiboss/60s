@@ -91,10 +91,10 @@ The weather module (`src/modules/weather.module.ts`) provides comprehensive weat
 ### Usage Examples
 ```bash
 # Current weather for a city
-curl "https://60s.viki.moe/v2/weather?location=深圳"
+curl "https://60s.viki.moe/v2/weather?query=深圳"
 
 # 5-day weather forecast
-curl "https://60s.viki.moe/v2/weather/forecast?location=北京&days=5"
+curl "https://60s.viki.moe/v2/weather/forecast?query=北京&days=5"
 ```
 
 ### Parameters
