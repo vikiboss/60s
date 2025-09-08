@@ -234,6 +234,9 @@ class ServiceWeather {
         }
 
         switch (ctx.state.encoding) {
+          case 'text':
+            ctx.response.body = this.formatWeatherText(result)
+            break
           case 'json':
           default:
             ctx.response.body = Common.buildJson(result)
@@ -311,6 +314,9 @@ class ServiceWeather {
         }
 
         switch (ctx.state.encoding) {
+          case 'text':
+            ctx.response.body = this.formatForecastText(result)
+            break
           case 'json':
           default:
             ctx.response.body = Common.buildJson(result)
@@ -495,6 +501,85 @@ class ServiceWeather {
         level: value.info,
         description: value.detail,
       }))
+  }
+
+  private formatWeatherText(result: any): string {
+    const lines: string[] = []
+
+    // Header with location
+    lines.push(`📍 ${result.location.name}`)
+
+    // Current weather - compact format
+    const w = result.weather
+    lines.push(`🌡️ ${w.condition} ${w.temperature}°C`)
+    lines.push(`💨 ${w.humidity}% 🌬️ ${w.wind_direction}${w.wind_power}`)
+
+    // Air quality - simplified
+    if (result.air_quality) {
+      const aq = result.air_quality
+      const aqiEmoji = aq.aqi <= 50 ? '😊' : aq.aqi <= 100 ? '😐' : '😷'
+      lines.push(`${aqiEmoji} AQI ${aq.aqi} PM2.5:${aq.pm25}`)
+    }
+
+    // Sunrise/sunset - compact
+    if (result.sunrise) {
+      lines.push(`🌅 ${result.sunrise.sunrise_desc} 🌇 ${result.sunrise.sunset_desc}`)
+    }
+
+    // Key life indices - only show important ones
+    if (result.life_indices && result.life_indices.length > 0) {
+      const important = result.life_indices
+        .filter((idx: any) => ['穿衣指数', '运动指数', '洗车指数', '紫外线指数'].includes(idx.name))
+        .slice(0, 2)
+      important.forEach((idx: any) => {
+        const emoji = idx.name.includes('穿衣')
+          ? '👕'
+          : idx.name.includes('运动')
+            ? '🏃'
+            : idx.name.includes('洗车')
+              ? '🚗'
+              : '☀️'
+        lines.push(`${emoji} ${idx.name}:${idx.level}`)
+      })
+    }
+
+    // Alerts - compact
+    if (result.alerts && result.alerts.length > 0) {
+      result.alerts.forEach((alert: any) => {
+        lines.push(`⚠️ ${alert.type}${alert.level}`)
+      })
+    }
+
+    return lines.join('\n')
+  }
+
+  private formatForecastText(result: any): string {
+    const lines: string[] = []
+
+    // Header
+    lines.push(`📍 ${result.location.name} 🔮 预报`)
+
+    // Today's hourly (next 6 hours)
+    if (result.hourly_forecast && result.hourly_forecast.length > 0) {
+      lines.push('🕰️ 今日逐时:')
+      result.hourly_forecast.slice(0, 6).forEach((hour: any) => {
+        const time = hour.datetime.split(' ')[1].slice(0, 5)
+        lines.push(`${time} ${hour.condition} ${hour.temperature}°`)
+      })
+    }
+
+    // Daily forecast - very compact
+    if (result.daily_forecast && result.daily_forecast.length > 0) {
+      lines.push('\n📅 未来几日:')
+      result.daily_forecast.forEach((day: any) => {
+        const date = day.date.slice(-2) + '日'
+        const temp = `${day.min_temperature}-${day.max_temperature}°`
+        const aqi = day.aqi <= 50 ? '😊' : day.aqi <= 100 ? '😐' : '😷'
+        lines.push(`${date} ${day.day_condition} ${temp} ${aqi}${day.aqi}`)
+      })
+    }
+
+    return lines.join('\n')
   }
 }
 
