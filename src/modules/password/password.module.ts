@@ -33,11 +33,8 @@ interface PasswordResult {
   }
   generation_info: {
     entropy: number
-    entropy_desc: string
     strength: string
-    strength_desc: string
     time_to_crack: string
-    time_to_crack_desc: string
   }
 }
 
@@ -45,13 +42,9 @@ interface PasswordStrengthResult {
   password: string
   length: number
   score: number
-  score_desc: string
   strength: string
-  strength_desc: string
   entropy: number
-  entropy_desc: string
   time_to_crack: string
-  time_to_crack_desc: string
   character_analysis: {
     has_lowercase: boolean
     has_uppercase: boolean
@@ -60,7 +53,6 @@ interface PasswordStrengthResult {
     has_repeated: boolean
     has_sequential: boolean
     character_variety: number
-    character_variety_desc: string
   }
   recommendations: string[]
   security_tips: string[]
@@ -253,11 +245,8 @@ class ServicePassword {
       },
       generation_info: {
         entropy,
-        entropy_desc: '密码熵值（信息熵），值越高越安全',
         strength: strength.level,
-        strength_desc: strength.description,
         time_to_crack: timeToCrack.time,
-        time_to_crack_desc: timeToCrack.description,
       },
     }
   }
@@ -311,13 +300,9 @@ class ServicePassword {
       password,
       length,
       score,
-      score_desc: '密码强度评分（0-100）',
       strength: strength.level,
-      strength_desc: strength.description,
       entropy,
-      entropy_desc: '密码熵值，表示密码的随机性和复杂度',
       time_to_crack: timeToCrack.time,
-      time_to_crack_desc: timeToCrack.description,
       character_analysis: {
         has_lowercase: hasLowercase,
         has_uppercase: hasUppercase,
@@ -326,7 +311,6 @@ class ServicePassword {
         has_repeated: hasRepeated,
         has_sequential: hasSequential,
         character_variety: characterVariety,
-        character_variety_desc: '字符种类数量',
       },
       recommendations,
       security_tips: this.getSecurityTips(),
@@ -584,8 +568,6 @@ class ServicePassword {
 • 包含大写: ${result.config.include_uppercase ? '是' : '否'}
 • 排除相似字符: ${result.config.exclude_similar ? '是' : '否'}
 • 排除模糊字符: ${result.config.exclude_ambiguous ? '是' : '否'}
-
-💡 ${result.generation_info.strength_desc}
     `.trim()
   }
 
@@ -629,8 +611,6 @@ ${recommendations}
 
 🔒 安全提示:
 ${tips}
-
-💡 ${result.strength_desc}
     `.trim()
   }
 }
