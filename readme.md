@@ -18,16 +18,16 @@
 
 ```bash
 # JSON 格式 (默认)
-curl https://60s.viki.moe/v2/60s
+curl "https://60s.viki.moe/v2/60s"
 
 # 纯文本格式
-curl https://60s.viki.moe/v2/60s?encoding=text
+curl "https://60s.viki.moe/v2/60s?encoding=text"
 
-# 新闻图片 (重定向到微信公众号原图)
-curl https://60s.viki.moe/v2/60s?encoding=image
+# 原图直链 (重定向到微信公众号原图)
+curl "https://60s.viki.moe/v2/60s?encoding=image"
 
-# 代理图片 (代理请求，绕过防盗链)
-curl https://60s.viki.moe/v2/60s?encoding=image-proxy
+# 代理直链 (代理请求，绕过防盗链)
+curl "https://60s.viki.moe/v2/60s?encoding=image-proxy"
 ```
 
 ### 📊 数据特性
