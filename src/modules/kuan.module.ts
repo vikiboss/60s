@@ -116,7 +116,8 @@ class ServiceKuan {
     const response = await fetch(url, { headers })
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+      const res = await response.text()
+      throw new Error(`HTTP error! status: ${response.status}, statusText: ${response.statusText}, response: ${res}`)
     }
 
     const rawData: CoolApkRawResponse = await response.json()
