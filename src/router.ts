@@ -41,6 +41,7 @@ import { serviceDongchedi } from './modules/dongchedi.module.ts'
 import { serviceHealth } from './modules/health.module.ts'
 import { servicePassword } from './modules/password/password.module.ts'
 import { serviceColor } from './modules/color.module.ts'
+import { serviceKuan } from './modules/kuan.module.ts'
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
 export const rootRouter = new Router()
@@ -126,3 +127,5 @@ appRouter.get('/ncm-rank/:id', serviceNcm.handleRankDetail())
 
 appRouter.all('/color', serviceColor.handle())
 appRouter.all('/color/palette', serviceColor.handlePalette())
+
+appRouter.get('/beta/kuan', serviceKuan.handle())
