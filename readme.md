@@ -137,8 +137,6 @@ curl "https://60s.viki.moe/v2/60s?encoding=image-proxy"
 curl "https://60s.viki.moe/v2/60s?encoding=text"
 curl "https://60s.viki.moe/v2/epic"
 curl "https://60s.viki.moe/v2/fanyi?text=Hello&to=ja"
-curl "https://60s.viki.moe/v2/weather?query=深圳"
-curl "https://60s.viki.moe/v2/weather/forecast?query=北京&days=5"
 ```
 
 ## 🚀 快速开始
