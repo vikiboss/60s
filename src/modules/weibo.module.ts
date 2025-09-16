@@ -3,6 +3,9 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceWeibo {
+  COOKIE =
+    'SUB=_2AkMflEwGf8NxqwFRmvsXxG7ia4h2wwrEieKpyL3dJRM3HRl-yT9yqk4mtRB6NBRi6maz6YaTyfIClrCyCUrm0-7nB1R9; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WhR9EPgz3BDPWy-YHwFuiIb; MLOGIN=0; _T_WM=32026405228; WEIBOCN_FROM=1110006030; XSRF-TOKEN=4f0061; mweibo_short_token=7c696d3a05; M_WEIBOCN_PARAMS=luicode%3D10000011%26lfid%3D106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot%26fid%3D106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot%26uicode%3D10000011'
+
   handle(): RouterMiddleware<'/weibo'> {
     return async (ctx) => {
       const data = await this.#fetch()
@@ -26,7 +29,14 @@ class ServiceWeibo {
   async #fetch() {
     const api =
       'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
-    const { data = {} } = await (await fetch(api)).json()
+    const { data = {} } = await (
+      await fetch(api, {
+        headers: {
+          'User-Agent': Common.chromeUA,
+          Cookie: this.COOKIE,
+        },
+      })
+    ).json()
     return (((data?.cards?.[0]?.card_group || []) as Item[]).filter((e) => !e.pic.includes('stick')) || []).map(
       (e) => ({
         title: e.desc,
