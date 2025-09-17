@@ -682,7 +682,8 @@ export function get_ab(dpf: string, ua: string): string {
 
 ;(async () => {
   const douyinUrl = `https://v.douyin.com/luFQ-afUTxY/`
-  const urlPattern = /https:\/\/v\.douyin\.com\/[a-zA-Z0-9_\-]+\//
+  const urlPattern =
+    /https?:\/\/(?:www|m|vt|vm)?\.tiktok\.com\/(?:@[\w.-]+\/video\/\d+|[\w.-]+)|https?:\/\/(?:www\.)?douyin\.com\/(?:v|video)\/[\w.-]+|https?:\/\/v\.douyin\.com\/[\w.-]+/g
   const match = douyinUrl.match(urlPattern)
 
   if (match) {
