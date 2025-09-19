@@ -6,5 +6,6 @@
     "Rednote",
     "tdee",
     "tyme"
-  ]
+  ],
+  "deno.enable": false
 }

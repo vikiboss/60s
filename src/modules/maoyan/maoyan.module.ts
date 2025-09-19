@@ -1,4 +1,5 @@
-import { Common } from '../common.ts'
+import { Common } from '../../common.ts'
+import { fetchBoxOffice } from './encode.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
@@ -40,6 +41,26 @@ class ServiceMaoyan {
         case 'json':
         default:
           ctx.response.body = Common.buildJson(ret)
+          break
+      }
+    }
+  }
+
+  handleRealtime(): RouterMiddleware<'/maoyan/realtime'> {
+    return async (ctx) => {
+      const data = await fetchBoxOffice()
+
+      switch (ctx.state.encoding) {
+        case 'text':
+          ctx.response.body = `实时票房（猫眼）\n\n${data.movieList.data.list
+            .map((e, idx) => `${idx + 1}. ${e.movieInfo.movieName} - ${e.boxSplitUnit.num}`)
+            .slice(0, 20)
+            .join('\n')}\n\n数据来源：猫眼专业版`
+          break
+
+        case 'json':
+        default:
+          ctx.response.body = Common.buildJson(data.movieList.data.list)
           break
       }
     }

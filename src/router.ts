@@ -24,7 +24,7 @@ import { serviceIP } from './modules/ip.module.ts'
 import { serviceKfc } from './modules/kfc.module.ts'
 import { serviceLuck } from './modules/luck/luck.module.ts'
 import { serviceLunar } from './modules/lunar/lunar.module.ts'
-import { serviceMaoyan } from './modules/maoyan.module.ts'
+import { serviceMaoyan } from './modules/maoyan/maoyan.module.ts'
 import { serviceNcm } from './modules/ncm.module.ts'
 import { serviceOG } from './modules/og.module.ts'
 import { serviceQRCode } from './modules/qrcode/qrcode.module.ts'
@@ -89,7 +89,6 @@ appRouter.get('/hitokoto', serviceHitokoto.handle())
 appRouter.get('/ip', serviceIP.handle())
 appRouter.get('/kfc', serviceKfc.handle())
 appRouter.get('/luck', serviceLuck.handle())
-appRouter.get('/maoyan', serviceMaoyan.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
 appRouter.get('/toutiao', serviceToutiao.handle())
 appRouter.get('/weibo', serviceWeibo.handle())
@@ -107,6 +106,9 @@ appRouter.all('/health', serviceHealth.handle())
 
 appRouter.all('/password', servicePassword.handle())
 appRouter.all('/password/check', servicePassword.handleCheck())
+
+appRouter.get('/maoyan', serviceMaoyan.handle())
+appRouter.get('/maoyan/realtime', serviceMaoyan.handleRealtime())
 
 appRouter.get('/baidu/realtime', serviceBaidu.handleRealtime())
 appRouter.get('/baidu/teleplay', serviceBaidu.handleTeleplay())
