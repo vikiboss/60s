@@ -17,37 +17,38 @@ const getMygsig = (qs: string) => {
 
   return JSON.stringify({
     m1: '0.0.3',
-    m2: 0,
-    m3: '0.0.67_tool',
+    // m2: 0,
+    // m3: '0.0.67_tool',
     ms1: utils.md5(`581409236#${sortedStr}$${ts}`),
     ts,
-    ts1: 1758266439813, // dynamic
+    // ts1: 1758274726353, // window.MyH5Guard.ts
   })
 }
 
-const getQueryKey = (query = {}, userAgent = 'Mozilla/5.0 Chrome/140.0.0.0 Safari/537.36', method = 'GET') => {
+const getParams = (userAgent = 'Mozilla/5.0 Chrome/140.0.0.0 Safari/537.36', method = 'GET') => {
   const signData: Record<string, any> = {
-    method,
     timeStamp: Date.now(),
     'User-Agent': utils.base64(userAgent),
     index: Math.floor(Math.random() * 1000 + 1),
     channelId: 40009,
     sVersion: 2,
-    key: 'A013F70DB97834C0A5492378BD76C53A',
   }
 
-  const queryString = new URLSearchParams(signData).toString().replace(/\s+/g, ' ')
-  const signKey = utils.md5(queryString)
+  const signKey = utils.md5(
+    new URLSearchParams({ method, key: 'A013F70DB97834C0A5492378BD76C53A', ...signData })
+      .toString()
+      .replace(/\s+/g, ' '),
+  )
 
-  delete signData.method
-  delete signData.key
-
-  return { ...query, ...signData, signKey }
+  return new URLSearchParams({ ...signData, signKey })
 }
 
 const fetchBoxOffice = async () => {
-  const finalQuery = getQueryKey({ orderType: 1 })
-  const params = new URLSearchParams(finalQuery)
+  const params = getParams()
+
+  // params.set('orderType', '0')
+  // ...其他需要的参数
+
   const url = `https://piaofang.maoyan.com/dashboard-ajax?${params}`
   const res = await fetch(url, { headers: { mygsig: getMygsig(params.toString()) } })
 
