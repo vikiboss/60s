@@ -1,3 +1,4 @@
+// deno-lint-ignore-file
 export function get__ac_signature2(url: string, ac_nonce: string, ua: string): string {
   let finalNum = 0
   let temp = 0
@@ -51,7 +52,7 @@ export function get__ac_signature(url: string, ac_nonce: string, ua: string) {
   function cal_one_str(one_str: string, orgi_iv: number) {
     let k = orgi_iv
     for (let i = 0; i < one_str.length; i++) {
-      let a = one_str.charCodeAt(i)
+      const a = one_str.charCodeAt(i)
       k = ((k ^ a) * 65599) >>> 0
     }
     return k
@@ -109,7 +110,7 @@ export function get__ac_signature(url: string, ac_nonce: string, ua: string) {
   return signature
 }
 export function mergeCookies(cookie1: string, cookie2: string) {
-  let cookieObj = {}
+  const cookieObj: Record<string, string> = {}
   const parseCookies = (cookie: string) => {
     cookie.split(';').forEach((item) => {
       const [key, value] = item.trim().split('=')
@@ -373,7 +374,7 @@ export function get_ab(dpf: string, ua: string): string {
         const a = r[i]
         k = (k * a + k + y[i % 3]) % 256
         const b = r[k]
-        ;((r[i] = b), (r[k] = a))
+        ;(r[i] = b), (r[k] = a)
       }
       return r
     }
