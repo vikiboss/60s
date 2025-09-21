@@ -38,7 +38,7 @@ class ServiceZhihuHot {
       comment_cnt: e.target.comment_count,
       created_at: e.target.created * 1000,
       created: Common.localeTime(e.target.created * 1000),
-      link: e.target.url,
+      link: e.target.url.replace('api.', 'www.').replace('questions', 'question'),
     }))
   }
 }
