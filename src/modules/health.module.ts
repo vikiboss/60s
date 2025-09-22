@@ -450,7 +450,7 @@ class ServiceHealth {
 
   private getNutritionAdvice(bmiCategory: string, gender: string, age: number) {
     let baseAdvice = ''
-    const specialTips = []
+    const specialTips: string[] = []
 
     // BMI基础营养建议
     switch (bmiCategory) {
