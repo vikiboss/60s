@@ -1,8 +1,8 @@
 import crypto from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { create } from 'fontkit'
-import numMap from './num-map.json' assert { type: 'json' }
-import numCommands from './num.json' assert { type: 'json' }
+import numMap from './num-map.json' with { type: 'json' }
+import numCommands from './num.json' with { type: 'json' }
 
 const utils = {
   parseQueryString: (qs: string) => Object.fromEntries((new URLSearchParams(qs) as any).entries()),
