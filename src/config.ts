@@ -3,7 +3,7 @@ export const config = {
   port: process.env.PORT ? +process.env.PORT : 4399,
   group: '1134573460',
   author: 'boycot <boycot2017@163.com>',
-  github: 'https://github.com/boycot/byt.api_v2',
+  github: 'https://github.com/boycot2015/byt.api_v2',
   debug: !!process.env.DEBUG,
   encodingParamName: process.env.ENCODING_PARAM_NAME || 'encoding',
 }

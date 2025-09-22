@@ -14,20 +14,20 @@
 
 ### 📡 API 调用方式
 
-> 部分地区访问主域名可能超时，可尝试自行部署，或使用他人分享的 [公共实例](https://docs.60s-api.boycot.moe/7306811m0)
+> 部分地区访问主域名可能超时，可尝试自行部署，或使用他人分享的 [公共实例](https://docs.60s-api.boycot.top/7306811m0)
 
 ```bash
 # JSON 格式 (默认)
-curl "https://60s.boycot.moe/v2/60s"
+curl "https://api_v2.boycot.top/v2/60s"
 
 # 纯文本格式
-curl "https://60s.boycot.moe/v2/60s?encoding=text"
+curl "https://api_v2.boycot.top/v2/60s?encoding=text"
 
 # 原图直链 (重定向到微信公众号原图)
-curl "https://60s.boycot.moe/v2/60s?encoding=image"
+curl "https://api_v2.boycot.top/v2/60s?encoding=image"
 
 # 代理直链 (代理请求，绕过防盗链)
-curl "https://60s.boycot.moe/v2/60s?encoding=image-proxy"
+curl "https://api_v2.boycot.top/v2/60s?encoding=image-proxy"
 ```
 
 ### 📊 数据特性
