@@ -70,30 +70,20 @@ interface KuanApiResponse {
 class ServiceKuan {
   handle(): RouterMiddleware<'/kuan'> {
     return async (ctx) => {
-      try {
-        const data = await this.#fetch()
+      const data = await this.#fetch()
 
-        switch (ctx.state.encoding) {
-          case 'text': {
-            const items = data.topics.map((item, idx) => `${idx + 1}. ${item.title}`).join('\n')
-            ctx.response.body = `酷安热门话题n\n${items}`
-            break
-          }
-
-          case 'json':
-          default: {
-            ctx.response.body = Common.buildJson(data)
-            break
-          }
+      switch (ctx.state.encoding) {
+        case 'text': {
+          const items = data.topics.map((item, idx) => `${idx + 1}. ${item.title}`).join('\n')
+          ctx.response.body = `酷安热门话题n\n${items}`
+          break
         }
-      } catch (error) {
-        ctx.response.status = 500
-        ctx.response.body = Common.buildJson({
-          error: error instanceof Error ? error.message : 'Unknown error',
-          topics: [],
-          total: 0,
-          updated_at: Date.now(),
-        })
+
+        case 'json':
+        default: {
+          ctx.response.body = Common.buildJson(data)
+          break
+        }
       }
     }
   }
@@ -123,7 +113,7 @@ class ServiceKuan {
     const rawData: CoolApkRawResponse = await response.json()
 
     if (!rawData.data || !Array.isArray(rawData.data)) {
-      throw new Error('Invalid response format from CoolApk API')
+      throw new Error(`Invalid response format from CoolApk API: ${JSON.stringify(rawData)}`)
     }
 
     const transformedData: KuanApiResponse = {
