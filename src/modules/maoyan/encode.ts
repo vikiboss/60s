@@ -1,8 +1,7 @@
 import crypto from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { create } from 'fontkit'
-import numMap from './num-map.json' with { type: 'json' }
-import numCommands from './num.json' with { type: 'json' }
+import numCommandsMap from './num-commands.json' with { type: 'json' }
 
 const utils = {
   parseQueryString: (qs: string) => Object.fromEntries((new URLSearchParams(qs) as any).entries()),
@@ -60,7 +59,9 @@ export const fetchBoxOffice = async () => {
 async function processFont(data: Root): Promise<Root> {
   const fontUrl = extractWoffUrl(data.fontStyle)
 
-  console.log('[font-url]', fontUrl)
+  if (!fontUrl) {
+    throw new Error('Font URL not found')
+  }
 
   const buffer = Buffer.from(await (await fetch(fontUrl)).arrayBuffer())
   const font = create(buffer)
@@ -74,32 +75,29 @@ async function processFont(data: Root): Promise<Root> {
   for (let codePoint of font.characterSet) {
     const glyph = font.glyphForCodePoint(codePoint)
     const unicode = `&#x${codePoint.toString(16).toLowerCase().padStart(4, '0')};`
-    const path = glyph.path.commands
-    const num = numCommands.find((e) => e.commands.every((e, idx) => e === path[idx].command))?.num ?? null
+    const commands = glyph.path.commands
+
+    const num =
+      numCommandsMap.find((e) => e.commandsList.some((e) => e.every((e, idx) => e === commands[idx].command)))?.num ??
+      null
 
     if (num !== null) {
       numbers.push({ unicode, num })
     }
   }
 
-  const skipNum = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].find((n) => !numbers.find((e) => e.num === n)) || 3
+  const skipNum = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].find((n) => !numbers.find((e) => e.num === n)) ?? '*'
 
-  for (const list of [data.movieList.data.list, data.webList.data.list, data.tvList.data.list]) {
-    for (const item of list) {
-      if ('boxSplitUnit' in item) {
-        item.boxSplitUnit.num = item.boxSplitUnit.num.replace(/&#x[0-9a-f]{4};/g, (match) => {
-          const found = numbers.find((n) => n.unicode === match)
-          return found ? found.num.toString() : String(skipNum)
-        })
-      }
+  for (const item of data.movieList.data.list) {
+    item.boxSplitUnit.num = item.boxSplitUnit.num.replace(/&#x[0-9a-f]{4};/g, (match) => {
+      const found = numbers.find((n) => n.unicode === match)
+      return found ? found.num.toString() : String(skipNum)
+    })
 
-      if ('splitBoxSplitUnit' in item) {
-        item.splitBoxSplitUnit.num = item.splitBoxSplitUnit.num.replace(/&#x[0-9a-f]{4};/g, (match) => {
-          const found = numbers.find((n) => n.unicode === match)
-          return found ? found.num.toString() : String(skipNum)
-        })
-      }
-    }
+    item.splitBoxSplitUnit.num = item.splitBoxSplitUnit.num.replace(/&#x[0-9a-f]{4};/g, (match) => {
+      const found = numbers.find((n) => n.unicode === match)
+      return found ? found.num.toString() : String(skipNum)
+    })
   }
 
   return data
@@ -129,7 +127,7 @@ export interface Root {
   movieList: {
     status: boolean
     data: {
-      list: Array<{
+      list: {
         avgSeatView: string
         avgShowView: string
         boxRate: string
@@ -151,7 +149,7 @@ export interface Root {
         }
         sumBoxDesc: string
         sumSplitBoxDesc: string
-      }>
+      }[]
       nationBoxInfo: {
         nationBoxSplitUnit: {
           num: string
@@ -174,7 +172,7 @@ export interface Root {
   webList: {
     status: boolean
     data: {
-      list: Array<{
+      list: {
         barValue: number
         currHeat: number
         currHeatDesc: string
@@ -186,11 +184,7 @@ export interface Root {
           releaseInfo: string
           seriesId: number
         }
-        playCountSplitUnit?: {
-          num: number
-          unit: string
-        }
-      }>
+      }[]
       updateInfo: {
         updateGapSecond: number
         updateTimestamp: number
@@ -200,14 +194,14 @@ export interface Root {
   tvList: {
     status: boolean
     data: {
-      list: Array<{
+      list: {
         attentionRate: number
         attentionRateDesc: string
         channelName: string
         marketRate: number
         marketRateDesc: string
         programmeName: string
-      }>
+      }[]
       updateInfo: {
         updateGapSecond: number
         updateTimestamp: number

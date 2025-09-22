@@ -3,18 +3,12 @@ import { fetchBoxOffice } from './encode.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
-const headers = {
-  referer: 'https://piaofang.maoyan.com/',
-  'User-Agent':
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
-}
-
 class ServiceMaoyan {
-  handle(): RouterMiddleware<'/maoyan'> {
+  handleAllMovie(): RouterMiddleware<'/maoyan/all/movie'> {
     return async (ctx) => {
       const { list, tips } = await this.fetchHTMLData()
 
-      const ret = {
+      const data = {
         list: list
           .toSorted((a, b) => b.rawValue - a.rawValue)
           .map((e, idx) => ({
@@ -32,44 +26,77 @@ class ServiceMaoyan {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = `全球电影票房总榜（猫眼）\n\n${ret.list
+          ctx.response.body = `全球电影票房总榜（猫眼）\n\n${data.list
             .map((e) => `${e.rank}. ${e.movie_name} (${e.release_year}) - ${e.box_office_desc}`)
             .slice(0, 20)
-            .join('\n')}\n\n${ret.tip}`
+            .join('\n')}\n\n${data.tip}`
           break
 
         case 'json':
         default:
-          ctx.response.body = Common.buildJson(ret)
+          ctx.response.body = Common.buildJson(data)
           break
       }
     }
   }
 
-  handleRealtime(): RouterMiddleware<'/maoyan/realtime'> {
+  handleRealtime(type: 'movie' | 'tv' | 'web'): RouterMiddleware<'/maoyan/movie'> {
     return async (ctx) => {
       const data = await fetchBoxOffice()
 
       switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `实时票房 (${dayjs().format('M/D HH:mm')})\n\n${data.movieList.data.list
-            .map(
-              (e, idx) =>
-                `${idx + 1}. ${e.movieInfo.movieName} - ${e.movieInfo.releaseInfo}/${e.sumBoxDesc}/${e.showCount?.toLocaleString() || '-'}场`,
-            )
-            .slice(0, 20)
-            .join('\n')}\n\n数据来源：猫眼专业版`
-          break
-
         case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data.movieList.data.list)
+        default: {
+          ctx.response.body = Common.buildJson(data[`${type}List`]?.data || [])
           break
+        }
+
+        case 'text': {
+          switch (type) {
+            case 'movie':
+            default: {
+              ctx.response.body = `今日实时票房排行 (${dayjs().format('M/D HH:mm')})\n\n${data.movieList.data.list
+                .map(
+                  (e, idx) =>
+                    `${idx + 1}. ${e.movieInfo.movieName} - ${e.boxSplitUnit.num}${e.boxSplitUnit.unit}/${
+                      e.movieInfo.releaseInfo
+                    }`,
+                )
+                .slice(0, 20)
+                .join('\n')}\n\n数据来源：猫眼专业版`
+              break
+            }
+
+            case 'tv': {
+              ctx.response.body = `今日实时电视收视排行 (${dayjs().format('M/D HH:mm')})\n\n${data.tvList.data.list
+                .map((e, idx) => `${idx + 1}. ${e.programmeName} - ${e.channelName}/${e.marketRate.toFixed(2)}%`)
+                .slice(0, 20)
+                .join('\n')}\n\n数据来源：猫眼专业版`
+              break
+            }
+
+            case 'web': {
+              ctx.response.body = `今日实时网播热度排行 (${dayjs().format('M/D HH:mm')})\n\n${data.webList.data.list
+                .map((e, idx) => `${idx + 1}. ${e.seriesInfo.name} - ${e.currHeatDesc}/${e.seriesInfo.releaseInfo}`)
+                .slice(0, 20)
+                .join('\n')}\n\n数据来源：猫眼专业版`
+              break
+            }
+          }
+
+          break
+        }
       }
     }
   }
 
   async fetchHTMLData() {
+    const headers = {
+      referer: 'https://piaofang.maoyan.com/',
+      'User-Agent':
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Safari/537.36',
+    }
+
     const html = await (await fetch('https://piaofang.maoyan.com/i/globalBox/historyRank', { headers })).text()
     const json = /var props = (\{.*?\});/.exec(html)?.[1] || '{}'
     const data = JSON.parse(json)?.data || {}
