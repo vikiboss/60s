@@ -3,9 +3,9 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceBaidu {
-  handleRealtime(): RouterMiddleware<'/baidu/realtime'> {
+  handleHotSearch(): RouterMiddleware<'/baidu/hot'> {
     return async (ctx) => {
-      const data = await this.#fetchRealtime()
+      const data = await this.#fetchRealtimeHot()
 
       switch (ctx.state.encoding) {
         case 'text':
@@ -73,7 +73,7 @@ class ServiceBaidu {
     return score
   }
 
-  async #fetchRealtime() {
+  async #fetchRealtimeHot() {
     const options = { headers: { 'User-Agent': Common.chromeUA } }
     const response = await fetch('https://top.baidu.com/board?tab=realtime', options)
     const rawHtml = await response.text()

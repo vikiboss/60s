@@ -83,14 +83,14 @@ appRouter.get('/chemical', serviceChemical.handle())
 appRouter.get('/douyin', serviceDouyin.handle())
 appRouter.get('/duanzi', serviceDuanzi.handle())
 appRouter.get('/epic', serviceEpic.handle())
-appRouter.get('/exchange_rate', serviceExRate.handle())
+appRouter.get('/exchange_rate', serviceExRate.handle()) // 兼容保留
 appRouter.get('/exchange-rate', serviceExRate.handle())
 appRouter.get('/fabing', serviceFabing.handle())
 appRouter.get('/hitokoto', serviceHitokoto.handle())
 appRouter.get('/ip', serviceIP.handle())
 appRouter.get('/kfc', serviceKfc.handle())
 appRouter.get('/luck', serviceLuck.handle())
-appRouter.get('/today_in_history', serviceTodayInHistory.handle())
+appRouter.get('/today_in_history', serviceTodayInHistory.handle()) // 兼容保留
 appRouter.get('/today-in-history', serviceTodayInHistory.handle())
 appRouter.get('/toutiao', serviceToutiao.handle())
 appRouter.get('/weibo', serviceWeibo.handle())
@@ -109,11 +109,14 @@ appRouter.all('/health', serviceHealth.handle())
 appRouter.all('/password', servicePassword.handle())
 appRouter.all('/password/check', servicePassword.handleCheck())
 
-appRouter.get('/maoyan', serviceMaoyan.handle())
-appRouter.get('/maoyan/all', serviceMaoyan.handle())
-appRouter.get('/maoyan/realtime', serviceMaoyan.handleRealtime())
+appRouter.get('/maoyan', serviceMaoyan.handleAllMovie()) // 兼容保留
+appRouter.get('/maoyan/all/movie', serviceMaoyan.handleAllMovie())
+appRouter.get('/maoyan/realtime/movie', serviceMaoyan.handleRealtime('movie'))
+appRouter.get('/maoyan/realtime/tv', serviceMaoyan.handleRealtime('tv'))
+appRouter.get('/maoyan/realtime/web', serviceMaoyan.handleRealtime('web'))
 
-appRouter.get('/baidu/realtime', serviceBaidu.handleRealtime())
+appRouter.get('/baidu/realtime', serviceBaidu.handleHotSearch()) // 兼容保留
+appRouter.get('/baidu/hot', serviceBaidu.handleHotSearch())
 appRouter.get('/baidu/teleplay', serviceBaidu.handleTeleplay())
 appRouter.get('/baidu/tieba', serviceBaidu.handleTieba())
 
@@ -124,15 +127,15 @@ appRouter.all('/hash', serviceHash.handle())
 appRouter.all('/fanyi', serviceFanyi.handle())
 appRouter.all('/fanyi/langs', serviceFanyi.langs())
 
-appRouter.get('/weather', serviceWeather.handle())
+appRouter.get('/weather', serviceWeather.handle()) // 兼容保留
 appRouter.get('/weather/realtime', serviceWeather.handle())
 appRouter.get('/weather/forecast', serviceWeather.handleForecast())
 
-appRouter.get('/ncm-rank', serviceNcm.handleRank())
+appRouter.get('/ncm-rank', serviceNcm.handleRank()) // 兼容保留
 appRouter.get('/ncm-rank/all', serviceNcm.handleRank())
 appRouter.get('/ncm-rank/:id', serviceNcm.handleRankDetail())
 
-appRouter.all('/color', serviceColor.handle())
+appRouter.all('/color', serviceColor.handle()) // 兼容保留
 appRouter.all('/color/random', serviceColor.handle())
 appRouter.all('/color/palette', serviceColor.handlePalette())
 
