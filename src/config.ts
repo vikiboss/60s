@@ -1,9 +1,9 @@
 export const config = {
   host: process.env.HOST || '0.0.0.0',
   port: process.env.PORT ? +process.env.PORT : 4399,
-  group: '595941841',
-  author: 'Viki <hi@viki.moe>',
-  github: 'https://github.com/vikiboss/60s',
+  group: '1134573460',
+  author: 'boycot <boycot2017@163.com>',
+  github: 'https://github.com/boycot/byt.api_v2',
   debug: !!process.env.DEBUG,
   encodingParamName: process.env.ENCODING_PARAM_NAME || 'encoding',
 }

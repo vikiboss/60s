@@ -1,8 +1,8 @@
 # ⏰ 60s API
 
-![Update Status](https://github.com/vikiboss/60s-static-host/workflows/schedule/badge.svg) ![GitHub](https://img.shields.io/github/v/release/vikiboss/60s?label=GitHub) ![Docker](https://img.shields.io/docker/v/vikiboss/60s?style=flat&label=Docker) ![Node.js](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?logo=bun&logoColor=white) ![Deno](https://img.shields.io/badge/Deno-000000?logo=deno&logoColor=white) [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)
+![Update Status](https://github.com/boycot/byt.api_v2-static-host/workflows/schedule/badge.svg) ![GitHub](https://img.shields.io/github/v/release/boycotboss/60s?label=GitHub) ![Docker](https://img.shields.io/docker/v/boycotboss/60s?style=flat&label=Docker) ![Node.js](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?logo=bun&logoColor=white) ![Deno](https://img.shields.io/badge/Deno-000000?logo=deno&logoColor=white) [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-1134573460-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)
 
-<a href="https://hellogithub.com/repository/vikiboss/60s" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=8e9af473df2244f59d84b79915298fcc&claim_uid=wXMelR56paDoO2x&theme=dark" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
+<a href="https://hellogithub.com/repository/boycotboss/60s" target="_blank"><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=8e9af473df2244f59d84b79915298fcc&claim_uid=wXMelR56paDoO2x&theme=dark" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
 > 一系列 **高质量、开源、可靠、全球 CDN 加速** 的开放 API 集合，让你用最简单的方式获取最准确的数据。
 
@@ -14,27 +14,27 @@
 
 ### 📡 API 调用方式
 
-> 部分地区访问主域名可能超时，可尝试自行部署，或使用他人分享的 [公共实例](https://docs.60s-api.viki.moe/7306811m0)
+> 部分地区访问主域名可能超时，可尝试自行部署，或使用他人分享的 [公共实例](https://docs.60s-api.boycot.moe/7306811m0)
 
 ```bash
 # JSON 格式 (默认)
-curl "https://60s.viki.moe/v2/60s"
+curl "https://60s.boycot.moe/v2/60s"
 
 # 纯文本格式
-curl "https://60s.viki.moe/v2/60s?encoding=text"
+curl "https://60s.boycot.moe/v2/60s?encoding=text"
 
 # 原图直链 (重定向到微信公众号原图)
-curl "https://60s.viki.moe/v2/60s?encoding=image"
+curl "https://60s.boycot.moe/v2/60s?encoding=image"
 
 # 代理直链 (代理请求，绕过防盗链)
-curl "https://60s.viki.moe/v2/60s?encoding=image-proxy"
+curl "https://60s.boycot.moe/v2/60s?encoding=image-proxy"
 ```
 
 ### 📊 数据特性
 
-- **数据源**: 微信公众号，详情参考 [这里](https://github.com/vikiboss/60s-static-host/blob/main/src/config/constants.ts#L1-L5)
+- **数据源**: 微信公众号，详情参考 [这里](https://github.com/boycot/byt.api_v2-static-host/blob/main/src/config/constants.ts#L1-L5)
 - **更新频率**: 每半小时自动尝试更新，正常情况最晚上午 10 点会更新
-- **数据处理**: [vikiboss/60s-static-host](https://github.com/vikiboss/60s-static-host) 仓库定时抓取
+- **数据处理**: [boycotboss/60s-static-host](https://github.com/boycot/byt.api_v2-static-host) 仓库定时抓取
 - **响应速度**: 毫秒级缓存响应，全球 CDN 加速
 - **内容质量**: 精选 15 条国内外优质新闻 + 每日微语
 
@@ -56,7 +56,7 @@ curl "https://60s.viki.moe/v2/60s?encoding=image-proxy"
 
 ## 📚 完整 API 目录
 
-> 完整文档托管在 [Apifox](https://docs.60s-api.viki.moe)，持续更新中，欢迎贡献！
+> 完整文档托管在 [Apifox](https://docs.60s-api.boycot.moe)，持续更新中，欢迎贡献！
 
 ### 📰 信息资讯类
 
@@ -134,9 +134,9 @@ curl "https://60s.viki.moe/v2/60s?encoding=image-proxy"
 ?id=123          # 获取指定ID
 
 # 示例调用
-curl "https://60s.viki.moe/v2/60s?encoding=text"
-curl "https://60s.viki.moe/v2/epic"
-curl "https://60s.viki.moe/v2/fanyi?text=Hello&to=ja"
+curl "https://60s.boycot.moe/v2/60s?encoding=text"
+curl "https://60s.boycot.moe/v2/epic"
+curl "https://60s.boycot.moe/v2/fanyi?text=Hello&to=ja"
 ```
 
 ## 🚀 快速开始
@@ -149,7 +149,7 @@ docker run -d \
   --restart always \
   --name 60s \
   -p 4399:4399 \
-  vikiboss/60s:latest
+  boycotboss/60s:latest
 ```
 
 **其他运行时**
@@ -170,7 +170,7 @@ npm install && node --experimental-strip-types node.ts
 
 方式一，使用 Workers 的可视化界面：
 
-1. [Fork 本仓库](https://github.com/vikiboss/60s/fork)
+1. [Fork 本仓库](https://github.com/boycot/byt.api_v2/fork)
 2. 在 [Cloudflare Workers](https://workers.cloudflare.com/) 通过 GitHub 创建项目
 3. 使用默认配置直接部署
 
@@ -208,17 +208,17 @@ npm install && npx wrangler publish
 
 ### 💬 交流
 
-- **QQ 群**: [![加入群聊](https://img.shields.io/badge/%E4%BC%81%E9%B5%9D%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG) (问题反馈、使用交流)
-- **GitHub**: [Issues](https://github.com/vikiboss/60s/issues) (Bug 报告、功能建议)
-- **文档**: [API 文档](https://docs.60s-api.viki.moe) (详细使用说明)
+- **QQ 群**: [![加入群聊](https://img.shields.io/badge/%E4%BC%81%E9%B5%9D%E7%BE%A4-1134573460-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG) (问题反馈、使用交流)
+- **GitHub**: [Issues](https://github.com/boycot/byt.api_v2/issues) (Bug 报告、功能建议)
+- **文档**: [API 文档](https://docs.60s-api.boycot.moe) (详细使用说明)
 
 ### 🎯 项目起源
 
-本项目最早源于 [这篇文章](https://xlog.viki.moe/60s) 中提到的想法。
+本项目最早源于 [这篇文章](https://xlog.boycot.moe/60s) 中提到的想法。
 
 ### 📈 项目 Star 历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=vikiboss/60s&type=Date)](https://star-history.com/#vikiboss/60s&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=boycotboss/60s&type=Date)](https://star-history.com/#boycotboss/60s&Date)
 
 ## 💰 赞赏项目
 
@@ -263,8 +263,8 @@ npm install && npx wrangler publish
 |             Ko.             | 11.66  |   QQ   |                   -                    |
 |           yijiong           | 15.00  |   QQ   |            a cup of coffee             |
 
-> 如有遗漏，欢迎通过 issue 或者 QQ 群 595941841 反馈～
+> 如有遗漏，欢迎通过 issue 或者 QQ 群 1134573460 反馈～
 
 ## 🪪 License （开源协议）
 
-[MIT](license) License © 2022-PRESENT Viki
+[MIT](license) License © 2022-PRESENT boycot
