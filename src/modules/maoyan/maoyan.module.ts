@@ -1,4 +1,4 @@
-import { Common } from '../../common.ts'
+import { Common, dayjs } from '../../common.ts'
 import { fetchBoxOffice } from './encode.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
@@ -52,8 +52,11 @@ class ServiceMaoyan {
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = `实时票房（猫眼）\n\n${data.movieList.data.list
-            .map((e, idx) => `${idx + 1}. ${e.movieInfo.movieName} - ${e.boxSplitUnit.num}`)
+          ctx.response.body = `实时票房 (${dayjs().format('M/D HH:mm')})\n\n${data.movieList.data.list
+            .map(
+              (e, idx) =>
+                `${idx + 1}. ${e.movieInfo.movieName} - ${e.movieInfo.releaseInfo}/${e.sumBoxDesc}/${e.showCount?.toLocaleString() || '-'}场`,
+            )
             .slice(0, 20)
             .join('\n')}\n\n数据来源：猫眼专业版`
           break

@@ -6,15 +6,16 @@
   "packageManager": "pnpm@10.17.0",
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.6",
-    "@types/cheerio": "^1.0.0",
     "cheerio": "^1.1.2",
     "dayjs": "^1.11.18",
     "filesize": "^11.0.10",
+    "fontkit": "^2.0.4",
     "tyme4ts": "^1.3.5",
     "yaqrcode": "^0.2.1"
   },
   "devDependencies": {
     "@types/bun": "^1.2.22",
+    "@types/fontkit": "^2.0.8",
     "@types/node": "^22.18.6",
     "bumpp": "^10.2.3",
     "prettier": "^3.6.2",
@@ -22,6 +23,7 @@
     "wrangler": "^4.38.0"
   },
   "scripts": {
+    "dev:no-watch": "DEV=1 PORT=4398 node --no-warnings --experimental-transform-types node.ts",
     "dev": "DEV=1 PORT=4398 node --no-warnings --experimental-transform-types --watch node.ts",
     "start": "PORT=4398 node --no-warnings --experimental-transform-types node.ts",
     "prerelease": "node --no-warnings --experimental-transform-types ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
