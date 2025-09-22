@@ -64,9 +64,9 @@ curl "https://60s.viki.moe/v2/60s?encoding=image-proxy"
 | ---------------- | ----------------------- | -------------------- | ------------ |
 | 🌍 **60秒看世界** | `/v2/60s`               | 每日精选新闻摘要     | 微信公众号   |
 | 🏞️ 必应壁纸       | `/v2/bing`              | 每日精美壁纸         | Bing 官方    |
-| 📅 历史今天       | `/v2/today_in_history`  | 历史上的今天         | 权威历史资料 |
+| 📅 历史今天       | `/v2/today-in-history`  | 历史上的今天         | 权威历史资料 |
 | 🤖 AI 快讯        | `/v2/ai-news`           | 每日 AI 行业资讯     | AI 工具集    |
-| 💰 汇率查询       | `/v2/exchange_rate`     | 实时货币汇率         | 权威金融数据 |
+| 💰 汇率查询       | `/v2/exchange-rate`     | 实时货币汇率         | 权威金融数据 |
 | 🔬 HN 文章        | `/v2/hacker-news/:type` | Hacker News 前沿资讯 | HN 官方      |
 
 ### 🔥 热门榜单类
@@ -79,9 +79,9 @@ curl "https://60s.viki.moe/v2/60s?encoding=image-proxy"
 | 🎵 抖音热搜     | `/v2/douyin`                       | 抖音热门内容   | 实时     |
 | 📰 头条热搜     | `/v2/toutiao`                      | 今日头条热点   | 实时     |
 | 🎬 猫眼票房     | `/v2/maoyan`                       | 实时电影票房   | 实时     |
-| 🎵 网易云榜单   | `/v2/ncm-rank`、`/v2/ncm-rank/:id` | 网易云音乐榜单 | 实时     |
+| 🎵 网易云榜单   | `/v2/ncm-rank/all`、`/v2/ncm-rank/:id` | 网易云音乐榜单 | 实时     |
 | 🍠 小红书热点   | `/v2/rednote`                      | 小红书热门话题 | 实时     |
-| 🐾 百度实时热搜 | `/v2/baidu/realtime`               | 百度实时热搜   | 实时     |
+| 🐾 百度实时热搜 | `/v2/baidu/hot`               | 百度实时热搜   | 实时     |
 | 📺 百度电视剧榜 | `/v2/baidu/teleplay`               | 百度电视剧榜   | 实时     |
 | 📃 百度贴吧话题 | `/v2/baidu/tieba`                  | 百度贴吧话题   | 实时     |
 | 🚗 懂车帝热搜   | `/v2/dongchedi`                    | 懂车帝热搜榜单 | 实时     |
@@ -104,7 +104,7 @@ curl "https://60s.viki.moe/v2/60s?encoding=image-proxy"
 | 🩺 健康分析     | `/v2/health`           | 身体健康综合分析参考 | BMI/理想体重/建议   |
 | 🔒 随机密码     | `/v2/password`         | 随机密码             | 高度可定制/强度分析 |
 | 🔒 密码强度检测 | `/v2/password/check`   | 检查密码强度         | 评分/破解时间       |
-| 🎨 随机颜色     | `/v2/color`            | 随机颜色             | 生成、分析颜色      |
+| 🎨 随机颜色     | `/v2/color/random`            | 随机颜色             | 生成、分析颜色      |
 | 🎨 色彩搭配     | `/v2/color/palette`    | 配套色彩搭配         | 系列配色推荐        |
 
 ### 🎈 趣味娱乐类
