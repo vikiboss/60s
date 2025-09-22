@@ -3,7 +3,7 @@ import { config } from './src/config.ts'
 
 console.log(`service is running at http://localhost:${config.port}`)
 
-app.listen({
+await app.listen({
   hostname: config.host,
   port: config.port,
 })
