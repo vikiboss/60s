@@ -28,19 +28,19 @@ type Primitive = boolean | number | string | null | undefined
 
 export class Common {
   static chromeUA =
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69'
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
 
   static buildJson(data: boolean | number | string | object | null, code = 200, message = COMMON_MSG) {
-    const res = { code, message, data }
+    const response = { code, message, data }
 
     if (config.debug) {
       return {
-        ...res,
+        ...response,
         __debug__: Common.getApiInfo(),
       }
     }
 
-    return res
+    return response
   }
 
   static requireArguments(name: string | string[], ctx: RouterContext<any, Record<string, any>>) {

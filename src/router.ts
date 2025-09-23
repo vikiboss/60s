@@ -1,7 +1,5 @@
-import pkg from '../package.json' with { type: 'json' }
-
 import { Router } from '@oak/oak/router'
-import { config } from './config.ts'
+import { Common } from './common.ts'
 
 import { service60s } from './modules/60s.module.ts'
 import { serviceAINews } from './modules/ai-news.module.ts'
@@ -42,31 +40,24 @@ import { serviceHealth } from './modules/health.module.ts'
 import { servicePassword } from './modules/password/password.module.ts'
 import { serviceColor } from './modules/color.module.ts'
 import { serviceKuan } from './modules/kuan.module.ts'
+
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
 export const rootRouter = new Router()
 
 rootRouter.get('/', (ctx) => {
   ctx.response.headers.set('Content-Type', 'application/json; charset=utf-8')
-  ctx.response.body = JSON.stringify(
-    {
-      api_name: '60s-api',
-      api_version: pkg.version,
-      api_docs: 'https://docs.60s-api.viki.moe',
-      author: config.author,
-      user_group: config.group,
-      github_repo: config.github,
-      updated: pkg.updateTime,
-      updated_at: new Date(pkg.updateTime).getTime(),
-      endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
-    },
-    null,
-    2,
-  )
+  const endpoints = Array.from(appRouter.entries(), ([_, v]) => v.path)
+  ctx.response.body = JSON.stringify({ ...Common.getApiInfo(), endpoints }, null, 2)
 })
 
 rootRouter.get('/health', (ctx) => {
   ctx.response.body = 'ok'
+})
+
+rootRouter.get('/endpoints', (ctx) => {
+  ctx.response.headers.set('Content-Type', 'application/json; charset=utf-8')
+  ctx.response.body = Array.from(appRouter.entries(), ([_, v]) => v.path)
 })
 
 export const appRouter = new Router({
