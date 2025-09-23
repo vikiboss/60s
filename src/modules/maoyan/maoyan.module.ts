@@ -47,7 +47,7 @@ class ServiceMaoyan {
       switch (ctx.state.encoding) {
         case 'json':
         default: {
-          ctx.response.body = Common.buildJson(data[`${type}List`]?.data || [])
+          ctx.response.body = Common.buildJson(data[type] ?? {})
           break
         }
 
@@ -55,29 +55,24 @@ class ServiceMaoyan {
           switch (type) {
             case 'movie':
             default: {
-              ctx.response.body = `今日实时票房排行 (${dayjs().format('M/D HH:mm')})\n\n${data.movieList.data.list
-                .map(
-                  (e, idx) =>
-                    `${idx + 1}. ${e.movieInfo.movieName} - ${e.boxSplitUnit.num}${e.boxSplitUnit.unit}/${
-                      e.movieInfo.releaseInfo
-                    }`,
-                )
+              ctx.response.body = `今日实时票房排行 (${dayjs().format('M/D HH:mm')})\n\n${data.movie.list
+                .map((e, idx) => `${idx + 1}. ${e.movie_name} - ${e.box_office_desc}/${e.release_info}`)
                 .slice(0, 20)
                 .join('\n')}\n\n数据来源：猫眼专业版`
               break
             }
 
             case 'tv': {
-              ctx.response.body = `今日实时电视收视排行 (${dayjs().format('M/D HH:mm')})\n\n${data.tvList.data.list
-                .map((e, idx) => `${idx + 1}. ${e.programmeName} - ${e.channelName}/${e.marketRate.toFixed(2)}%`)
+              ctx.response.body = `今日实时电视收视排行 (${dayjs().format('M/D HH:mm')})\n\n${data.tv.list
+                .map((e, idx) => `${idx + 1}. ${e.programme_name} - ${e.channel_name}/${e.market_rate.toFixed(2)}%`)
                 .slice(0, 20)
                 .join('\n')}\n\n数据来源：猫眼专业版`
               break
             }
 
             case 'web': {
-              ctx.response.body = `今日实时网播热度排行 (${dayjs().format('M/D HH:mm')})\n\n${data.webList.data.list
-                .map((e, idx) => `${idx + 1}. ${e.seriesInfo.name} - ${e.currHeatDesc}/${e.seriesInfo.releaseInfo}`)
+              ctx.response.body = `今日实时网播热度排行 (${dayjs().format('M/D HH:mm')})\n\n${data.web.list
+                .map((e, idx) => `${idx + 1}. ${e.series_name} - ${e.curr_heat_desc}/${e.release_info}`)
                 .slice(0, 20)
                 .join('\n')}\n\n数据来源：猫眼专业版`
               break

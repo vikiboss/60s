@@ -2,6 +2,7 @@ import crypto from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { create } from 'fontkit'
 import numCommandsMap from './num-commands.json' with { type: 'json' }
+import { dayjs } from '../../common.ts'
 
 const utils = {
   parseQueryString: (qs: string) => Object.fromEntries((new URLSearchParams(qs) as any).entries()),
@@ -53,7 +54,76 @@ export const fetchBoxOffice = async () => {
   const res = await fetch(url, { headers: { mygsig: getMygsig(params.toString()) } })
   const data = (await res.json()) as Root
 
-  return processFont(data)
+  return transformFormat(await processFont(data))
+}
+
+function transformFormat(data: Root) {
+  return {
+    movie: {
+      title: data.movieList.data.nationBoxInfo.title,
+      show_count_desc: data.movieList.data.nationBoxInfo.showCountDesc,
+      view_count_desc: data.movieList.data.nationBoxInfo.viewCountDesc,
+      split_box_office: data.movieList.data.nationBoxInfo.nationBoxSplitUnit.num,
+      split_box_office_unit: data.movieList.data.nationBoxInfo.nationSplitBoxSplitUnit.unit,
+      box_office: data.movieList.data.nationBoxInfo.nationBoxSplitUnit.num,
+      box_office_unit: data.movieList.data.nationBoxInfo.nationBoxSplitUnit.unit,
+      update_gap_second: data.movieList.data.updateInfo.updateGapSecond,
+      updated: dayjs(data.movieList.data.updateInfo.updateTimestamp).format('YYYY-MM-DD HH:mm:ss'),
+      updated_at: data.movieList.data.updateInfo.updateTimestamp,
+      list: data.movieList.data.list.map((item) => ({
+        movie_id: item.movieInfo.movieId,
+        movie_name: item.movieInfo.movieName,
+        release_info: item.movieInfo.releaseInfo,
+
+        box_office: item.boxSplitUnit.num,
+        box_office_unit: item.boxSplitUnit.unit,
+        box_office_desc: `${item.boxSplitUnit.num}${item.boxSplitUnit.unit}`,
+        box_office_rate: item.boxRate,
+
+        split_box_office: item.splitBoxSplitUnit.num,
+        split_box_office_unit: item.splitBoxSplitUnit.unit,
+        split_box_office_desc: `${item.splitBoxSplitUnit.num}${item.splitBoxSplitUnit.unit}`,
+        split_box_office_rate: item.splitBoxRate,
+
+        show_count: item.showCount,
+        show_count_rate: item.showCountRate,
+
+        avg_show_view: item.avgShowView,
+        avg_seat_view: item.avgSeatView,
+
+        sum_box_desc: item.sumBoxDesc,
+        sum_split_box_desc: item.sumSplitBoxDesc,
+      })),
+    },
+    tv: {
+      update_gap_second: data.tvList.data.updateInfo.updateGapSecond,
+      updated: dayjs(data.tvList.data.updateInfo.updateTimestamp).format('YYYY-MM-DD HH:mm:ss'),
+      updated_at: data.tvList.data.updateInfo.updateTimestamp,
+      list: data.tvList.data.list.map((item) => ({
+        programme_name: item.programmeName,
+        channel_name: item.channelName,
+        market_rate: item.marketRate,
+        market_rate_desc: item.marketRateDesc,
+        attention_rate: item.attentionRate,
+        attention_rate_desc: item.attentionRateDesc,
+      })),
+    },
+    web: {
+      update_gap_second: data.webList.data.updateInfo.updateGapSecond,
+      updated: dayjs(data.webList.data.updateInfo.updateTimestamp).format('YYYY-MM-DD HH:mm:ss'),
+      updated_at: data.webList.data.updateInfo.updateTimestamp,
+      list: data.webList.data.list.map((item) => ({
+        series_id: item.seriesInfo.seriesId,
+        series_name: item.seriesInfo.name,
+        release_info: item.seriesInfo.releaseInfo,
+        platform_desc: item.seriesInfo.platformDesc,
+        platform_txt: item.seriesInfo.platformTxt,
+        curr_heat: item.currHeat,
+        curr_heat_desc: item.currHeatDesc,
+        bar_value: item.barValue,
+      })),
+    },
+  }
 }
 
 async function processFont(data: Root): Promise<Root> {
