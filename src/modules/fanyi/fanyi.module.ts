@@ -60,6 +60,14 @@ class ServiceFanyi {
     }
   }
 
+  handleLangs(): RouterMiddleware<'/fanyi/langs'> {
+    return (ctx) => {
+      ctx.response.body = Common.buildJson(
+        [...this.langMap.values()].toSorted((a, b) => a.alphabet.localeCompare(b.alphabet)),
+      )
+    }
+  }
+
   isLangValid(from: string, to: string) {
     return (from === 'auto' || this.langMap.has(from)) && (to === 'auto' || this.langMap.has(to))
   }
@@ -75,14 +83,6 @@ class ServiceFanyi {
 
     const date = new Date().toLocaleString('zh-CN')
     console.log(`[${date}] [fanyi] 语言列表初始化完成，共 ${this.langMap.size} 种语言`)
-  }
-
-  langs(): RouterMiddleware<'/fanyi/langs'> {
-    return (ctx) => {
-      ctx.response.body = Common.buildJson(
-        [...this.langMap.values()].toSorted((a, b) => a.alphabet.localeCompare(b.alphabet)),
-      )
-    }
   }
 
   async #fetch(text: string, from: string, to: string) {

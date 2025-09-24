@@ -64,6 +64,7 @@ export const appRouter = new Router({
   prefix: '/v2',
 })
 
+// === 以下为已发布的正式接口 ===
 appRouter.get('/60s', service60s.handle())
 appRouter.get('/answer', serviceAnswer.handle())
 appRouter.get('/baike', serviceBaike.handle())
@@ -118,19 +119,20 @@ appRouter.get('/ncm-rank/:id', serviceNcm.handleRankDetail())
 appRouter.get('/color/random', serviceColor.handle())
 appRouter.get('/color/palette', serviceColor.handlePalette())
 
-appRouter.get('/beta/kuan', serviceKuan.handle())
-
-// 以下为支持 body 解析参数的接口
+// === 以下为支持 body 解析参数的接口 ===
 appRouter.all('/og', serviceOG.handle())
 appRouter.all('/hash', serviceHash.handle())
 
 appRouter.all('/fanyi', serviceFanyi.handle())
-appRouter.all('/fanyi/langs', serviceFanyi.langs())
+appRouter.all('/fanyi/langs', serviceFanyi.handleLangs())
 
-// 以下为待定接口
+// === 以下为测试接口，beta 前缀，接口可能不稳定 ===
+appRouter.get('/beta/kuan', serviceKuan.handle())
+
+// === 以下为待定接口，还在计划、开发中 ===
 // appRouter.get('/slacking-calendar', serviceSlackingCalendar.handle())
 
-// 以下接口为兼容保留，未来大版本移除
+// === 以下接口为兼容保留，未来大版本移除 ===
 appRouter.get('/exchange_rate', serviceExRate.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
 appRouter.get('/maoyan', serviceMaoyan.handleAllMovie())
