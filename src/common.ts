@@ -191,6 +191,7 @@ export class Common {
     const urls = [
       `https://raw.githubusercontent.com/${repo}/refs/heads/${branch}/${path}`,
       `https://cdn.jsdelivr.net/gh/${repo}/${path}`,
+      `https://cdn.jsdmirror.com/gh/${repo}/${path}`,
       ...alternatives,
     ]
 
