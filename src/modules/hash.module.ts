@@ -8,12 +8,10 @@ import type { RouterMiddleware } from '@oak/oak'
 class ServiceHash {
   handle(): RouterMiddleware<'/hash'> {
     return async (ctx) => {
-      const content = await Common.getParam('content', ctx.request)
+      const content = await Common.getParam('content', ctx.request, true)
 
       if (!content) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, 'query 或者 body 的 `content` 参数不能为空')
-        return
+        return Common.requireArguments('content', ctx)
       }
 
       const data = {

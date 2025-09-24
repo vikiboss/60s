@@ -92,10 +92,9 @@ appRouter.get('/dad-joke', serviceDadJoke.handle())
 appRouter.get('/rednote', serviceRednote.handle())
 appRouter.get('/dongchedi', serviceDongchedi.handle())
 
-appRouter.all('/health', serviceHealth.handle())
-
-appRouter.all('/password', servicePassword.handle())
-appRouter.all('/password/check', servicePassword.handleCheck())
+appRouter.get('/health', serviceHealth.handle())
+appRouter.get('/password', servicePassword.handle())
+appRouter.get('/password/check', servicePassword.handleCheck())
 
 appRouter.get('/maoyan/all/movie', serviceMaoyan.handleAllMovie())
 appRouter.get('/maoyan/realtime/movie', serviceMaoyan.handleRealtime('movie'))
@@ -110,23 +109,26 @@ appRouter.get('/baidu/hot', serviceBaidu.handleHotSearch())
 appRouter.get('/baidu/teleplay', serviceBaidu.handleTeleplay())
 appRouter.get('/baidu/tieba', serviceBaidu.handleTieba())
 
-appRouter.all('/og', serviceOG.handle())
-appRouter.all('/hash', serviceHash.handle())
-// appRouter.get('/slacking-calendar', serviceSlackingCalendar.handle())
-
-appRouter.all('/fanyi', serviceFanyi.handle())
-appRouter.all('/fanyi/langs', serviceFanyi.langs())
-
 appRouter.get('/weather/realtime', serviceWeather.handle())
 appRouter.get('/weather/forecast', serviceWeather.handleForecast())
 
 appRouter.get('/ncm-rank/list', serviceNcm.handleRank())
 appRouter.get('/ncm-rank/:id', serviceNcm.handleRankDetail())
 
-appRouter.all('/color/random', serviceColor.handle())
-appRouter.all('/color/palette', serviceColor.handlePalette())
+appRouter.get('/color/random', serviceColor.handle())
+appRouter.get('/color/palette', serviceColor.handlePalette())
 
 appRouter.get('/beta/kuan', serviceKuan.handle())
+
+// 以下为支持 body 解析参数的接口
+appRouter.all('/og', serviceOG.handle())
+appRouter.all('/hash', serviceHash.handle())
+
+appRouter.all('/fanyi', serviceFanyi.handle())
+appRouter.all('/fanyi/langs', serviceFanyi.langs())
+
+// 以下为待定接口
+// appRouter.get('/slacking-calendar', serviceSlackingCalendar.handle())
 
 // 以下接口为兼容保留，未来大版本移除
 appRouter.get('/exchange_rate', serviceExRate.handle())
@@ -135,4 +137,4 @@ appRouter.get('/maoyan', serviceMaoyan.handleAllMovie())
 appRouter.get('/baidu/realtime', serviceBaidu.handleHotSearch())
 appRouter.get('/weather', serviceWeather.handle())
 appRouter.get('/ncm-rank', serviceNcm.handleRank())
-appRouter.all('/color', serviceColor.handle())
+appRouter.get('/color', serviceColor.handle())

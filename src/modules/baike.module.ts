@@ -8,8 +8,7 @@ class ServiceBaike {
       const word = await Common.getParam('word', ctx.request)
 
       if (!word) {
-        Common.requireArguments('word', ctx)
-        return
+        return Common.requireArguments('word', ctx)
       }
 
       try {

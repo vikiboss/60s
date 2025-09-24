@@ -10,16 +10,14 @@ class ServiceFanyi {
     this.initLangs()
 
     return async (ctx) => {
-      const text = await Common.getParam('text', ctx.request)
+      const text = await Common.getParam('text', ctx.request, true)
 
       if (!text) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, 'text 参数不能为空')
-        return
+        return Common.requireArguments('text', ctx)
       }
 
-      const from = (await Common.getParam('from', ctx.request)) || 'auto'
-      const to = (await Common.getParam('to', ctx.request)) || 'auto'
+      const from = (await Common.getParam('from', ctx.request, true)) || 'auto'
+      const to = (await Common.getParam('to', ctx.request, true)) || 'auto'
 
       if (!this.isLangValid(from, to)) {
         ctx.response.status = 400

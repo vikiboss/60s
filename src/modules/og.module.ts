@@ -5,11 +5,10 @@ import type { RouterMiddleware } from '@oak/oak'
 class ServiceOG {
   handle(): RouterMiddleware<'/og'> {
     return async (ctx) => {
-      const url = await Common.getParam('url', ctx.request)
+      const url = await Common.getParam('url', ctx.request, true)
 
       if (!url) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, 'query 参数 `url` 不能为空')
+        return Common.requireArguments('url', ctx)
       }
 
       try {

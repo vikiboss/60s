@@ -50,7 +50,7 @@ export class Common {
     ctx.response.body = Common.buildJson(
       null,
       400,
-      `参数 ${args.join(', ')} 不能为空，可以是 GET 请求的 query 参数或 POST 请求的 body JSON 参数。query 参数请进行必要的 URL 编码`,
+      `参数 ${args.join(', ')} 不能为空。如为 query 参数，请进行必要的 URL 编码`,
     )
   }
 
@@ -103,15 +103,21 @@ export class Common {
     return arr[Math.floor(Math.random() * arr.length)]
   }
 
-  static async getParam(name: string, request: Request) {
-    let value = request.url.searchParams.get(name) || ''
+  static async getParam(name: string, request: Request & { _bodyJson?: Record<string, any> }, parseBody = false) {
+    const value = request.url.searchParams.get(name) ?? ''
+
+    if (!parseBody && value) return value
+
     try {
-      if (!value) {
-        value = (await request.body.json())[name] || ''
+      const json = request?._bodyJson
+
+      if (!json) {
+        request._bodyJson = await request.body.json()
+      } else {
+        return json[name] ?? ''
       }
-    } catch {
-      // ignored
-    }
+    } catch {}
+
     return value
   }
 
@@ -177,5 +183,24 @@ export class Common {
       updated: pkg.updateTime,
       updated_at: new Date(pkg.updateTime).getTime(),
     }
+  }
+
+  static async tryRepoUrl(options: { repo: string; path: string; branch?: string; alternatives?: string[] }) {
+    const { repo, path, branch = 'main', alternatives = [] } = options
+
+    const urls = [
+      `https://raw.githubusercontent.com/${repo}/refs/heads/${branch}/${path}`,
+      `https://cdn.jsdelivr.net/gh/${repo}/${path}`,
+      ...alternatives,
+    ]
+
+    for (const url of urls) {
+      try {
+        const response = await fetch(url)
+        if (response.ok) return response
+      } catch {}
+    }
+
+    throw new Error(`无法获取文件 ${path}，请稍后再试。`)
   }
 }

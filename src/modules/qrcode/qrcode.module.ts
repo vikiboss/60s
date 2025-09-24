@@ -10,9 +10,7 @@ class ServiceQRCode {
       const text = await Common.getParam('text', ctx.request)
 
       if (!text) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, '参数 `text` 不能为空')
-        return
+        return Common.requireArguments('text', ctx)
       }
 
       const size = await Common.getParam('size', ctx.request)
