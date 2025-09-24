@@ -41,6 +41,8 @@ class ServiceKfc {
       alternatives: [`https://v50.deno.dev/list`],
     })
 
+    if (!response) return []
+
     const data = (await response.json()) as string[]
 
     if (data?.length > 0) {

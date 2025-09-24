@@ -63,26 +63,23 @@ class Service60s {
       ],
     })
 
-    if (response.ok) {
-      const data = await response.json()
+    if (!response || !response.ok) return null
 
-      if (!data?.news?.length) return null
+    const data = await response.json()
+    if (!data?.news?.length) return null
 
-      const now = dayjs().tz(TZ_SHANGHAI)
+    const now = dayjs().tz(TZ_SHANGHAI)
 
-      return {
-        ...data,
-        day_of_week: getDayOfWeek(data.date),
-        lunar_date: SolarDay.fromYmd(now.year(), now.month() + 1, now.date())
-          .getLunarDay()
-          .toString()
-          .replace('农历', ''),
-        api_updated: Common.localeTime(now.valueOf()),
-        api_updated_at: now.valueOf(),
-      } satisfies DailyNewsItem
-    } else {
-      return null
-    }
+    return {
+      ...data,
+      day_of_week: getDayOfWeek(data.date),
+      lunar_date: SolarDay.fromYmd(now.year(), now.month() + 1, now.date())
+        .getLunarDay()
+        .toString()
+        .replace('农历', ''),
+      api_updated: Common.localeTime(now.valueOf()),
+      api_updated_at: now.valueOf(),
+    } satisfies DailyNewsItem
   }
 
   async #fetch(date?: string | null, forceUpdate = false): Promise<DailyNewsItem> {

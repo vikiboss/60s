@@ -197,11 +197,14 @@ export class Common {
 
     for (const url of urls) {
       try {
-        const response = await fetch(url)
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 2_000)
+        const response = await fetch(url, { signal: controller.signal })
+        clearTimeout(timeoutId)
         if (response.ok) return response
       } catch {}
     }
 
-    throw new Error(`无法获取文件 ${path}，请稍后再试。`)
+    return null
   }
 }
