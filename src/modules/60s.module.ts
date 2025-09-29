@@ -59,7 +59,7 @@ class Service60s {
       path: `static/60s/${date}.json`,
       alternatives: [
         `https://raw.githubusercontent.com/two2025/60s-static-host/refs/heads/main/static/60s/${date}.json`,
-        `https://cdn.jsdelivr.net/gh/vikiboss/60s-static-host/static/60s/${date}.json`,
+        `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`,
       ],
     })
 
@@ -80,30 +80,6 @@ class Service60s {
       api_updated: Common.localeTime(now.valueOf()),
       api_updated_at: now.valueOf(),
     } satisfies DailyNewsItem
-    const response = await fetch(this.getUrl(date))
-    //   .catch(() => fetch(this.getVercelUrl(date)))
-      .catch(() => fetch(this.getJsDelivrUrl(date)))
-
-    if (response.ok) {
-      const data = await response.json()
-
-      if (!data?.news?.length) return null
-
-      const now = dayjs().tz(TZ_SHANGHAI)
-
-      return {
-        ...data,
-        day_of_week: getDayOfWeek(data.date),
-        lunar_date: SolarDay.fromYmd(now.year(), now.month() + 1, now.date())
-          .getLunarDay()
-          .toString()
-          .replace('农历', ''),
-        api_updated: Common.localeTime(now.valueOf()),
-        api_updated_at: now.valueOf(),
-      } satisfies DailyNewsItem
-    } else {
-      return null
-    }
   }
 
   async #fetch(date?: string | null, forceUpdate = false): Promise<DailyNewsItem> {
