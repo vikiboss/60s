@@ -49,17 +49,26 @@ class Service60s {
     }
   }
 
+
+  getUrl(date: string): string {
+    return `https://raw.githubusercontent.com/two2025/60s-static-host/refs/heads/main/static/60s/${date}.json`
+  }
+
+ /* getVercelUrl(date: string): string {
+    return `https://60s-static.viki.moe/60s/${date}.json`
+  }*/
+
   getJsDelivrUrl(date: string): string {
-    return `https://cdn.jsdelivr.net/gh/vikiboss/60s-static-host/static/60s/${date}.json`
+    return `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`
   }
 
   async tryUrl(date: string) {
     const response = await Common.tryRepoUrl({
-      repo: 'vikiboss/60s-static-host',
+      repo: 'skykiBoss/60s-static-host',
       path: `static/60s/${date}.json`,
       alternatives: [
-        `https://60s-static.viki.moe/60s/${date}.json`,
-        `https://60s-static-host.vercel.app/60s/${date}.json`,
+        `https://60s.cccccc.plus/60s/${date}.json`,
+        `https://60.woaicc.cc/60s/${date}.json`,
       ],
     })
 

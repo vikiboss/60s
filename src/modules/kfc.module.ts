@@ -30,15 +30,16 @@ class ServiceKfc {
     }
   }
 
+
   async #fetch() {
     if (this.cache && Date.now() - this.lastFetchTime <= this.cacheDuration) {
       return this.cache
     }
 
     const response = await Common.tryRepoUrl({
-      repo: 'vikiboss/v50',
+      repo: 'skykiboss/v50',
       path: 'static/v50.json',
-      alternatives: [`https://v50.deno.dev/list`],
+      alternatives: [`https://cdn.jsdelivr.net/gh/two2025/v50@main/static/v50.json`],
     })
 
     if (!response) return []
