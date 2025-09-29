@@ -21,9 +21,13 @@ import { serviceHitokoto } from './modules/hitokoto/hitokoto.module.ts'
 import { serviceIP } from './modules/ip.module.ts'
 import { serviceKfc } from './modules/kfc.module.ts'
 import { serviceLuck } from './modules/luck/luck.module.ts'
+
 import { serviceLunar } from './modules/lunar/lunar.module.ts'
 import { serviceMaoyan } from './modules/maoyan/maoyan.module.ts'
 import { serviceNcm } from './modules/ncm.module.ts'
+
+import { serviceLove } from './modules/love/love.module.ts'
+
 import { serviceOG } from './modules/og.module.ts'
 import { serviceQRCode } from './modules/qrcode/qrcode.module.ts'
 import { serviceTodayInHistory } from './modules/today-in-history.module.ts'
@@ -43,12 +47,33 @@ import { serviceKuan } from './modules/kuan.module.ts'
 
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
+
+
 export const rootRouter = new Router()
 
 rootRouter.get('/', (ctx) => {
   ctx.response.headers.set('Content-Type', 'application/json; charset=utf-8')
+
   const endpoints = Array.from(appRouter.entries(), ([_, v]) => v.path)
   ctx.response.body = JSON.stringify({ ...Common.getApiInfo(), endpoints }, null, 2)
+
+  ctx.response.body = JSON.stringify(
+    {
+        这是接口服务器: '啥也没有',
+    //   api_name: '60s-api',
+    //   api_version: pkg.version,
+       接口内容请查看: 'https://doc.cccccc.plus',
+    //   author: config.author,
+    //   user_group: config.group,
+    //   github_repo: config.github,
+    //   updated: pkg.updateTime,
+    //   updated_at: new Date(pkg.updateTime).getTime(),
+    //   endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
+    },
+    null,
+    2,
+  )
+
 })
 
 rootRouter.get('/health', (ctx) => {
@@ -132,11 +157,17 @@ appRouter.get('/beta/kuan', serviceKuan.handle())
 // === 以下为待定接口，还在计划、开发中 ===
 // appRouter.get('/slacking-calendar', serviceSlackingCalendar.handle())
 
+
 // === 以下接口为兼容保留，未来大版本移除 ===
 appRouter.get('/exchange_rate', serviceExRate.handle())
 appRouter.get('/today_in_history', serviceTodayInHistory.handle())
 appRouter.get('/maoyan', serviceMaoyan.handleAllMovie())
 appRouter.get('/baidu/realtime', serviceBaidu.handleHotSearch())
+
+
+appRouter.get('/love', serviceLove.handle())
+
+
 appRouter.get('/weather', serviceWeather.handle())
 appRouter.get('/ncm-rank', serviceNcm.handleRank())
 appRouter.get('/color', serviceColor.handle())

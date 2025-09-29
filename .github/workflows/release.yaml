@@ -6,7 +6,7 @@ on:
       - 'v*'
 env:
   REGISTRY: docker.io
-  IMAGE_NAME: vikiboss/60s
+  IMAGE_NAME: two2024/60s
 
 jobs:
   release:
