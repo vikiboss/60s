@@ -47,9 +47,28 @@ export const rootRouter = new Router()
 
 rootRouter.get('/', (ctx) => {
   ctx.response.headers.set('Content-Type', 'application/json; charset=utf-8')
-  const endpoints = Array.from(appRouter.entries(), ([_, v]) => v.path)
-  ctx.response.body = JSON.stringify({ ...Common.getApiInfo(), endpoints }, null, 2)
+  ctx.response.body = JSON.stringify(
+    {
+        这是接口服务器: '啥也没有',
+    //   api_name: '60s-api',
+    //   api_version: pkg.version,
+       接口内容请查看: 'https://doc.cccccc.plus',
+    //   author: config.author,
+    //   user_group: config.group,
+    //   github_repo: config.github,
+    //   updated: pkg.updateTime,
+    //   updated_at: new Date(pkg.updateTime).getTime(),
+    //   endpoints: Array.from(appRouter.entries(), ([_, v]) => v.path),
+    },
+    null,
+    2,
+  )
 })
+//rootRouter.get('/', (ctx) => {
+//  ctx.response.headers.set('Content-Type', 'application/json; charset=utf-8')
+//  const endpoints = Array.from(appRouter.entries(), ([_, v]) => v.path)
+//  ctx.response.body = JSON.stringify({ ...Common.getApiInfo(), endpoints }, null, 2)
+//})
 
 rootRouter.get('/health', (ctx) => {
   ctx.response.body = 'ok'
