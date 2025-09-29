@@ -49,43 +49,37 @@ class Service60s {
     }
   }
 
-  getUrl(date: string): string {
-    return `https://raw.githubusercontent.com/two2025/60s-static-host/refs/heads/main/static/60s/${date}.json`
-  }
-
- /* getVercelUrl(date: string): string {
-    return `https://60s-static.viki.moe/60s/${date}.json`
-  }*/
-
   getJsDelivrUrl(date: string): string {
     return `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`
   }
 
   async tryUrl(date: string) {
-    const response = await fetch(this.getUrl(date))
-    //   .catch(() => fetch(this.getVercelUrl(date)))
-      .catch(() => fetch(this.getJsDelivrUrl(date)))
+    const response = await Common.tryRepoUrl({
+      repo: 'two2025/60s-static-host',
+      path: `static/60s/${date}.json`,
+      alternatives: [
+        `https://raw.githubusercontent.com/two2025/60s-static-host/refs/heads/main/static/60s/${date}.json`,
+        `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`,
+      ],
+    })
 
-    if (response.ok) {
-      const data = await response.json()
+    if (!response || !response.ok) return null
 
-      if (!data?.news?.length) return null
+    const data = await response.json()
+    if (!data?.news?.length) return null
 
-      const now = dayjs().tz(TZ_SHANGHAI)
+    const now = dayjs().tz(TZ_SHANGHAI)
 
-      return {
-        ...data,
-        day_of_week: getDayOfWeek(data.date),
-        lunar_date: SolarDay.fromYmd(now.year(), now.month() + 1, now.date())
-          .getLunarDay()
-          .toString()
-          .replace('农历', ''),
-        api_updated: Common.localeTime(now.valueOf()),
-        api_updated_at: now.valueOf(),
-      } satisfies DailyNewsItem
-    } else {
-      return null
-    }
+    return {
+      ...data,
+      day_of_week: getDayOfWeek(data.date),
+      lunar_date: SolarDay.fromYmd(now.year(), now.month() + 1, now.date())
+        .getLunarDay()
+        .toString()
+        .replace('农历', ''),
+      api_updated: Common.localeTime(now.valueOf()),
+      api_updated_at: now.valueOf(),
+    } satisfies DailyNewsItem
   }
 
   async #fetch(date?: string | null, forceUpdate = false): Promise<DailyNewsItem> {

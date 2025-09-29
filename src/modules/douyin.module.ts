@@ -10,8 +10,8 @@ class ServiceDouyin {
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = `抖音实时热搜\n\n${data
-            .slice(0, 20)
             .map((e, idx) => `${idx + 1}. ${e.title}`)
+            .slice(0, 20)
             .join('\n')}`
           break
 

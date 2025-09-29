@@ -10,8 +10,8 @@ class ServiceZhihuHot {
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = `知乎实时热搜\n\n${data
-            .slice(0, 20)
             .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value_desc})`)
+            .slice(0, 20)
             .join('\n')}`
           break
 
@@ -38,7 +38,7 @@ class ServiceZhihuHot {
       comment_cnt: e.target.comment_count,
       created_at: e.target.created * 1000,
       created: Common.localeTime(e.target.created * 1000),
-      link: e.target.url,
+      link: e.target.url.replace('api.', 'www.').replace('questions', 'question'),
     }))
   }
 }
