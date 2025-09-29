@@ -3,21 +3,26 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceKfc {
+  private lastFetchTime = 0
+  private cacheDuration = 1 * 24 * 60 * 60 * 1000 // 缓存 1 天
+  private cache: string[] = []
+
   handle(): RouterMiddleware<'/kfc'> {
-    return async ctx => {
-      const list = await this.fetchJson()
+    return async (ctx) => {
+      const list = await this.#fetch()
+      const result = Common.randomItem(list)
 
       switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = list[Math.floor(Math.random() * list.length)]
+        case 'text': {
+          ctx.response.body = result
           break
+        }
 
         case 'json':
         default: {
-          const idx = Math.floor(Math.random() * list.length)
           ctx.response.body = Common.buildJson({
-            index: idx,
-            kfc: list[idx],
+            index: list.findIndex((item: string) => item === result),
+            kfc: result,
           })
           break
         }
@@ -25,10 +30,28 @@ class ServiceKfc {
     }
   }
 
-  async fetchJson() {
-    return await (
-      await fetch('https://cdn.jsdelivr.net/gh/two2025/v50@main/static/v50.json')
-    ).json()
+  async #fetch() {
+    if (this.cache && Date.now() - this.lastFetchTime <= this.cacheDuration) {
+      return this.cache
+    }
+
+    const response = await Common.tryRepoUrl({
+      repo: 'vikiboss/v50',
+      path: 'static/v50.json',
+      alternatives: [`https://cdn.jsdelivr.net/gh/two2025/v50@main/static/v50.json`],
+    })
+
+    if (!response) return []
+
+    const data = (await response.json()) as string[]
+
+    if (data?.length > 0) {
+      this.cache = data
+      this.lastFetchTime = Date.now()
+    }
+
+    return data || []
+
   }
 }
 

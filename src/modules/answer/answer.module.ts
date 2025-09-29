@@ -5,17 +5,37 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceAnswer {
   handle(): RouterMiddleware<'/answer'> {
-    return (ctx) => {
-      const answer = Common.randomItem(answerData)
+    return async (ctx) => {
+      const id = await Common.getParam('id', ctx.request)
+
+      let result: any
+
+      if (id) {
+        // 获取指定ID的答案
+        const index = parseInt(id)
+        if (index >= 0 && index < answerData.length) {
+          result = answerData[index]
+        } else {
+          ctx.response.status = 404
+          ctx.response.body = Common.buildJson(null, 404, `未找到ID为 ${index} 的答案`)
+          return
+        }
+      } else {
+        // 随机获取答案（默认行为）
+        result = Common.randomItem(answerData)
+      }
 
       switch (ctx.state.encoding) {
         case 'text':
-          ctx.response.body = answer.answer
+          ctx.response.body = result.answer
           break
 
         case 'json':
         default:
-          ctx.response.body = Common.buildJson(answer)
+          ctx.response.body = Common.buildJson({
+            ...result,
+            index: answerData.findIndex((item) => item === result),
+          })
           break
       }
     }

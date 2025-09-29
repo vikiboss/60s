@@ -1,26 +1,29 @@
 import crypto from 'node:crypto'
 import { Common } from '../../common.ts'
 
-// stored from 'https://api-overmind.youdao.com/openapi/get/luna/dict/luna-front/prod/langType'
-import langs from './langs.json' with { type: 'json' }
-
 import type { RouterMiddleware } from '@oak/oak'
 
-const langMap = Object.groupBy(langs, (e) => e.code)
-
 class ServiceFanyi {
+  langMap = new Map<string, { label: string; code: string; alphabet: string }>()
+
   handle(): RouterMiddleware<'/fanyi'> {
+    this.initLangs()
+
     return async (ctx) => {
-      const text = await Common.getParam('text', ctx.request)
+      const text = await Common.getParam('text', ctx.request, true)
 
       if (!text) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, 'text 参数不能为空')
-        return
+        return Common.requireArguments('text', ctx)
       }
 
-      const from = ctx.request.url.searchParams.get('from') || 'auto'
-      const to = ctx.request.url.searchParams.get('to') || 'auto'
+      const from = (await Common.getParam('from', ctx.request, true)) || 'auto'
+      const to = (await Common.getParam('to', ctx.request, true)) || 'auto'
+
+      if (!this.isLangValid(from, to)) {
+        ctx.response.status = 400
+        ctx.response.body = Common.buildJson(null, 400, '不支持的语言类型，请通过 /fanyi/langs 接口查询支持的语言类型')
+        return
+      }
 
       const data = await this.#fetch(text, from, to)
       const isSuccess = data.code === 0
@@ -41,13 +44,13 @@ class ServiceFanyi {
                 source: {
                   text: responseItems.map((e) => e.src).join('') || '',
                   type: sourceType,
-                  type_desc: langMap[sourceType]?.[0]?.label || '',
+                  type_desc: this.langMap.get(sourceType)?.label || '',
                   pronounce: responseItems.map((e) => e.srcPronounce).join('') || '',
                 },
                 target: {
                   text: responseItems.map((e) => e.tgt).join('') || '',
                   type: targetType,
-                  type_desc: langMap[targetType]?.[0]?.label || '',
+                  type_desc: this.langMap.get(targetType)?.label || '',
                   pronounce: responseItems.map((e) => e.tgtPronounce).join('') || '',
                 },
               })
@@ -57,10 +60,29 @@ class ServiceFanyi {
     }
   }
 
-  langs(): RouterMiddleware<'/fanyi/langs'> {
+  handleLangs(): RouterMiddleware<'/fanyi/langs'> {
     return (ctx) => {
-      ctx.response.body = Common.buildJson(langs)
+      ctx.response.body = Common.buildJson(
+        [...this.langMap.values()].toSorted((a, b) => a.alphabet.localeCompare(b.alphabet)),
+      )
     }
+  }
+
+  isLangValid(from: string, to: string) {
+    return (from === 'auto' || this.langMap.has(from)) && (to === 'auto' || this.langMap.has(to))
+  }
+
+  async initLangs() {
+    const api = 'https://api-overmind.youdao.com/openapi/get/luna/dict/luna-front/prod/langType'
+    const { data = {} } = (await (await fetch(api)).json()) || {}
+    const langs = [...(data?.value?.textTranslate?.common || []), ...(data?.value?.textTranslate?.specify || [])]
+
+    for (const lang of langs) {
+      this.langMap.set(lang.code, lang)
+    }
+
+    const date = new Date().toLocaleString('zh-CN')
+    console.log(`[${date}] [fanyi] 语言列表初始化完成，共 ${this.langMap.size} 种语言`)
   }
 
   async #fetch(text: string, from: string, to: string) {

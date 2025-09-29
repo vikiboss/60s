@@ -3,8 +3,6 @@
 ![Update Status](https://github.com/vikiboss/60s-static-host/workflows/schedule/badge.svg) ![GitHub](https://img.shields.io/github/v/release/two2025/60s?label=GitHub) ![Docker](https://img.shields.io/docker/v/two2025/60s?style=flat&label=Docker) ![Node.js](https://img.shields.io/badge/Node.js-6DA55F?logo=node.js&logoColor=white) ![Bun](https://img.shields.io/badge/Bun-%23000000.svg?logo=bun&logoColor=white) ![Deno](https://img.shields.io/badge/Deno-000000?logo=deno&logoColor=white) [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)
 
 
-
-
 ## ⚖️ API 实现原则和使用建议
 
 - 尽可能采用官方、权威的数据源头，保证准确性和可用性
@@ -80,35 +78,50 @@ docker run -d \
   vikiboss/60s:latest
 ```
 
-### Deno
+**其他 JS/TS 运行时（备选）**
 
 ```bash
+# Deno
 deno install && deno run -A deno.ts
-```
 
-### Bun
-
-```bash
+# Bun
 bun install && bun run bun.ts
-```
 
-### Node.js
-
-> 要求 Node.js 版本 >= 22.6 以支持 `--experimental-strip-types` 参数来执行 TypeScript 文件
-
-```bash
+# Node.js (需要 v22.6+)
 npm install && node --experimental-strip-types node.ts
 ```
 
-### Cloudflare Workers
+### ☁️ 云端部署
 
-> 要求本地 Node.js 环境，受限于 Node.js 兼容性原因，不支持翻译接口
+**Cloudflare Workers**
+
+方式一，使用 Workers 的可视化界面：
+
+1. [Fork 本仓库](https://github.com/vikiboss/60s/fork)
+2. 在 [Cloudflare Workers](https://workers.cloudflare.com/) 通过 GitHub 创建项目
+3. 使用默认配置直接部署
+
+> 仓库已预置 Workers 配置，无需额外设置。后续更新只需同步主仓库即可。
+
+方式二，命令行操作，clone 本仓库然后执行：
 
 ```bash
 npm install && npx wrangler publish
 ```
 
-如果你习惯可视化操作，也可以按照下方步骤操作：
+---
+
+## 📋 数据更新机制
+
+![数据流架构图](./images/arch.png)
+
+### 🔄 更新策略
+- **数据抓取**: GitHub Actions 定时任务
+- **存储方式**: 静态 JSON 文件 + CDN 缓存  
+- **更新频率**: 每日自动更新
+
+> 可视化架构图: [60s 更新策略 - Excalidraw](https://excalidraw.com/#json=VRffPBlMuFBkOlTbGe7IH,0C6yClfLME65ZhmQ30ywdg)
+
 
 1. [fork](https://github.com/vikiboss/60s/fork) 本仓库
 2. 打开 [workers.cloudflare.com](https://workers.cloudflare.com/)
@@ -117,21 +130,31 @@ npm install && npx wrangler publish
 
 > 本仓库内已经放置了预先配好的 Workers 配置，你无需关心配置细节，后续如需更新，只需要同步主仓库的代码即可。
 
-## 60s 的数据更新策略
 
-![arch](./images/arch.png)
+## 🤝 社区与支持
 
-- 可编辑版本请参考 [60s 更新策略 - Excalidraw](https://excalidraw.com/#json=VRffPBlMuFBkOlTbGe7IH,0C6yClfLME65ZhmQ30ywdg)
+### 🙏 致谢
 
-## 🧑‍🤝‍🧑 用户群
+本项目的部分代码、灵感、实现方式等参考了以下优秀开源项目，排名不分先后：
 
-使用过程中有任何问题或建议，欢迎加入企鹅群反馈: [![群](https://img.shields.io/badge/%E4%BC%81%E9%B9%85%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG)。
+- [DIYgod/RSSHub](https://github.com/DIYgod/RSSHub)
+- [Rankslive/RanksLiveApi](https://github.com/Rankslive/RanksLiveApi)
 
-## 🌟 Star 历史
+### 💬 交流
+
+- **QQ 群**: [![加入群聊](https://img.shields.io/badge/%E4%BC%81%E9%B5%9D%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG) (问题反馈、使用交流)
+- **GitHub**: [Issues](https://github.com/vikiboss/60s/issues) (Bug 报告、功能建议)
+- **文档**: [API 文档](https://docs.60s-api.viki.moe) (详细使用说明)
+
+### 🎯 项目起源
+
+本项目最早源于 [这篇文章](https://xlog.viki.moe/60s) 中提到的想法。
+
+### 📈 项目 Star 历史
 
 [![Star History Chart](https://api.star-history.com/svg?repos=vikiboss/60s&type=Date)](https://star-history.com/#vikiboss/60s&Date)
 
-## 💰 赞赏
+## 💰 赞赏项目
 
 
 如果觉得这个项目对你有帮助，欢迎请 **原作者** 喝咖啡 ☕️ ～
@@ -145,6 +168,44 @@ npm install && npx wrangler publish
 </div>
 
 
+
+<details>
+<summary>感谢以下小伙伴的赞赏（点击展开/收起，排名不分先后）</summary>
+
+
+<!-- 表格 -->
+|           赞赏人            |  金额  |  途径  |                  备注                  |
+| :-------------------------: | :----: | :----: | :------------------------------------: |
+|           Update            |  6.66  | WeChat |           感谢大佬的开源分享           |
+|            匿名             |  0.01  | WeChat |                   -                    |
+|         月夜忆江南          |  5.00  | WeChat |                   -                    |
+|            匿名             |  1.66  | WeChat |                   -                    |
+|         GoooodJooB7         |  1.66  | WeChat |              谢谢大佬开源              |
+|            匿名             |  1.66  | WeChat |                   -                    |
+| 十七岁就学会吃饭的天才少年  |  5.00  | WeChat |                   -                    |
+|          Sundrops           |  1.66  | WeChat |             感谢友友的接口             |
+|        春风伴我余生         | 10.00  | WeChat |                   -                    |
+|             杰              |  1.00  | WeChat |                   -                    |
+|            Blue             |  6.66  | WeChat |           Blue 祝开发者 6666           |
+|           聆听、            | 10.00  | WeChat |           喝杯咖啡，记得加冰           |
+|            匿名             | 100.00 | WeChat |                 好项目                 |
+| 卤蛋 （HelloGitHub 发起人） | 88.88  | WeChat |      很喜欢你的项目，加油 ^ O ^ ~      |
+|             Lee             |  6.66  | WeChat |                感谢分享                |
+|          世界和平           | 66.00  | WeChat |           世界需要更多的英雄           |
+|         севастополь         |  6.66  | WeChat |                买包辣条                |
+|             爪              |  2.00  | WeChat |                   -                    |
+|             LMQ             | 18.80  | WeChat | 大佬的响应速度，我泪目了，请大佬喝咖啡 |
+|             ---             |  ---   |  ---   |                  ---                   |
+|             *斌             | 12.90  | Alipay |                   -                    |
+|             *杰             | 20.00  | Alipay |                   -                    |
+|            **杰             |  9.90  | Alipay |                   -                    |
+|             ---             |  ---   |  ---   |                  ---                   |
+|             Ko.             | 11.66  |   QQ   |                   -                    |
+|           yijiong           | 15.00  |   QQ   |            a cup of coffee             |
+
+> 如有遗漏，欢迎通过 issue 或者 QQ 群 595941841 反馈～
+
+</details>
 
 ## 🪪 License （开源协议）
 

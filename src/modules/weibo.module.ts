@@ -3,6 +3,9 @@ import { Common } from '../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceWeibo {
+  COOKIE =
+    'SUB=_2AkMfiZ0rf8NxqwFRmvsQzWzrb4t2wg7EieKp1WzwJRMxHRl-yT9kqlIitRB6NAmzxF4VA1utRFGp8rQgmyrgezcW39y0; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9W53ZGSdSzBm4kF5jod8B.He; _s_tentry=passport.weibo.com; Apache=6768551213104.772.1758794271221; SINAGLOBAL=6768551213104.772.1758794271221; ULV=1758794271230:1:1:1:6768551213104.772.1758794271221:'
+
   handle(): RouterMiddleware<'/weibo'> {
     return async (ctx) => {
       const data = await this.#fetch()
@@ -10,8 +13,8 @@ class ServiceWeibo {
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = `微博实时热搜\n\n${data
-            .slice(0, 20)
             .map((e, i) => `${i + 1}. ${e.title}`)
+            .slice(0, 20)
             .join('\n')}`
           break
 
@@ -26,7 +29,14 @@ class ServiceWeibo {
   async #fetch() {
     const api =
       'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
-    const { data = {} } = await (await fetch(api)).json()
+    const { data = {} } = await (
+      await fetch(api, {
+        headers: {
+          'User-Agent': Common.chromeUA,
+          Cookie: this.COOKIE,
+        },
+      })
+    ).json()
     return (((data?.cards?.[0]?.card_group || []) as Item[]).filter((e) => !e.pic.includes('stick')) || []).map(
       (e) => ({
         title: e.desc,

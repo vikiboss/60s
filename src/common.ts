@@ -9,9 +9,11 @@ import type { Request, RouterContext } from '@oak/oak'
 import _dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc.js'
 import timezone from 'dayjs/plugin/timezone.js'
+import isBetween from 'dayjs/plugin/isBetween.js'
 
 _dayjs.extend(utc)
 _dayjs.extend(timezone)
+_dayjs.extend(isBetween)
 
 export const TZ_SHANGHAI = 'Asia/Shanghai'
 
@@ -26,19 +28,19 @@ type Primitive = boolean | number | string | null | undefined
 
 export class Common {
   static chromeUA =
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36 Edg/110.0.1587.69'
+    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36'
 
   static buildJson(data: boolean | number | string | object | null, code = 200, message = COMMON_MSG) {
-    const res = { code, message, data }
+    const response = { code, message, data }
 
     if (config.debug) {
       return {
-        ...res,
+        ...response,
         __debug__: Common.getApiInfo(),
       }
     }
 
-    return res
+    return response
   }
 
   static requireArguments(name: string | string[], ctx: RouterContext<any, Record<string, any>>) {
@@ -48,7 +50,7 @@ export class Common {
     ctx.response.body = Common.buildJson(
       null,
       400,
-      `参数 ${args.join(', ')} 不能为空，可以是 GET 请求的 query 参数或 POST 请求的 body JSON 参数。query 参数请进行必要的 URL 编码`,
+      `参数 ${args.join(', ')} 不能为空。如为 query 参数，请进行必要的 URL 编码`,
     )
   }
 
@@ -102,15 +104,21 @@ export class Common {
     return arr[Math.floor(Math.random() * arr.length)]
   }
 
-  static async getParam(name: string, request: Request) {
-    let value = request.url.searchParams.get(name) || ''
+  static async getParam(name: string, request: Request & { _bodyJson?: Record<string, any> }, parseBody = false) {
+    const value = request.url.searchParams.get(name) ?? ''
+
+    if (!parseBody && value) return value
+
     try {
-      if (!value) {
-        value = (await request.body.json())[name] || ''
+      const json = request?._bodyJson
+
+      if (!json) {
+        request._bodyJson = await request.body.json()
+      } else {
+        return json[name] ?? ''
       }
-    } catch {
-      // ignored
-    }
+    } catch {}
+
     return value
   }
 
@@ -176,5 +184,28 @@ export class Common {
       updated: pkg.updateTime,
       updated_at: new Date(pkg.updateTime).getTime(),
     }
+  }
+
+  static async tryRepoUrl(options: { repo: string; path: string; branch?: string; alternatives?: string[] }) {
+    const { repo, path, branch = 'main', alternatives = [] } = options
+
+    const urls = [
+      `https://raw.githubusercontent.com/${repo}/refs/heads/${branch}/${path}`,
+      `https://cdn.jsdelivr.net/gh/${repo}/${path}`,
+      `https://cdn.jsdmirror.com/gh/${repo}/${path}`,
+      ...alternatives,
+    ]
+
+    for (const url of urls) {
+      try {
+        const controller = new AbortController()
+        const timeoutId = setTimeout(() => controller.abort(), 2_000)
+        const response = await fetch(url, { signal: controller.signal })
+        clearTimeout(timeoutId)
+        if (response.ok) return response
+      } catch {}
+    }
+
+    return null
   }
 }

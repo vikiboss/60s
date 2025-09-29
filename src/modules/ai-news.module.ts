@@ -18,6 +18,7 @@ class ServiceAINews {
         case 'text': {
           ctx.response.body = `AI 资讯快报（${data.date}${isToday ? '，实时更新' : ''}）\n\n${data.news
             .map((e, idx) => `${idx + 1}. ${e.title}\n${e.link}`)
+            .slice(0, 20)
             .join('\n\n')}`
           break
         }

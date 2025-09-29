@@ -5,16 +5,14 @@ import type { RouterMiddleware } from '@oak/oak'
 class ServiceBaike {
   handle(): RouterMiddleware<'/baike'> {
     return async (ctx) => {
-      const word = ctx.request.url.searchParams.get('word')
+      const word = await Common.getParam('word', ctx.request)
 
       if (!word) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, '缺少 query 参数 word')
-        return
+        return Common.requireArguments('word', ctx)
       }
 
       try {
-        const data = await this.#fetch(ctx.request.url.searchParams.get('word') ?? '')
+        const data = await this.#fetch(word)
 
         switch (ctx.state.encoding) {
           case 'text':
@@ -33,20 +31,25 @@ class ServiceBaike {
     }
   }
 
-  async #fetch(item: string) {
+  async #fetchRaw(item: string) {
     const api = new URL('https://baike.baidu.com/api/openapi/BaikeLemmaCardApi')
 
-    api.searchParams.set('scope', '103')
-    api.searchParams.set('format', 'json')
     api.searchParams.set('appid', '379020')
     api.searchParams.set('bk_key', item)
-    api.searchParams.set('bk_length', '100')
 
     const data = (await (await fetch(api)).json()) as BaikeData
 
     if (!data?.title) {
       throw new Error('未找到相关词条')
     }
+
+    return data
+  }
+
+  async #fetch(item: string) {
+    const data = await this.#fetchRaw(item)
+      .catch(() => this.#fetchRaw(item))
+      .catch(() => this.#fetchRaw(item))
 
     return {
       title: data.title,
