@@ -49,14 +49,6 @@ class Service60s {
     }
   }
 
-  getUrl(date: string): string {
-    return `https://raw.githubusercontent.com/two2025/60s-static-host/refs/heads/main/static/60s/${date}.json`
-  }
-
- /* getVercelUrl(date: string): string {
-    return `https://60s-static.viki.moe/60s/${date}.json`
-  }*/
-
   getJsDelivrUrl(date: string): string {
     return `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`
   }
@@ -67,7 +59,7 @@ class Service60s {
       path: `static/60s/${date}.json`,
       alternatives: [
         `https://raw.githubusercontent.com/two2025/60s-static-host/refs/heads/main/static/60s/${date}.json`,
-        `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`,
+        `https://cdn.jsdelivr.net/gh/vikiboss/60s-static-host/static/60s/${date}.json`,
       ],
     })
 
