@@ -49,10 +49,6 @@ class Service60s {
     }
   }
 
-  getJsDelivrUrl(date: string): string {
-    return `https://cdn.jsdelivr.net/gh/vikiboss/60s-static-host/static/60s/${date}.json`
-  }
-
   async tryUrl(date: string) {
     const response = await Common.tryRepoUrl({
       repo: 'vikiboss/60s-static-host',
