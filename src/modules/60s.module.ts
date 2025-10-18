@@ -49,10 +49,6 @@ class Service60s {
     }
   }
 
-  getJsDelivrUrl(date: string): string {
-    return `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`
-  }
-
   async tryUrl(date: string) {
     const response = await Common.tryRepoUrl({
       repo: 'two2025/60s-static-host',
