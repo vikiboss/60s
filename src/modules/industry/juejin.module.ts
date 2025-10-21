@@ -1,20 +1,20 @@
 import { Common } from '../../common.ts'
 import type { RouterMiddleware } from '@oak/oak'
 
-class ServiceTech36Kr {
+class ServiceJuejin {
   #cache: TechNews[] = []
   #lastUpdate = 0
   #cacheDuration = 30 * 60 * 1000 // 30分钟缓存
 
-  handle(): RouterMiddleware<'/industry/tech-36kr'> {
+  handle(): RouterMiddleware<'/industry/juejin'> {
     return async (ctx) => {
       const data = await this.#fetch()
 
       switch (ctx.state.encoding) {
         case 'text': {
-          ctx.response.body = `36氪科技快讯\n\n${data
+          ctx.response.body = `掘金热门文章\n\n${data
             .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.title}\n   ${e.description || ''}`)
+            .map((e, i) => `${i + 1}. ${e.title}\n   ${e.description || ''}\n   👍 ${e.likes}`)
             .join('\n\n')}`
           break
         }
@@ -36,37 +36,39 @@ class ServiceTech36Kr {
     }
 
     try {
-      // 36氪快讯API
-      const api = 'https://www.36kr.com/api/info-flow/main_site/posts'
+      // 掘金热门文章API
+      const api = 'https://api.juejin.cn/content_api/v1/content/article_rank'
       const params = new URLSearchParams({
-        b_id: '0',
-        category: '0',
-        per_page: '20',
-        type: 'entInfo',
+        category_id: '1', // 全部分类
+        type: '2', // 热门
       })
 
       const response = await fetch(`${api}?${params}`, {
         headers: {
           'User-Agent': Common.chromeUA,
-          Referer: 'https://www.36kr.com/',
+          'X-Agent': 'Juejin/Web',
         },
       })
 
       if (!response.ok) {
-        throw new Error('Failed to fetch 36kr data')
+        throw new Error('Failed to fetch Juejin data')
       }
 
       const result = await response.json()
-      const items = result?.data?.items || []
+      const items = result?.data || []
 
       this.#cache = items.map((item: any) => ({
-        id: item.id,
-        title: item.title,
-        description: item.summary || item.description || '',
-        link: `https://www.36kr.com/p/${item.id}`,
-        cover: item.cover || '',
-        published_at: item.published_at,
-        published: Common.localeTime(item.published_at * 1000),
+        id: item.content?.content_id || item.article_id,
+        title: item.content?.title || item.title,
+        description: item.content?.brief_content || '',
+        link: `https://juejin.cn/post/${item.content?.content_id || item.article_id}`,
+        cover: item.content?.cover_image || '',
+        author: item.author?.user_name || '',
+        likes: item.content_counter?.digg || 0,
+        views: item.content_counter?.view || 0,
+        comments: item.content_counter?.comment || 0,
+        published_at: item.content?.ctime || 0,
+        published: item.content?.ctime ? Common.localeTime(item.content.ctime * 1000) : '',
       }))
 
       this.#lastUpdate = now
@@ -82,14 +84,18 @@ class ServiceTech36Kr {
   }
 }
 
-export const serviceTech36Kr = new ServiceTech36Kr()
+export const serviceJuejin = new ServiceJuejin()
 
 interface TechNews {
-  id: number
+  id: string | number
   title: string
   description: string
   link: string
   cover: string
+  author: string
+  likes: number
+  views: number
+  comments: number
   published_at: number
   published: string
 }

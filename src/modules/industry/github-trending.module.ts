@@ -44,14 +44,13 @@ class ServiceGitHubTrending {
     }
 
     try {
-      // 使用第三方API获取GitHub Trending
-      const api = 'https://api.gitterapp.com/repositories'
-      const params = new URLSearchParams({
-        language: lang,
-        since: since,
-      })
+      // 使用github-trending-api.com (基于huchenme/github-trending-api)
+      // 备选：https://gh-trending-api.vercel.app (基于doforce/github-trending)
+      const langParam = lang ? `/${lang}` : ''
+      const sinceParam = since || 'daily'
+      const api = `https://gh-trending-api.vercel.app/repositories${langParam}?since=${sinceParam}`
 
-      const response = await fetch(`${api}?${params}`, {
+      const response = await fetch(api, {
         headers: {
           'User-Agent': Common.chromeUA,
         },
@@ -64,15 +63,15 @@ class ServiceGitHubTrending {
       const items = await response.json()
 
       const repos = items.map((item: any) => ({
-        repo: item.fullName || item.name,
-        author: item.author,
-        name: item.name,
+        repo: item.author && item.name ? `${item.author}/${item.name}` : item.repositoryName || '',
+        author: item.author || '',
+        name: item.name || item.repositoryName || '',
         description: item.description || '',
-        link: item.url,
+        link: item.url || `https://github.com/${item.author}/${item.name}`,
         language: item.language || '',
         stars: item.stars || 0,
         forks: item.forks || 0,
-        currentPeriodStars: item.currentPeriodStars || 0,
+        currentPeriodStars: item.currentPeriodStars || item.starsSince || 0,
         builtBy: item.builtBy || [],
       }))
 
