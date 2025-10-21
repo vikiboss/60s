@@ -36,9 +36,10 @@ class ServiceV2EX {
     }
 
     try {
-      // V2EX API - 获取热门主题
+      // V2EX API - 获取热门主题（官方API，已验证）
       const api = 'https://www.v2ex.com/api/topics/hot.json'
 
+      console.log('[V2EX] 请求V2EX热门话题')
       const response = await fetch(api, {
         headers: {
           'User-Agent': Common.chromeUA,
@@ -46,10 +47,15 @@ class ServiceV2EX {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to fetch V2EX data')
+        throw new Error(`HTTP ${response.status}`)
       }
 
       const items = await response.json()
+      console.log(`[V2EX] 成功获取 ${items.length} 条热帖`)
+
+      if (!Array.isArray(items) || !items.length) {
+        throw new Error('V2EX API返回空数据')
+      }
 
       this.#cache = items.map((item: any) => ({
         id: item.id,
@@ -65,14 +71,17 @@ class ServiceV2EX {
       }))
 
       this.#lastUpdate = now
+      console.log(`[V2EX] ✓ 成功缓存 ${this.#cache.length} 条数据`)
 
       return this.#cache
     } catch (error) {
+      console.error('[V2EX] 请求失败:', error)
       // 如果请求失败但有缓存，返回旧缓存
       if (this.#cache.length) {
+        console.log('[V2EX] 使用缓存数据')
         return this.#cache
       }
-      throw error
+      throw new Error(`V2EX API不可用: ${error}`)
     }
   }
 }

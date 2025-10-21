@@ -39,6 +39,7 @@ class ServiceAINews {
       // 使用掘金的AI标签推荐文章
       const api = 'https://api.juejin.cn/recommend_api/v1/article/recommend_tag_feed'
 
+      console.log('[AI News] 请求掘金AI标签文章')
       const response = await fetch(api, {
         method: 'POST',
         headers: {
@@ -56,11 +57,16 @@ class ServiceAINews {
       })
 
       if (!response.ok) {
-        throw new Error('Failed to fetch AI news data')
+        throw new Error(`HTTP ${response.status}`)
       }
 
       const result = await response.json()
       const items = result?.data || []
+      console.log(`[AI News] 返回状态: ${result.err_no}, 数据条数: ${items.length}`)
+
+      if (!items.length) {
+        throw new Error('AI资讯API返回空数据')
+      }
 
       this.#cache = items.map((item: any) => ({
         id: item.article_id,
@@ -78,14 +84,17 @@ class ServiceAINews {
       }))
 
       this.#lastUpdate = now
+      console.log(`[AI News] ✓ 成功缓存 ${this.#cache.length} 条数据`)
 
       return this.#cache
     } catch (error) {
+      console.error('[AI News] 请求失败:', error)
       // 如果请求失败但有缓存，返回旧缓存
       if (this.#cache.length) {
+        console.log('[AI News] 使用缓存数据')
         return this.#cache
       }
-      throw error
+      throw new Error(`AI资讯API不可用: ${error}`)
     }
   }
 }

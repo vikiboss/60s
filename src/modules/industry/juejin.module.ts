@@ -36,50 +36,65 @@ class ServiceJuejin {
     }
 
     try {
-      // 掘金热门文章API
-      const api = 'https://api.juejin.cn/content_api/v1/content/article_rank'
-      const params = new URLSearchParams({
-        category_id: '1', // 全部分类
-        type: '2', // 热门
-      })
+      // 掘金推荐文章API（使用搜索结果中找到的实际案例）
+      // 参考: https://blog.csdn.net/frontend_frank/article/details/136360333
+      const api = 'https://api.juejin.cn/recommend_api/v1/article/recommend_all_feed'
 
-      const response = await fetch(`${api}?${params}`, {
+      console.log('[Juejin] 请求掘金热门文章')
+      const response = await fetch(api, {
+        method: 'POST',
         headers: {
           'User-Agent': Common.chromeUA,
-          'X-Agent': 'Juejin/Web',
+          'Content-Type': 'application/json',
         },
+        body: JSON.stringify({
+          id_type: 2,
+          client_type: 2608,
+          sort_type: 200, // 热门排序
+          cursor: '0',
+          limit: 20,
+        }),
       })
 
       if (!response.ok) {
-        throw new Error('Failed to fetch Juejin data')
+        throw new Error(`HTTP ${response.status}`)
       }
 
       const result = await response.json()
+      console.log(`[Juejin] 返回状态: ${result.err_no}, 数据条数: ${result?.data?.length || 0}`)
+
       const items = result?.data || []
 
+      if (!items.length) {
+        throw new Error('掘金API返回空数据')
+      }
+
       this.#cache = items.map((item: any) => ({
-        id: item.content?.content_id || item.article_id,
-        title: item.content?.title || item.title,
-        description: item.content?.brief_content || '',
-        link: `https://juejin.cn/post/${item.content?.content_id || item.article_id}`,
-        cover: item.content?.cover_image || '',
-        author: item.author?.user_name || '',
-        likes: item.content_counter?.digg || 0,
-        views: item.content_counter?.view || 0,
-        comments: item.content_counter?.comment || 0,
-        published_at: item.content?.ctime || 0,
-        published: item.content?.ctime ? Common.localeTime(item.content.ctime * 1000) : '',
+        id: item.article_id || item.item_id,
+        title: item.article_info?.title || '',
+        description: item.article_info?.brief_content || '',
+        link: `https://juejin.cn/post/${item.article_id || item.item_id}`,
+        cover: item.article_info?.cover_image || '',
+        author: item.author_user_info?.user_name || '',
+        likes: item.article_info?.digg_count || 0,
+        views: item.article_info?.view_count || 0,
+        comments: item.article_info?.comment_count || 0,
+        published_at: item.article_info?.ctime || 0,
+        published: item.article_info?.ctime ? Common.localeTime(item.article_info.ctime * 1000) : '',
       }))
 
       this.#lastUpdate = now
+      console.log(`[Juejin] ✓ 成功缓存 ${this.#cache.length} 条数据`)
 
       return this.#cache
     } catch (error) {
+      console.error('[Juejin] 请求失败:', error)
       // 如果请求失败但有缓存，返回旧缓存
       if (this.#cache.length) {
+        console.log('[Juejin] 使用缓存数据')
         return this.#cache
       }
-      throw error
+      throw new Error(`掘金API不可用: ${error}`)
     }
   }
 }

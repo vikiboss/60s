@@ -1,6 +1,22 @@
 # 行业信息追踪模块
 
+> ⚠️ **实验性功能** - 这些API依赖第三方服务，请先测试后再用于生产环境
+
 每日行业信息追踪功能已添加到本项目，可以实时获取科技、AI等行业的最新资讯。
+
+## 🧪 测试API可用性
+
+部署后请先运行测试脚本验证API是否可用：
+
+```bash
+# 启动服务
+npm run dev
+
+# 在另一个终端运行测试
+node --no-warnings --experimental-transform-types scripts/test-industry-apis.ts
+```
+
+测试脚本会检查所有API并输出详细的测试结果。
 
 ## 📡 可用接口
 
@@ -231,16 +247,37 @@ curl https://your-domain.com/v2/industry/ai-news
 
 ## 📝 注意事项
 
-1. **数据源可靠性**:
-   - 掘金API：使用官方公开API，较为稳定
-   - GitHub Trending：使用开源第三方服务（部署在Vercel），可自行部署
-   - V2EX：使用官方API，稳定性高
+### ⚠️ 重要：请先测试
 
-2. **速率限制**: 请求频率过高可能会被上游限流，建议合理使用缓存
+这些API是**实验性功能**，基于第三方服务实现。**强烈建议**在生产环境使用前先运行测试脚本验证可用性。
 
-3. **容错机制**: 所有接口都有缓存降级策略，API失败时返回旧数据
+### 数据源说明
 
-4. **第三方依赖**: GitHub Trending使用 `gh-trending-api.vercel.app`，如需更稳定可自行部署
+1. **掘金API**（实验性）:
+   - 使用端点：`https://api.juejin.cn/recommend_api/v1/article/recommend_all_feed`
+   - 状态：基于实际案例，但未经充分验证
+   - 风险：可能需要调整参数或端点
+
+2. **GitHub Trending**（实验性）:
+   - 主要服务：`ghtrending.vercel.app`
+   - 备选服务：`github-trending.vercel.app`
+   - 状态：使用开源第三方服务，支持自行部署
+   - 风险：依赖外部Vercel部署，可能不稳定
+
+3. **V2EX**（相对稳定）:
+   - 使用端点：`https://www.v2ex.com/api/topics/hot.json`
+   - 状态：官方API，经过验证
+   - 限制：120次/小时，频繁访问可能403
+
+4. **AI资讯**（实验性）:
+   - 使用端点：掘金AI标签推荐
+   - 状态：基于掘金API，未经验证
+
+### 其他注意事项
+
+- **速率限制**: 请求频率过高可能被上游限流
+- **容错机制**: 所有接口都有缓存降级策略
+- **日志输出**: 控制台会输出详细的API调用日志，便于调试
 
 ---
 

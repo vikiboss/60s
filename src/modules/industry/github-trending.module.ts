@@ -44,34 +44,59 @@ class ServiceGitHubTrending {
     }
 
     try {
-      // 使用github-trending-api.com (基于huchenme/github-trending-api)
-      // 备选：https://gh-trending-api.vercel.app (基于doforce/github-trending)
-      const langParam = lang ? `/${lang}` : ''
-      const sinceParam = since || 'daily'
-      const api = `https://gh-trending-api.vercel.app/repositories${langParam}?since=${sinceParam}`
-
-      const response = await fetch(api, {
-        headers: {
-          'User-Agent': Common.chromeUA,
+      // API 1: ghtrending.vercel.app (搜索结果中找到的实际服务)
+      // API 2: github-trending.vercel.app (备选)
+      const apis = [
+        {
+          name: 'ghtrending.vercel.app',
+          url: `https://ghtrending.vercel.app/repositories${lang ? `?lang=${lang}` : ''}${since ? `&since=${since}` : ''}`,
         },
-      })
+        {
+          name: 'github-trending.vercel.app',
+          url: `https://github-trending.vercel.app/repo?lang=${lang || 'all'}&since=${since || 'daily'}`,
+        },
+      ]
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch GitHub Trending data')
+      let items: any[] = []
+      let lastError: Error | null = null
+
+      for (const api of apis) {
+        try {
+          console.log(`[GitHub Trending] 尝试使用: ${api.name}`)
+          const response = await fetch(api.url, {
+            headers: {
+              'User-Agent': Common.chromeUA,
+            },
+          })
+
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+          }
+
+          items = await response.json()
+          console.log(`[GitHub Trending] ✓ ${api.name} 成功，获取 ${items.length} 条数据`)
+          break
+        } catch (error) {
+          console.error(`[GitHub Trending] ✗ ${api.name} 失败:`, error)
+          lastError = error as Error
+          continue
+        }
       }
 
-      const items = await response.json()
+      if (!items.length && lastError) {
+        throw lastError
+      }
 
       const repos = items.map((item: any) => ({
-        repo: item.author && item.name ? `${item.author}/${item.name}` : item.repositoryName || '',
-        author: item.author || '',
+        repo: item.author && item.name ? `${item.author}/${item.name}` : item.repositoryName || item.full_name || '',
+        author: item.author || item.owner || '',
         name: item.name || item.repositoryName || '',
         description: item.description || '',
-        link: item.url || `https://github.com/${item.author}/${item.name}`,
+        link: item.url || item.html_url || `https://github.com/${item.author}/${item.name}`,
         language: item.language || '',
-        stars: item.stars || 0,
-        forks: item.forks || 0,
-        currentPeriodStars: item.currentPeriodStars || item.starsSince || 0,
+        stars: item.stars || item.stargazers_count || 0,
+        forks: item.forks || item.forks_count || 0,
+        currentPeriodStars: item.currentPeriodStars || item.starsSince || item.stars_today || 0,
         builtBy: item.builtBy || [],
       }))
 
@@ -80,11 +105,13 @@ class ServiceGitHubTrending {
 
       return repos
     } catch (error) {
+      console.error('[GitHub Trending] 所有API都失败了:', error)
       // 如果请求失败但有缓存，返回旧缓存
       if (this.#cache.has(cacheKey)) {
+        console.log('[GitHub Trending] 使用缓存数据')
         return this.#cache.get(cacheKey)!
       }
-      throw error
+      throw new Error(`GitHub Trending API 不可用: ${error}`)
     }
   }
 }
