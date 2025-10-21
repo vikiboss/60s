@@ -29,6 +29,10 @@ import { serviceWeather } from './modules/weather.module.ts'
 import { serviceWeibo } from './modules/weibo.module.ts'
 import { serviceZhihu } from './modules/zhihu.module.ts'
 import { serviceLunar } from './modules/lunar/lunar.module.ts'
+import { serviceTech36Kr } from './modules/industry/tech-36kr.module.ts'
+import { serviceGitHubTrending } from './modules/industry/github-trending.module.ts'
+import { serviceAINews } from './modules/industry/ai-news.module.ts'
+import { serviceV2EX } from './modules/industry/v2ex.module.ts'
 
 export const rootRouter = new Router()
 
@@ -90,3 +94,9 @@ appRouter.all('/fanyi/langs', serviceFanyi.langs())
 
 appRouter.get('/weather', serviceWeather.handle())
 appRouter.get('/weather/7d', serviceWeather.handle7d())
+
+// 行业信息追踪模块
+appRouter.get('/industry/tech-36kr', serviceTech36Kr.handle())
+appRouter.get('/industry/github-trending', serviceGitHubTrending.handle())
+appRouter.get('/industry/ai-news', serviceAINews.handle())
+appRouter.get('/industry/v2ex', serviceV2EX.handle())
