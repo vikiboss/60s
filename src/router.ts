@@ -40,6 +40,7 @@ import { serviceHealth } from './modules/health.module.ts'
 import { servicePassword } from './modules/password/password.module.ts'
 import { serviceColor } from './modules/color.module.ts'
 import { serviceKuan } from './modules/kuan.module.ts'
+import { serviceLyric } from './modules/lyric.module.ts'
 
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
@@ -118,6 +119,8 @@ appRouter.get('/ncm-rank/:id', serviceNcm.handleRankDetail())
 
 appRouter.get('/color/random', serviceColor.handle())
 appRouter.get('/color/palette', serviceColor.handlePalette())
+
+appRouter.all('/lyric', serviceLyric.handle())
 
 // === 以下为支持 body 解析参数的接口 ===
 appRouter.all('/og', serviceOG.handle())
