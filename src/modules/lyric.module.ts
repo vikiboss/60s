@@ -138,54 +138,91 @@ class ServiceLyric {
     return `[${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}.${centiseconds.toString().padStart(2, '0')}]`
   }
 
-  #isInfoLine(text: string): boolean {
-    if (!text.trim()) return false
+  // 静态常量: 提取到类级别避免每次调用都创建
+  static readonly #CHINESE_KEYWORDS = new Set([
+    '词', '曲', '编曲', '作词', '作曲', '演唱', '歌手', '艺人', '专辑',
+    '制作人', '制作', '监制', '监棚', '混音', '混音师', '和声', '和音', '合声',
+    '配唱', '和声配唱', '合声编写', '人声', '主唱', '合唱', '伴唱',
+    '吉他', '低音吉他', '电吉他', '木吉他', '民谣吉他', '古典吉他',
+    '键盘', '键盘乐器', '贝斯', '贝司', '鼓', '架子鼓', '打击乐',
+    '弦乐', '管弦乐', '提琴', '小提琴', '中提琴', '大提琴', '低音提琴',
+    '萨克斯', '长笛', '短笛', '哨笛', '竖笛', '箫', '笛子', '埙', '葫芦丝', '唢呐',
+    '小号', '大号', '圆号', '长号', '钢琴', '三角钢琴', '口琴', '手风琴', '口哨',
+    '二胡', '琵琶', '古筝', '古琴', '扬琴', '琴', '筝', '箜篌', '马林巴',
+    '出品', '发行', '录音', '录音师', '录音室', '录音棚', '录音工程师',
+    '混音工程师', '混音录音室', '母带', '母带工程师', '母带后期', '母带后期处理工程师',
+    '制作协力', '版权声明', '后期', '后期制作', '统筹', '项目统筹',
+    '企划', '策划', '宣传', '推广', '特别鸣谢', '鸣谢', '感谢', '致谢',
+    'OP', 'SP',
+  ])
 
+  // 预编译的正则表达式: 避免每次调用都重新编译
+  static readonly #PATTERNS = {
+    chineseLabel: /^[\u4e00-\u9fa5/]{1,10}[：:\s]/,
+    colonSeparator: /[：:\s]/,
+    englishLabel: /^(Written|Composed|Lyrics|Music|Arranged|Arrangement|Producer|Co-Producer|Executive Producer|Artist|Album|Lyricist|Composer|Vocal|Vocals|Bvox|Backing Vocals|Chorus|Choir|Guitar|E\.Guitar|A\.Guitar|Classical Guitar|Bass|Drums|Keyboards|Piano|Grand Piano|Whistle|Harmonica|Accordion|Strings|Violin|Viola|Cello|Double Bass|Brass|Saxophone|Trumpet|Trombone|Flute|Piccolo|Clarinet|Oboe|Bassoon|Engineer|Sound Engineer|Studio|Recording Studio|Assistant|Mastering|Recording|Mixing|Mix|Rhodes|Mellotron|Synthesizer|Synth|Production|Executive|Director|Sound|Background|Percussion|Programming|Coordinator|Organizer|Thanks|Special Thanks|Acknowledgment|OP|SP|Label|Publisher|Release|Distributor)(?:\s+by)?[：:\s/]/i,
+    instrumentAbbrev: /^[A-Z][\w.]*\s*(Guitar|Guita|Bass|Drums|Piano|Keyboard|Vocal|Vocals|Bvox|Violin|Viola|Cello|Trumpet|Trombone|Sax|Saxophone|Flute|Synth|Synthesizer|Percussion|Strings|Harmonic|Choir)[：:\s]/i,
+    copyright: /^(版权|著作权|Copyright|未经著作权人|任何人不得|不得|翻唱|翻录|盗版|侵权|授权|许可|All Rights|Rights Reserved|Reserved|\(C\)|\(P\)|©|℗)/i,
+    byClause: /\s+by[：:\s]/i,
+    formatTag: /^(op|ed|cv|ft|feat|featuring|feat\.|sp|vs|vs\.|remix|mix|ver|version|live|acoustic|instrumental|demo|original|cover)[：:\s.]/i,
+    sourceInfo: /^(出自|来自|选自|收录于|特别鸣谢|鸣谢|感谢|致谢|from|source|thanks|special thanks)[：:\s]/i,
+    timeLocationInfo: /^(录制于|录于|制作于|发行于|recorded|produced|released|at|in|on)[：:\s]/i,
+    urlOrEmail: /(https?:\/\/|www\.|\.com|\.cn|\.net|\.org|@[\w.]+[\s(]|Studio\(|工作室\()/i,
+    yearInfo: /^\d{4}年?[\s\u4e00-\u9fa5]*$/,
+    parentheses: /^[(（].*[)）]$/,
+    separatorLine: /^[-=*_~]{3,}$/,
+  } as const
+
+  #isInfoLine(text: string): boolean {
+    const trimmed = text.trim()
+    if (!trimmed) return false
+
+    // 中文标签检测: 支持单字和组合词 (如 "词:" "弦乐监棚:" "出品发行:")
+    if (ServiceLyric.#PATTERNS.chineseLabel.test(trimmed)) {
+      const beforeColon = trimmed.split(ServiceLyric.#PATTERNS.colonSeparator)[0]
+      // 使用 Set 的 O(1) 查找优化性能
+      for (const keyword of ServiceLyric.#CHINESE_KEYWORDS) {
+        if (beforeColon.includes(keyword)) return true
+      }
+    }
+
+    // 其他模式匹配: 使用预编译的正则表达式提升性能
+    const patterns = ServiceLyric.#PATTERNS
     return (
-      // 中文标签: "词:" "曲:" "编曲:" 等,包含混合格式如 "词 Lyricist:"
-      /^(词|曲|编曲|作词|作曲|演唱|歌手|专辑|制作人|混音|和声|吉他|低音吉他|键盘|键盘乐器|贝斯|鼓|监制|出品|发行|口哨|录音室|录音工程师|混音工程师|混音录音室|母带后期处理工程师|制作协力|版权声明|出品方|发行方|后期|制作)(?:[：:\s(]|\s+[A-Za-z][A-Za-z\s&/()]*[：:\s])/.test(
-        text,
-      ) ||
-      // 英文标签: "Written by:" "Producer:" "Lyricist:" 等
-      /^(Written|Composed|Lyrics|Music|Arranged|Producer|Artist|Album|Lyricist|Composer|Vocal|Guitar|Bass|Drums|Keyboards|Whistle|Engineer|Studio|Assistant|Mastering|Recording|Mixing|Rhodes|Mellotron|Synthesizer|Piano|Violin|Trumpet|Saxophone|Flute|Production|Executive|Director|Sound|Background)(?:\s+by)?[：:\s/]/i.test(
-        text,
-      ) ||
-      // 乐器缩写标签: "E.Guitar:" "A.Guitar:" "Elec.Guitar:" "SP:" 等
-      /^[A-Z][\w.]*\s*(Guitar|Guita|Bass|Drums|Piano|Keyboard|Violin|Trumpet|Sax|Flute|Synth|Vocal|Percussion)[：:\s]/i.test(text) ||
-      // 版权声明
-      /^(版权|著作权|Copyright|未经著作权人|任何人不得|不得|翻唱|翻录|盗版|侵权|All Rights|Reserved|\(C\)|\(P\)|©|℗)/i.test(
-        text,
-      ) ||
-      // 包含 "by" 的行
-      /\s+by[：:\s]/i.test(text) ||
-      // 其他格式: "OP:" "ED:" "CV:" "FT:" "FEAT:" "SP:" 等
-      /^(op|ed|cv|ft|feat|sp)[：:\s]/i.test(text) ||
-      // 括号包裹的补充信息
-      /^[(（].*[)）]$/.test(text)
+      patterns.englishLabel.test(trimmed) ||
+      patterns.instrumentAbbrev.test(trimmed) ||
+      patterns.copyright.test(trimmed) ||
+      patterns.byClause.test(trimmed) ||
+      patterns.formatTag.test(trimmed) ||
+      patterns.sourceInfo.test(trimmed) ||
+      patterns.timeLocationInfo.test(trimmed) ||
+      patterns.urlOrEmail.test(trimmed) ||
+      patterns.yearInfo.test(trimmed) ||
+      patterns.parentheses.test(trimmed) ||
+      patterns.separatorLine.test(trimmed)
     )
   }
 
+  // 静态正则: 用于 cleanLyric 的模式匹配
+  static readonly #CLEAN_PATTERNS = {
+    metadata: /^\[[a-z]+:/i,
+    timestamp: /\[\d{2}:\d{2}(?:[\.:]\d{2,3})?\]/g,
+  } as const
+
   #cleanLyric(lyric: string, cleanInfo = true): string {
-    // 元数据行正则 (预编译避免重复创建)
-    const metadataRegex = /^\[[a-z]+:/i
-    // 时间戳正则
-    const timestampRegex = /\[\d{2}:\d{2}(?:[\.:]\d{2,3})?\]/g
+    const patterns = ServiceLyric.#CLEAN_PATTERNS
 
     return lyric
       .split('\n')
       .reduce<string[]>((result, line) => {
-        // 跳过元数据行
-        if (metadataRegex.test(line)) {
-          return result
-        }
+        // 早期返回: 跳过元数据行 (如 [ti:], [ar:], [al:])
+        if (patterns.metadata.test(line)) return result
 
         // 移除时间戳并清理空白
-        const cleaned = line.replace(timestampRegex, '').trim()
+        const cleaned = line.replace(patterns.timestamp, '').trim()
 
-        // 跳过空行和信息行
-        if (!cleaned || (cleanInfo && this.#isInfoLine(cleaned))) {
-          return result
-        }
+        // 早期返回: 跳过空行和信息行
+        if (!cleaned || (cleanInfo && this.#isInfoLine(cleaned))) return result
 
         result.push(cleaned)
         return result
