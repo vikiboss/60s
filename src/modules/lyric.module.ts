@@ -150,14 +150,16 @@ class ServiceLyric {
       /^(Written|Composed|Lyrics|Music|Arranged|Producer|Artist|Album|Lyricist|Composer|Vocal|Guitar|Bass|Drums|Keyboards|Whistle|Engineer|Studio|Assistant|Mastering|Recording|Mixing|Rhodes|Mellotron|Synthesizer|Piano|Violin|Trumpet|Saxophone|Flute|Production|Executive|Director|Sound|Background)(?:\s+by)?[：:\s/]/i.test(
         text,
       ) ||
+      // 乐器缩写标签: "E.Guitar:" "A.Guitar:" "Elec.Guitar:" "SP:" 等
+      /^[A-Z][\w.]*\s*(Guitar|Guita|Bass|Drums|Piano|Keyboard|Violin|Trumpet|Sax|Flute|Synth|Vocal|Percussion)[：:\s]/i.test(text) ||
       // 版权声明
       /^(版权|著作权|Copyright|未经著作权人|任何人不得|不得|翻唱|翻录|盗版|侵权|All Rights|Reserved|\(C\)|\(P\)|©|℗)/i.test(
         text,
       ) ||
       // 包含 "by" 的行
       /\s+by[：:\s]/i.test(text) ||
-      // 其他格式
-      /^(op|ed|cv|ft|feat)[：:\s]/i.test(text) ||
+      // 其他格式: "OP:" "ED:" "CV:" "FT:" "FEAT:" "SP:" 等
+      /^(op|ed|cv|ft|feat|sp)[：:\s]/i.test(text) ||
       // 括号包裹的补充信息
       /^[(（].*[)）]$/.test(text)
     )
