@@ -139,41 +139,56 @@ class ServiceLyric {
   }
 
   #isInfoLine(text: string): boolean {
-    // 歌曲信息标签正则(中英文)
-    const infoPatterns = [
-      // 中文标签
-      /^(词|曲|编曲|作词|作曲|演唱|歌手|专辑|制作人|混音|和声|吉他|键盘|贝斯|鼓|监制|出品|发行)[：:]/,
-      // 英文标签
-      /^(Written by|Composed by|Lyrics by|Music by|Arranged by|Producer|Artist|Album|OP|ED|Vocal|Guitar|Bass|Drums|Mix|Master)[：:]/i,
-      // 其他格式
-      /^(op|ed|cv|ft|feat)[：:\s]/i,
-    ]
+    if (!text.trim()) return false
 
-    return infoPatterns.some((pattern) => pattern.test(text))
+    return (
+      // 中文标签: "词:" "曲:" "编曲:" 等,包含混合格式如 "词 Lyricist:"
+      /^(词|曲|编曲|作词|作曲|演唱|歌手|专辑|制作人|混音|和声|吉他|低音吉他|键盘|键盘乐器|贝斯|鼓|监制|出品|发行|口哨|录音室|录音工程师|混音工程师|混音录音室|母带后期处理工程师|制作协力|版权声明|出品方|发行方|后期|制作)(?:[：:\s(]|\s+[A-Za-z][A-Za-z\s&/()]*[：:\s])/.test(
+        text,
+      ) ||
+      // 英文标签: "Written by:" "Producer:" "Lyricist:" 等
+      /^(Written|Composed|Lyrics|Music|Arranged|Producer|Artist|Album|Lyricist|Composer|Vocal|Guitar|Bass|Drums|Keyboards|Whistle|Engineer|Studio|Assistant|Mastering|Recording|Mixing|Rhodes|Mellotron|Synthesizer|Piano|Violin|Trumpet|Saxophone|Flute|Production|Executive|Director|Sound|Background)(?:\s+by)?[：:\s/]/i.test(
+        text,
+      ) ||
+      // 版权声明
+      /^(版权|著作权|Copyright|未经著作权人|任何人不得|不得|翻唱|翻录|盗版|侵权|All Rights|Reserved|\(C\)|\(P\)|©|℗)/i.test(
+        text,
+      ) ||
+      // 包含 "by" 的行
+      /\s+by[：:\s]/i.test(text) ||
+      // 其他格式
+      /^(op|ed|cv|ft|feat)[：:\s]/i.test(text) ||
+      // 括号包裹的补充信息
+      /^[(（].*[)）]$/.test(text)
+    )
   }
 
   #cleanLyric(lyric: string, cleanInfo = true): string {
-    const lines = lyric.split('\n')
-    const result: string[] = []
+    // 元数据行正则 (预编译避免重复创建)
+    const metadataRegex = /^\[[a-z]+:/i
+    // 时间戳正则
+    const timestampRegex = /\[\d{2}:\d{2}(?:[\.:]\d{2,3})?\]/g
 
-    for (const line of lines) {
-      // 跳过元数据行
-      if (line.match(/^\[[a-z]+:/i)) {
-        continue
-      }
+    return lyric
+      .split('\n')
+      .reduce<string[]>((result, line) => {
+        // 跳过元数据行
+        if (metadataRegex.test(line)) {
+          return result
+        }
 
-      // 移除时间戳
-      const cleaned = line.replace(/\[\d{2}:\d{2}(?:[\.:]\d{2,3})?\]/g, '').trim()
+        // 移除时间戳并清理空白
+        const cleaned = line.replace(timestampRegex, '').trim()
 
-      // 如果启用 cleanInfo,过滤歌曲信息行
-      if (cleanInfo && this.#isInfoLine(cleaned)) {
-        continue
-      }
+        // 跳过空行和信息行
+        if (!cleaned || (cleanInfo && this.#isInfoLine(cleaned))) {
+          return result
+        }
 
-      result.push(cleaned)
-    }
-
-    return result.join('\n').trim()
+        result.push(cleaned)
+        return result
+      }, [])
+      .join('\n')
   }
 }
 
