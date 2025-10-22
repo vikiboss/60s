@@ -165,11 +165,6 @@ class ServiceLyric {
       // 移除时间戳
       const cleaned = line.replace(/\[\d{2}:\d{2}(?:[\.:]\d{2,3})?\]/g, '').trim()
 
-      // 如果没有内容,跳过
-      if (!cleaned) {
-        continue
-      }
-
       // 如果启用 cleanInfo,过滤歌曲信息行
       if (cleanInfo && this.#isInfoLine(cleaned)) {
         continue
@@ -178,7 +173,7 @@ class ServiceLyric {
       result.push(cleaned)
     }
 
-    return result.join('\n')
+    return result.join('\n').trim()
   }
 }
 
