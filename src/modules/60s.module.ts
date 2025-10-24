@@ -31,7 +31,13 @@ class Service60s {
           break
 
         case 'image-proxy': {
-          const response = await fetch(data.image)
+          const url = new URL(data.image)
+          url.host = 'cdn.jsdelivr.net'
+
+          const response = await fetch(url).catch(() => {
+            url.host = 'cdn.jsdmirror.com'
+            return fetch(url)
+          })
 
           ctx.response.headers = response.headers
           ctx.response.body = response.body
