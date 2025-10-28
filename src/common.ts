@@ -189,9 +189,9 @@ export class Common {
     const { repo, path, branch = 'main', alternatives = [] } = options
 
     const urls = [
+      `https://cdn.jsdmirror.com/gh/${repo}/${path}`,
       `https://raw.githubusercontent.com/${repo}/refs/heads/${branch}/${path}`,
       `https://cdn.jsdelivr.net/gh/${repo}/${path}`,
-      `https://cdn.jsdmirror.com/gh/${repo}/${path}`,
       ...alternatives,
     ]
 

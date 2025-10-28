@@ -26,24 +26,32 @@ class Service60s {
           break
         }
 
-        case 'image':
-          ctx.response.redirect(data.image)
+        case 'image': {
+          // test image url
+          const response = await fetch(data.image, { method: 'HEAD' })
+          ctx.response.redirect(response.ok ? data.image : `https://60s-static.viki.moe/images/${data.date}.png`)
           break
+        }
 
         case 'image-proxy': {
-          const url = new URL(data.image)
-          url.host = 'cdn.jsdelivr.net'
+          let response: Response | null = await fetch(data.image)
 
-          const response = await fetch(url).catch(() => {
-            url.host = 'cdn.jsdmirror.com'
-            return fetch(url)
-          })
+          if (!response.ok) {
+            response = await Common.tryRepoUrl({
+              repo: 'vikiboss/60s-static-host',
+              path: `static/images/${data.date}.png`,
+              alternatives: [`https://60s-static.viki.moe/images/${data.date}.png`],
+            })
+          }
 
-          ctx.response.headers = response.headers
-          ctx.response.body = response.body
-          ctx.response.type = response.type
-          ctx.response.status = response.status
-          break
+          if (response) {
+            ctx.response.headers = response.headers
+            ctx.response.body = response.body
+            ctx.response.status = response.status
+          } else {
+            ctx.response.status = 404
+            ctx.response.body = 'Image not found'
+          }
         }
 
         case 'json':
