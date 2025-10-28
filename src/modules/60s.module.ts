@@ -47,6 +47,7 @@ class Service60s {
           if (response) {
             ctx.response.headers = response.headers
             ctx.response.body = response.body
+            ctx.response.type = response.type
             ctx.response.status = response.status
           } else {
             ctx.response.status = 404
