@@ -53,6 +53,8 @@ class Service60s {
             ctx.response.status = 404
             ctx.response.body = 'Image not found'
           }
+
+          break
         }
 
         case 'json':
