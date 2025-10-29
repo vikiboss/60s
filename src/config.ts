@@ -8,4 +8,4 @@ export const config = {
   encodingParamName: process.env.ENCODING_PARAM_NAME || 'encoding',
 }
 
-export const COMMON_MSG = `获取成功。数据来自官方/权威源头，以确保稳定与实时。开源地址 ${config.github}，反馈群 ${config.group}`
+export const COMMON_MSG = `获取成功，开源地址 ${config.github}，反馈群 ${config.group}`

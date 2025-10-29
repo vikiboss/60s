@@ -25,6 +25,7 @@ import { serviceLunar } from './modules/lunar/lunar.module.ts'
 import { serviceMaoyan } from './modules/maoyan/maoyan.module.ts'
 import { serviceNcm } from './modules/ncm.module.ts'
 import { serviceOG } from './modules/og.module.ts'
+import { serviceQQ } from './modules/qq.module.ts'
 import { serviceQRCode } from './modules/qrcode/qrcode.module.ts'
 import { serviceTodayInHistory } from './modules/today-in-history.module.ts'
 import { serviceToutiao } from './modules/toutiao.module.ts'
@@ -131,6 +132,7 @@ appRouter.all('/fanyi/langs', serviceFanyi.handleLangs())
 
 // === 以下为测试接口，beta 前缀，接口可能不稳定 ===
 appRouter.get('/beta/kuan', serviceKuan.handle())
+appRouter.get('/beta/qq/profile', serviceQQ.handle())
 
 // === 以下为待定接口，还在计划、开发中 ===
 // appRouter.get('/slacking-calendar', serviceSlackingCalendar.handle())
