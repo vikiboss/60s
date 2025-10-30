@@ -1,10 +1,13 @@
 export const config = {
   host: process.env.HOST || '0.0.0.0',
   port: process.env.PORT ? +process.env.PORT : 4399,
-  group: '595941841',
-  author: 'Viki <hi@viki.moe>',
-  github: 'https://github.com/vikiboss/60s',
-  debug: !!process.env.DEBUG,
+
+//   group: '595941841',
+  group: '',
+  author: '',
+//   github: 'https://github.com/vikiboss/60s',
+  github: '',
+
   encodingParamName: process.env.ENCODING_PARAM_NAME || 'encoding',
 }
 
