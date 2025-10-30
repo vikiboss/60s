@@ -52,7 +52,7 @@ rootRouter.get('/', (ctx) => {
         这是接口服务器: '啥也没有',
     //   api_name: '60s-api',
     //   api_version: pkg.version,
-       接口内容请查看: 'https://doc.cccccc.plus',
+       接口内容请查看: 'https://doc.cccccc.life',
     //   author: config.author,
     //   user_group: config.group,
     //   github_repo: config.github,
