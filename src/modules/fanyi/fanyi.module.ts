@@ -81,8 +81,8 @@ class ServiceFanyi {
       this.langMap.set(lang.code, lang)
     }
 
-    const date = new Date().toLocaleString('zh-CN')
-    console.log(`[${date}] [fanyi] 语言列表初始化完成，共 ${this.langMap.size} 种语言`)
+    // const date = new Date().toLocaleString('zh-CN')
+    // console.log(`[${date}] [fanyi] 语言列表初始化完成，共 ${this.langMap.size} 种语言`)
   }
 
   async #fetch(text: string, from: string, to: string) {

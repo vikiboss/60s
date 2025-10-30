@@ -15,6 +15,7 @@
 
 
 
+
 目前包含的接口如下，仍在持续增加中，全面的 API 文档已公开托管在 [Apifox](https://doc.cccccc.plus) 上。
 
 主域名: https://60s.cccccc.plus 
@@ -203,7 +204,7 @@ npm install && npx wrangler publish
 |             Ko.             | 11.66  |   QQ   |                   -                    |
 |           yijiong           | 15.00  |   QQ   |            a cup of coffee             |
 
-> 如有遗漏，欢迎通过 issue 或者 QQ 群 595941841 反馈～
+> 如有遗漏，欢迎通过 issue 或者 QQ 群 595941841 反馈。
 
 </details>
 
