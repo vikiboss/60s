@@ -17,8 +17,7 @@ class ServiceAINews {
       switch (ctx.state.encoding) {
         case 'text': {
           ctx.response.body = `AI 资讯快报（${data.date}${isToday ? '，实时更新' : ''}）\n\n${data.news
-            .map((e, idx) => `${idx + 1}. ${e.title}\n${e.link}`)
-            .slice(0, 20)
+            .map((e, idx) => `${idx + 1}. ${e.title}\n\n${e.detail}（来自: ${e.source}）\n\n> 详情: ${e.link}`)
             .join('\n\n')}`
           break
         }
