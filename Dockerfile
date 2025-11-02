@@ -1,5 +1,5 @@
 # 使用更小的基础镜像和多阶段构建来减少最终镜像的大小
-FROM node:lts-alpine AS builder
+FROM node:24-alpine AS builder
 
 # 设置工作目录，避免之后的 RUN 命令中需要不断地 mkdir 和 cd
 WORKDIR /app
@@ -18,7 +18,7 @@ RUN corepack enable && corepack prepare --activate && pnpm install --prod --froz
 COPY . .
 
 # 运行阶段
-FROM node:lts-alpine AS runner
+FROM node:24-alpine AS runner
 
 # 维护信息
 LABEL maintainer="Viki <hi@viki.moe> (https://github.com/vikiboss)"
