@@ -23,10 +23,10 @@ curl "https://60s.viki.moe/v2/60s"
 # 纯文本格式
 curl "https://60s.viki.moe/v2/60s?encoding=text"
 
-# 原图直链 (重定向到微信公众号原图)
+# 原图直链 (重定向到数据仓库原图直链)
 curl "https://60s.viki.moe/v2/60s?encoding=image" --location --output "$(date +%Y-%m-%d).png"
 
-# 代理直链 (代理请求，绕过防盗链)
+# 代理直链 (代理请求，直接返回图片二进制数据)
 curl "https://60s.viki.moe/v2/60s?encoding=image-proxy" --output "$(date +%Y-%m-%d).png"
 ```
 
