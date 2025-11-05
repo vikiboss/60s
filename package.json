@@ -4,6 +4,12 @@
   "version": "2.37.3",
   "updateTime": "2025/11/03 08:02:37",
   "packageManager": "pnpm@10.20.0",
+  "prettier": {
+    "printWidth": 120,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.6",
     "cheerio": "^1.1.2",
