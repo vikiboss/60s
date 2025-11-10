@@ -30,9 +30,9 @@
     "wrangler": "^4.44.0"
   },
   "scripts": {
-    "dev:no-watch": "DEV=1 PORT=4398 node node.ts",
-    "dev": "DEV=1 PORT=4398 node --watch node.ts",
-    "start": "PORT=4398 node node.ts",
+    "dev:no-watch": "DEV=1 PORT=4398 node --disable-warning=ExperimentalWarning node.ts",
+    "dev": "DEV=1 PORT=4398 node --disable-warning=ExperimentalWarning --watch node.ts",
+    "start": "PORT=4398 node --disable-warning=ExperimentalWarning node.ts",
     "prerelease": "node ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
     "release": "bumpp",
     "update-lockfile": "pnpm install && bun install && deno install --allow-scripts",
