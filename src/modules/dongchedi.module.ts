@@ -16,6 +16,13 @@ class ServiceDongchedi {
             .join('\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 懂车帝热搜\n\n${list
+            .slice(0, 20)
+            .map((e, i) => `${i + 1}. [${e.title}](${e.url}) \`${e.score_desc}\``)
+            .join('\n')}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(list)

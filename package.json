@@ -13,6 +13,7 @@
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.6",
     "cheerio": "^1.1.2",
+    "chinese-days": "^1.5.4",
     "dayjs": "^1.11.18",
     "filesize": "^11.0.13",
     "fontkit": "^2.0.4",

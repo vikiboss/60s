@@ -47,6 +47,14 @@ class ServiceRednote {
           break
         }
 
+        case 'markdown': {
+          ctx.response.body = `# 小红书实时热点\n\n${hotList
+            .slice(0, 20)
+            .map((e) => `${e.rank}. [${e.title}](${e.link}) \`${e.score}\``)
+            .join('\n')}`
+          break
+        }
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(hotList)

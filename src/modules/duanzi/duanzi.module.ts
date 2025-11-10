@@ -7,10 +7,9 @@ class ServiceDuanzi {
   handle(): RouterMiddleware<'/duanzi'> {
     return async (ctx) => {
       const id = await Common.getParam('id', ctx.request)
-      const random = await Common.getParam('random', ctx.request)
-      
+
       let result: string
-      
+
       if (id) {
         // 获取指定ID的段子
         const index = parseInt(id)
@@ -29,6 +28,10 @@ class ServiceDuanzi {
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = result
+          break
+
+        case 'markdown':
+          ctx.response.body = `# 😄 段子\n\n${result}\n\n---\n\n*第 ${duanziData.findIndex((item) => item === result) + 1} 条段子*`
           break
 
         case 'json':

@@ -12,6 +12,10 @@ class ServiceChangYa {
           ctx.response.body = data.audio.url
           break
 
+        case 'markdown':
+          ctx.response.body = `# 🎤 唱鸭随机作品\n\n## ${data.song.name}\n\n**演唱**: ${data.user.nickname} ${data.user.gender === 'M' ? '♂' : '♀'}\n\n**原唱**: ${data.song.singer}\n\n**时长**: ${Math.floor(data.audio.duration / 60)}:${(data.audio.duration % 60).toString().padStart(2, '0')}\n\n**发布时间**: ${data.audio.publish}\n\n**点赞数**: ${data.audio.like_count}\n\n[🔗 在线收听](${data.audio.link}) | [🎵 音频链接](${data.audio.url})\n\n---\n\n### 歌词\n\n${data.song.lyrics.slice(0, 6).join('\n')}\n\n*...*`
+          break
+
         case 'audio':
           ctx.response.redirect(data.audio.url)
           break

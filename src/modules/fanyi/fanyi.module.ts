@@ -37,6 +37,21 @@ class ServiceFanyi {
           ctx.response.body = isSuccess ? responseItems.map((e) => e.tgt).join('') || '' : '[翻译服务异常]'
           break
 
+        case 'markdown': {
+          if (!isSuccess) {
+            ctx.response.body = '# 翻译服务异常'
+            break
+          }
+          const sourceText = responseItems.map((e) => e.src).join('') || ''
+          const targetText = responseItems.map((e) => e.tgt).join('') || ''
+          const sourcePronounce = responseItems.map((e) => e.srcPronounce).join('') || ''
+          const targetPronounce = responseItems.map((e) => e.tgtPronounce).join('') || ''
+          const sourceLang = this.langMap.get(sourceType)?.label || sourceType
+          const targetLang = this.langMap.get(targetType)?.label || targetType
+          ctx.response.body = `# 🌐 翻译结果\n\n## 原文 (${sourceLang})\n\n> ${sourceText}\n\n${sourcePronounce ? `*发音: ${sourcePronounce}*\n\n` : ''}## 译文 (${targetLang})\n\n> ${targetText}\n\n${targetPronounce ? `*发音: ${targetPronounce}*` : ''}`
+          break
+        }
+
         case 'json':
         default:
           ctx.response.body = isSuccess

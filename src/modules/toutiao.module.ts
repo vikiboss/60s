@@ -15,6 +15,16 @@ class ServiceToutiao {
             .join('\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 头条实时热搜\n\n${data
+            .slice(0, 20)
+            .map(
+              (e, idx) =>
+                `### ${idx + 1}. [${e.title}](${e.link}) \`热度: ${e.hot_value}\`\n\n${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
+            )
+            .join('\n')}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)

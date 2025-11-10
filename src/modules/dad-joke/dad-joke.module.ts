@@ -31,6 +31,10 @@ class ServiceDadJoke {
           ctx.response.body = result
           break
 
+        case 'markdown':
+          ctx.response.body = `# 😂 Dad Joke\n\n${result}\n\n---\n\n*#${dadJokeList.findIndex((item) => item === result) + 1}*`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson({

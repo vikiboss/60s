@@ -18,6 +18,13 @@ class ServiceWeibo {
             .join('\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 微博实时热搜\n\n${data
+            .slice(0, 20)
+            .map((e, i) => `${i + 1}. [${e.title}](${e.link})`)
+            .join('\n')}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)

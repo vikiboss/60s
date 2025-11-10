@@ -27,6 +27,10 @@ class ServiceChemical {
           ctx.response.body = `化学元素信息\n名称: ${result.name}\n分子式: ${result.formula}\n质量: ${result.mass}\n单同位素质量: ${result.monoisotopicMass}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 🧪 化学物质信息\n\n## ${result.name}\n\n**分子式**: ${result.formula}\n\n**质量**: ${result.mass}\n\n**单同位素质量**: ${result.monoisotopicMass}\n\n![结构式](${result.image})\n\n*ID: ${result.id}*`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(result)

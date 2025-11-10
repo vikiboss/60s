@@ -33,6 +33,10 @@ class ServiceQQ {
           ctx.response.body = data.nickname
           break
 
+        case 'markdown':
+          ctx.response.body = `# 👤 QQ 用户信息\n\n![${data.nickname}](${data.avatar_url})\n\n**昵称**: ${data.nickname}\n\n**QQ 号**: ${data.qq}\n\n**头像尺寸**: ${data.avatar_size}px`
+          break
+
         case 'image':
           ctx.response.redirect(data.avatar_url)
           break

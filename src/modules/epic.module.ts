@@ -24,6 +24,24 @@ class ServiceEpic {
             .join('\n\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# Epic Games 免费游戏\n\n${data
+            .slice(0, 20)
+            .map((e, idx) => {
+              const date = Common.localeTime(new Date(e.free_start_at), { seconds: false })
+              const endDate = Common.localeTime(new Date(e.free_end_at), { seconds: false })
+              const hasBookTitle = e.title.includes('《')
+              const title = hasBookTitle ? e.title : `《${e.title}》`
+
+              const freeDesc = e.is_free_now
+                ? `🎮 **现在免费** 截至 ${endDate}`
+                : `⏰ ${date} 至 ${endDate} 免费`
+
+              return `### ${idx + 1}. [${title}](${e.link}) ${e.is_free_now ? '🔥' : ''}\n\n${freeDesc}\n\n${e.description}\n\n${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}**发行商**: ${e.seller} | **原价**: ${e.original_price_desc}\n\n---\n`
+            })
+            .join('\n')}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)

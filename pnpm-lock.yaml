@@ -14,6 +14,9 @@ importers:
       cheerio:
         specifier: ^1.1.2
         version: 1.1.2
+      chinese-days:
+        specifier: ^1.5.4
+        version: 1.5.4
       dayjs:
         specifier: ^1.11.18
         version: 1.11.18
@@ -504,6 +507,9 @@ packages:
   cheerio@1.1.2:
     resolution: {integrity: sha512-IkxPpb5rS/d1IiLbHMgfPuS0FgiWTtFIm/Nj+2woXDLTZ7fOT2eqzgYbdMlLweqlHbsZjxEChoVK+7iph7jyQg==}
     engines: {node: '>=20.18.1'}
+
+  chinese-days@1.5.4:
+    resolution: {integrity: sha512-YAj/f4UhzNm7F5SbeyhVPZbS5gdGNcsaNy4TqIzknx5/fql0bHU+OY3wJEw75lMhfsZRQUCTvBNu88rcMoswmw==}
 
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
@@ -1234,6 +1240,8 @@ snapshots:
       parse5-parser-stream: 7.1.2
       undici: 7.16.0
       whatwg-mimetype: 4.0.0
+
+  chinese-days@1.5.4: {}
 
   chokidar@4.0.3:
     dependencies:

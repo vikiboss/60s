@@ -42,6 +42,7 @@ import { servicePassword } from './modules/password/password.module.ts'
 import { serviceColor } from './modules/color.module.ts'
 import { serviceKuan } from './modules/kuan.module.ts'
 import { serviceLyric } from './modules/lyric.module.ts'
+import { serviceMoyu } from './modules/moyu.module.ts'
 
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
@@ -94,6 +95,7 @@ appRouter.get('/qrcode', serviceQRCode.handle())
 appRouter.get('/dad-joke', serviceDadJoke.handle())
 appRouter.get('/rednote', serviceRednote.handle())
 appRouter.get('/dongchedi', serviceDongchedi.handle())
+appRouter.get('/moyu', serviceMoyu.handle())
 
 appRouter.get('/health', serviceHealth.handle())
 appRouter.get('/password', servicePassword.handle())
