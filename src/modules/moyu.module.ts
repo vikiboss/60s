@@ -14,6 +14,18 @@ class ServiceMoyu {
   private cache = new Map<string, MoyuCalendar>()
   private lastCacheDate: string = ''
 
+  /**
+   * 从 chinese-days 返回的节日名称中提取中文名称
+   * chinese-days 返回格式: "New Year's Day,元旦,1"
+   * 提取第二部分(中文名称): "元旦"
+   */
+  private extractChineseName(holidayName: string | null): string | null {
+    if (!holidayName) return null
+    const parts = holidayName.split(',')
+    // 返回第二部分(中文名称),如果不存在则返回原始字符串
+    return parts.length >= 2 ? parts[1].trim() : holidayName
+  }
+
   handle(): RouterMiddleware<'/moyu'> {
     return async (ctx) => {
       const dateParam = await Common.getParam('date', ctx.request)
@@ -24,18 +36,18 @@ class ServiceMoyu {
           let body = '🐟 摸鱼办·打工人日历\n\n'
           body += `📆 ${data.date.gregorian} ${data.date.weekday}\n`
           body += `🌙 农历 ${data.date.lunar.yearCN}年 ${data.date.lunar.monthCN}${data.date.lunar.dayCN}\n`
-          body += `${data.date.lunar.zodiac}年 ${data.date.lunar.yearGanZhi}\n\n`
+          body += `🐯 ${data.date.lunar.zodiac}年 ${data.date.lunar.yearGanZhi}\n\n`
 
           // 当前假期状态
           if (data.currentHoliday) {
-            body += `🎉 恭喜！您正处于【${data.currentHoliday.name}】假期中！\n`
+            body += `🎉 恭喜！您正处于【${this.extractChineseName(data.currentHoliday.name)}】假期中！\n`
             body += `📅 今天是假期的第 ${data.currentHoliday.dayOfHoliday} 天，还剩 ${data.currentHoliday.daysRemaining} 天（含今天）\n`
             body += `💡 好好享受假期吧，打工人！\n\n`
           } else {
             if (data.today.isWeekend) {
               body += `🎉 太好了！今天是周末，可以愉快摸鱼！\n\n`
             } else if (data.today.isHoliday) {
-              body += `🎊 耶！今天是节假日【${data.today.holidayName}】，尽情摸鱼吧！\n\n`
+              body += `🎊 耶！今天是节假日【${this.extractChineseName(data.today.holidayName)}】，尽情摸鱼吧！\n\n`
             } else if (data.today.isWorkday) {
               if (data.today.isWeekend) {
                 body += `😢 悲报：今天周末要调休上班，但也要坚持摸鱼！\n\n`
@@ -75,7 +87,7 @@ class ServiceMoyu {
             if (data.nextHoliday.until === 0) {
               body += `🎯 距离假期：就是明天啦！收拾行李准备摸鱼！\n`
             } else {
-              body += `🎯 距离【${data.nextHoliday.name}】：还要搬砖 ${data.nextHoliday.until} 天\n`
+              body += `🎯 距离【${this.extractChineseName(data.nextHoliday.name)}】：还要搬砖 ${data.nextHoliday.until} 天\n`
             }
           }
 
@@ -86,7 +98,7 @@ class ServiceMoyu {
 
           if (data.nextHoliday) {
             body += `\n🎯 下一个带薪摸鱼日\n`
-            body += `🎊 节日：${data.nextHoliday.name}\n`
+            body += `🎊 节日：${this.extractChineseName(data.nextHoliday.name)}\n`
             body += `📅 日期：${data.nextHoliday.date}\n`
             body += `⏱️ 时长：${data.nextHoliday.duration} 天\n`
             if (data.nextHoliday.workdays && data.nextHoliday.workdays.length > 0) {
@@ -118,7 +130,7 @@ class ServiceMoyu {
 
           if (data.currentHoliday) {
             body += `### 🎉 当前假期中\n\n`
-            body += `**【${data.currentHoliday.name}】假期进行中！**\n\n`
+            body += `**【${this.extractChineseName(data.currentHoliday.name)}】假期进行中！**\n\n`
             body += `- 📅 今天是假期的第 **${data.currentHoliday.dayOfHoliday}** 天\n`
             body += `- ⏰ 还剩 **${data.currentHoliday.daysRemaining}** 天（含今天）\n`
             body += `- 💡 好好享受假期吧，打工人！\n\n`
@@ -126,7 +138,7 @@ class ServiceMoyu {
             if (data.today.isWeekend) {
               body += `🎉 **太好了！今天是周末，可以愉快摸鱼！**\n\n`
             } else if (data.today.isHoliday) {
-              body += `🎊 **节假日**: ${data.today.holidayName}，尽情摸鱼吧！\n\n`
+              body += `🎊 **节假日**: ${this.extractChineseName(data.today.holidayName)}，尽情摸鱼吧！\n\n`
             } else if (data.today.isWorkday) {
               if (data.today.isWeekend) {
                 body += `😢 **悲报**: 今天周末要调休上班，但也要坚持摸鱼！\n\n`
@@ -167,7 +179,7 @@ class ServiceMoyu {
 
           if (data.nextHoliday) {
             body += `## 🎯 下一个带薪摸鱼日\n\n`
-            body += `- **假期名称**: ${data.nextHoliday.name}\n`
+            body += `- **假期名称**: ${this.extractChineseName(data.nextHoliday.name)}\n`
             body += `- **开始日期**: ${data.nextHoliday.date}\n`
             body += `- **倒计时**: ${data.nextHoliday.until === 0 ? '就是明天啦！收拾行李准备摸鱼！' : `再坚持 ${data.nextHoliday.until} 天！`}\n`
             body += `- **可摸时长**: ${data.nextHoliday.duration} 天\n`
@@ -276,7 +288,7 @@ class ServiceMoyu {
         isWeekend,
         isHoliday: isHolidayToday,
         isWorkday: isWorkdayToday,
-        holidayName: isHolidayToday ? dayDetail.name : null,
+        holidayName: isHolidayToday ? this.extractChineseName(dayDetail.name) : null,
         solarTerm: solarTermName,
         lunarFestivals: lunarFestivalNames,
       },
@@ -374,7 +386,7 @@ class ServiceMoyu {
     const daysRemaining = duration - dayOfHoliday + 1
 
     return {
-      name: detail.name,
+      name: this.extractChineseName(detail.name) || detail.name,
       dayOfHoliday,
       daysRemaining,
       totalDays: duration,
@@ -406,7 +418,7 @@ class ServiceMoyu {
         }
 
         return {
-          name: detail.name,
+          name: this.extractChineseName(detail.name) || detail.name,
           date: dateStr,
           until: currentCheck.diff(today, 'day'),
           duration,
