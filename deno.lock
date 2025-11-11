@@ -7,6 +7,7 @@
     "npm:@types/node@^22.18.12": "22.18.12",
     "npm:bumpp@^10.3.1": "10.3.1",
     "npm:cheerio@^1.1.2": "1.1.2",
+    "npm:chinese-days@^1.5.4": "1.5.4",
     "npm:dayjs@^1.11.18": "1.11.18",
     "npm:filesize@^11.0.13": "11.0.13",
     "npm:fontkit@^2.0.4": "2.0.4",
@@ -595,6 +596,9 @@
         "whatwg-mimetype"
       ]
     },
+    "chinese-days@1.5.4": {
+      "integrity": "sha512-YAj/f4UhzNm7F5SbeyhVPZbS5gdGNcsaNy4TqIzknx5/fql0bHU+OY3wJEw75lMhfsZRQUCTvBNu88rcMoswmw=="
+    },
     "chokidar@4.0.3": {
       "integrity": "sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==",
       "dependencies": [
@@ -1131,6 +1135,7 @@
         "npm:@types/node@^22.18.12",
         "npm:bumpp@^10.3.1",
         "npm:cheerio@^1.1.2",
+        "npm:chinese-days@^1.5.4",
         "npm:dayjs@^1.11.18",
         "npm:filesize@^11.0.13",
         "npm:fontkit@^2.0.4",

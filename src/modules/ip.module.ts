@@ -91,6 +91,13 @@ class ServiceIP {
           ctx.response.body = ip
           break
 
+        case 'markdown': {
+          const api = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip}`
+          const { data = {} } = (await (await fetch(api)).json()) || {}
+          ctx.response.body = `# 🌐 IP 地址查询\n\n## ${ip}\n\n${data.continent ? `**洲**: ${data.continent}\n\n` : ''}${data.country ? `**国家**: ${data.country}\n\n` : ''}${data.prov ? `**省份**: ${data.prov}\n\n` : ''}${data.city ? `**城市**: ${data.city}\n\n` : ''}${data.district ? `**区县**: ${data.district}\n\n` : ''}${data.isp ? `**运营商**: ${data.isp}` : ''}`
+          break
+        }
+
         case 'json':
         default: {
           const api = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip}`

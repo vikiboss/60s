@@ -26,6 +26,10 @@ class ServiceLyric {
           ctx.response.body = data.formatted
           break
 
+        case 'markdown':
+          ctx.response.body = `# 🎵 ${data.title}\n\n**演唱**: ${data.artists.join(', ')}\n\n**专辑**: ${data.album}\n\n---\n\n${data.formatted}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)
@@ -304,7 +308,7 @@ class ServiceLyric {
   // 静态正则: 用于 cleanLyric 的模式匹配
   static readonly #CLEAN_PATTERNS = {
     metadata: /^\[[a-z]+:/i,
-    timestamp: /\[\d{2}:\d{2}(?:[\.:]\d{2,3})?\]/g,
+    timestamp: /\[\d{2}:\d{2}(?:[.:]\d{2,3})?\]/g,
   } as const
 
   #cleanLyric(lyric: string, cleanInfo = true): string {

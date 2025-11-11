@@ -30,6 +30,10 @@ class ServiceAnswer {
           ctx.response.body = result.answer
           break
 
+        case 'markdown':
+          ctx.response.body = `# 答案之书\n\n## ${result.answer}\n\n---\n\n*第 ${answerData.findIndex((item) => item === result) + 1} 条答案*`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson({

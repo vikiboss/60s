@@ -19,6 +19,10 @@ class ServiceOG {
             ctx.response.body = `标题: ${data.title}\n描述: ${data.description}`
             break
 
+          case 'markdown':
+            ctx.response.body = `# 🔗 Open Graph 信息\n\n## [${data.title || '无标题'}](${url})\n\n${data.description ? `> ${data.description}\n\n` : ''}${data.image ? `![预览图](${data.image})` : '*无预览图*'}`
+            break
+
           case 'json':
           default:
             ctx.response.body = Common.buildJson(data)

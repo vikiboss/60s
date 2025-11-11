@@ -40,6 +40,10 @@ class ServiceAwesomeJs {
           ctx.response.body = this.formatQuestionText(result)
           break
 
+        case 'markdown':
+          ctx.response.body = this.formatQuestionMarkdown(result)
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(result)
@@ -64,6 +68,23 @@ class ServiceAwesomeJs {
     text += `解释: ${question.explanation}`
 
     return text
+  }
+
+  private formatQuestionMarkdown(question: JavaScriptQuestion): string {
+    let md = `# 💻 JavaScript 面试题 #${question.id}\n\n## ${question.question}\n\n`
+
+    if (question.code) {
+      md += `\`\`\`javascript\n${question.code}\n\`\`\`\n\n`
+    }
+
+    md += `### 选项\n\n`
+    question.options.forEach((option) => {
+      md += `- ${option}\n`
+    })
+
+    md += `\n### ✅ 答案\n\n**${question.answer}**\n\n### 💡 解释\n\n${question.explanation}`
+
+    return md
   }
 }
 

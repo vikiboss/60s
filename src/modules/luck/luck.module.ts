@@ -46,6 +46,10 @@ class ServiceLuck {
           ctx.response.body = `${result.luck_desc}: ${result.luck_tip}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 🍀 今日运势\n\n## ${result.luck_desc}\n\n> ${result.luck_tip}\n\n**运势等级**: ${result.luck_rank}/10`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(result)

@@ -30,6 +30,10 @@ class ServiceBing {
           ctx.response.body = data.cover || ''
           break
 
+        case 'markdown':
+          ctx.response.body = `# ${data.title || '必应每日壁纸'}\n\n${data.headline ? `## ${data.headline}\n\n` : ''}${data.description ? `${data.description}\n\n` : ''}![${data.title}](${data.cover})\n\n${data.copyright ? `*${data.copyright}*` : ''}`
+          break
+
         case 'image':
           ctx.response.redirect(data.cover || '')
           break

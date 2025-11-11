@@ -69,6 +69,6 @@ When adding new modules:
 ### Common Patterns
 - Use `Common.buildJson()` for consistent JSON responses
 - Handle query parameters with `ctx.request.url.searchParams`
-- Support POST body parameters via `Common.getParam()`
+- Support POST body parameters via `Common.getParam(ctx.request)` if the params maybe so large
 - Use `Common.chromeUA` for web scraping requests
 - Implement caching where appropriate using Map or similar

@@ -51,4 +51,4 @@ EXPOSE 4399
 #   CMD curl --silent --fail http://127.0.0.1:4399/health -H 'User-Agent: Docker Health Check' || exit 1
 
 # 运行应用
-CMD ["node", "node.ts"]
+CMD ["node", "--disable-warning=ExperimentalWarning", "node.ts"]
