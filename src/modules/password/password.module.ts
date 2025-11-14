@@ -116,7 +116,7 @@ class ServicePassword {
       const password = await Common.getParam('password', ctx.request)
 
       if (!password) {
-        Common.requireArguments(['password'], ctx)
+        Common.requireArguments(['password'], ctx.response)
         return
       }
 

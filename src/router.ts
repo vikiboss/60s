@@ -43,6 +43,7 @@ import { serviceColor } from './modules/color.module.ts'
 import { serviceKuan } from './modules/kuan.module.ts'
 import { serviceLyric } from './modules/lyric.module.ts'
 import { serviceMoyu } from './modules/moyu.module.ts'
+import { serviceFuelPrice } from './modules/fuel-price/fuel-price.module.ts'
 
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
@@ -124,6 +125,7 @@ appRouter.get('/color/random', serviceColor.handle())
 appRouter.get('/color/palette', serviceColor.handlePalette())
 
 appRouter.all('/lyric', serviceLyric.handle())
+appRouter.all('/fuel-price', serviceFuelPrice.handle())
 
 // === 以下为支持 body 解析参数的接口 ===
 appRouter.all('/og', serviceOG.handle())

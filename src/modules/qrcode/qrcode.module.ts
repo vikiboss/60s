@@ -10,7 +10,7 @@ class ServiceQRCode {
       const text = await Common.getParam('text', ctx.request)
 
       if (!text) {
-        return Common.requireArguments('text', ctx)
+        return Common.requireArguments('text', ctx.response)
       }
 
       const size = await Common.getParam('size', ctx.request)

@@ -11,7 +11,7 @@ class ServiceHash {
       const content = await Common.getParam('content', ctx.request, true)
 
       if (!content) {
-        return Common.requireArguments('content', ctx)
+        return Common.requireArguments('content', ctx.response)
       }
 
       const data = {
