@@ -51,6 +51,13 @@ class ServiceFuelPrice {
             break
           }
 
+          case 'markdown': {
+            ctx.response.body = `# 今日油价 (${queryRegion})\n\n${data.items
+              .map((e) => `- **${e.name}**: ${e.price_desc}`)
+              .join('\n')}\n\n更新时间: ${data.updated}`
+            break
+          }
+
           case 'json':
           default: {
             ctx.response.body = Common.buildJson(data)
