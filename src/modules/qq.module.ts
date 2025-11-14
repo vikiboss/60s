@@ -9,7 +9,7 @@ class ServiceQQ {
       const size = +((await Common.getParam('size', ctx.request)) || 0)
 
       if (!qq) {
-        return Common.requireArguments('qq', ctx)
+        return Common.requireArguments('qq', ctx.response)
       }
 
       if (!/^\d{5,11}$/.test(qq)) {

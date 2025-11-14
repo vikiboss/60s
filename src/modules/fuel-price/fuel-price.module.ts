@@ -6,6 +6,8 @@ import type { RouterMiddleware } from '@oak/oak'
 
 type FuelRegion = (typeof regions)[number]
 
+const sortedRegion = regions.toSorted((a, b) => a.region.length - b.region.length)
+
 interface FuelPrice {
   name: string
   price: number
@@ -22,16 +24,9 @@ class ServiceFuelPrice {
   handle(): RouterMiddleware<'/fuel/price'> {
     return async (ctx) => {
       try {
-        // 地区
-        const queryRegion = ctx.request.url.searchParams.get('region')
-        // 是否需要强制刷新缓存
+        const queryRegion = ctx.request.url.searchParams.get('region') || '北京'
         const forceUpdate = !!ctx.request.url.searchParams.get('force-update')
-
-        if (!queryRegion) {
-          return Common.requireArguments(['region'], ctx.response)
-        }
-
-        const target = regions.find((e) => e.region.includes(queryRegion))
+        const target = sortedRegion.find((e) => e.region.endsWith(queryRegion))
 
         if (!target) {
           ctx.response.body = Common.buildJson(null, 400, `暂不支持 ${queryRegion} 区域查询`)

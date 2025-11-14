@@ -13,7 +13,7 @@ class ServiceFanyi {
       const text = await Common.getParam('text', ctx.request, true)
 
       if (!text) {
-        return Common.requireArguments('text', ctx)
+        return Common.requireArguments('text', ctx.response)
       }
 
       const from = (await Common.getParam('from', ctx.request, true)) || 'auto'

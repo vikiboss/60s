@@ -125,7 +125,6 @@ appRouter.get('/color/random', serviceColor.handle())
 appRouter.get('/color/palette', serviceColor.handlePalette())
 
 appRouter.all('/lyric', serviceLyric.handle())
-
 appRouter.all('/fuel-price', serviceFuelPrice.handle())
 
 // === 以下为支持 body 解析参数的接口 ===

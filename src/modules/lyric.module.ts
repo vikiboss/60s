@@ -8,7 +8,7 @@ class ServiceLyric {
       const query = ctx.request.url.searchParams.get('query')
 
       if (!query) {
-        return Common.requireArguments('query', ctx)
+        return Common.requireArguments('query', ctx.response)
       }
 
       const clean = ctx.request.url.searchParams.get('clean') !== 'false'

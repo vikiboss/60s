@@ -8,7 +8,7 @@ class ServiceOG {
       const url = await Common.getParam('url', ctx.request, true)
 
       if (!url) {
-        return Common.requireArguments('url', ctx)
+        return Common.requireArguments('url', ctx.response)
       }
 
       try {

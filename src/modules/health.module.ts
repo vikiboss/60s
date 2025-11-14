@@ -100,7 +100,7 @@ class ServiceHealth {
       const age = await Common.getParam('age', ctx.request)
 
       if (!height || !weight || !gender || !age) {
-        Common.requireArguments(['height', 'weight', 'gender', 'age'], ctx)
+        Common.requireArguments(['height', 'weight', 'gender', 'age'], ctx.response)
         return
       }
 
@@ -455,7 +455,7 @@ class ServiceHealth {
 
   private getNutritionAdvice(bmiCategory: string, gender: string, age: number) {
     let baseAdvice = ''
-    const specialTips = []
+    const specialTips: string[] = []
 
     // BMI基础营养建议
     switch (bmiCategory) {
