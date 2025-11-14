@@ -1,112 +1,105 @@
-import { Common } from '../../common.ts'
+import regions from './regions.json' with { type: 'json' }
 import { load } from 'cheerio'
-import type { RouterMiddleware } from '@oak/oak'
-import fuelPriceRegions from './fuel-price.json' with { type: 'json' }
+import { Common } from '../../common.ts'
 
-const BASE_URL: string = 'http://www.qiyoujiage.com'
+import type { RouterMiddleware } from '@oak/oak'
+
+type FuelRegion = (typeof regions)[number]
+
+interface FuelPrice {
+  name: string
+  price: number
+  price_desc: string
+}
 
 class ServiceFuelPrice {
-  private cache = new Map<string, CacheFuelPrice>()
+  #BASE_URL: string = 'http://www.qiyoujiage.com'
+
+  private cache = new Map<string, { ts: number; items: FuelPrice[] }>()
   // 60 minutes
   private readonly CACHE_TTL_MS = 60 * 60 * 1000
 
-  handle(): RouterMiddleware<'/hacker-news'> {
+  handle(): RouterMiddleware<'/fuel/price'> {
     return async (ctx) => {
-      const region = await Common.getParam('region', ctx.request)
+      try {
+        // 地区
+        const queryRegion = ctx.request.url.searchParams.get('region')
+        // 是否需要强制刷新缓存
+        const forceUpdate = !!ctx.request.url.searchParams.get('force-update')
 
-      const fuelRegions: FuelRegion[] = fuelPriceRegions[region]
-      if (!fuelRegions) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, `暂不支持 ${region} 区域查询`)
-        return
-      }
-
-      // 是否需要强制刷新缓存
-      const forceUpdate = !!(await Common.getParam('force-update', ctx.request))
-
-      const list = await this.#fetch(region, fuelRegions, forceUpdate)
-      const data = {
-        list: list,
-        update_time: Common.localeTime(),
-        update_time_at: new Date().getTime(),
-      }
-      switch (ctx.state.encoding) {
-        case 'text': {
-          ctx.response.body = `今日油价\n\n${data.list
-            .map((e, idx) => `${idx + 1}. ${e.fullArea}\n${e.fuelPrices.map(i => `${i.name}: ${i.price}`).join("\n")}`)
-            .join('\n\n')}`
-          break
+        if (!queryRegion) {
+          return Common.requireArguments(['region'], ctx.response)
         }
 
-        case 'json':
-        default: {
-          ctx.response.body = Common.buildJson(data)
-          break
+        const target = regions.find((e) => e.region.includes(queryRegion))
+
+        if (!target) {
+          ctx.response.body = Common.buildJson(null, 400, `暂不支持 ${queryRegion} 区域查询`)
+          return
         }
+
+        const { items, ts } = await this.#fetch(target, forceUpdate)
+
+        const data = {
+          region: target.region,
+          items,
+          link: `${this.#BASE_URL}${target.url}`,
+          updated: Common.localeTime(ts),
+          updated_at: ts,
+        }
+
+        switch (ctx.state.encoding) {
+          case 'text': {
+            ctx.response.body = `今日油价 (${queryRegion})\n\n${data.items
+              .map((e) => `${e.name}: ${e.price_desc}`)
+              .join('\n')}\n\n更新时间: ${data.updated}`
+            break
+          }
+
+          case 'json':
+          default: {
+            ctx.response.body = Common.buildJson(data)
+            break
+          }
+        }
+      } catch (error) {
+        const message = error instanceof Error ? error.message : '未知错误'
+        ctx.response.body = Common.buildJson({ error: message }, 500, message)
       }
     }
   }
 
-  async #fetch(region: string, fuelRegions: FuelRegion[], forceUpdate: boolean = false): Promise<AreaFuelPrices[]> {
-    // 生成唯一的缓存键
-    const cacheKey = `fuel-price-${region}`
+  async #fetch(region: FuelRegion, forceUpdate: boolean = false): Promise<{ ts: number; items: FuelPrice[] }> {
+    const cacheKey = `FUEL_PRICE_${region.url}`
 
-    if (!forceUpdate) {
-      // 检查是否存在有效缓存
-      const cachedEntry = this.cache.get(cacheKey)
-      if (cachedEntry) {
-        const isExpired = Date.now() - cachedEntry.timestamp > this.CACHE_TTL_MS
-        if (!isExpired) {
-          return cachedEntry.items
-        }
-        // 如果缓存已过期，从 cache 中删除
-        this.cache.delete(cacheKey)
-      }
-    } else {
-      // 强制刷新缓存
+    if (forceUpdate) {
       this.cache.delete(cacheKey)
     }
 
-    try {
-      const result: AreaFuelPrices[] = []
+    const cachedEntry = this.cache.get(cacheKey)
+    const isCacheValid = cachedEntry && Date.now() - cachedEntry.ts > this.CACHE_TTL_MS
 
-      for (let fuelRegion of fuelRegions) {
-        const response = await fetch(`${BASE_URL}${fuelRegion.url}`, {
-          headers: {
-            'User-Agent': Common.chromeUA,
-          },
-        })
-
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}`)
-        }
-
-        const html = await response.text()
-        const data = this.parseHTML(html, region)
-
-        result.push({
-          fullArea: fuelRegion.fullArea,
-          fuelPrices: data
-        })
-      }
-
-      // 将新数据和当前时间戳存入缓存
-      const newCachedEntry: CacheFuelPrice = {
-        items: result,
-        timestamp: Date.now(),
-      }
-      this.cache.set(cacheKey, newCachedEntry)
-
-      return result
-    } catch (error) {
-      throw new Error(`Failed to fetch fuel price: ${error}`)
+    if (isCacheValid) {
+      return cachedEntry
     }
+
+    const response = await fetch(`${this.#BASE_URL}${region.url}`, { headers: { 'User-Agent': Common.chromeUA } })
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`)
+    }
+
+    const html = await response.text()
+    const data = { ts: Date.now(), items: this.parseHTML(html) }
+
+    this.cache.set(cacheKey, data)
+
+    return data
   }
 
-  parseHTML(html: string, region: string): FuelPrice[] {
+  parseHTML(html: string): FuelPrice[] {
     const $ = load(html)
-
-    const fuelPrices: FuelPrice[] = []
+    const items: FuelPrice[] = []
 
     $('#youjia dl').each((_, dl) => {
       const $dl = $(dl)
@@ -114,36 +107,23 @@ class ServiceFuelPrice {
       const dds = $dl.find('dd')
 
       dts.each((i, dt) => {
-        const name = $(dt).text().trim().replace(region, '')
+        const name = $(dt)
+          .text()
+          .trim()
+          .replace(/^[^0-9]+/, '')
         const priceText = $(dds[i]).text().trim()
         const price = parseFloat(priceText)
 
-        fuelPrices.push({ name, price })
+        items.push({
+          name,
+          price,
+          price_desc: `${price.toFixed(2)} 元/升`,
+        })
       })
     })
 
-    return fuelPrices
+    return items
   }
 }
 
 export const serviceFuelPrice = new ServiceFuelPrice()
-
-interface FuelRegion {
-  fullArea: string
-  url: string
-}
-
-interface AreaFuelPrices {
-  fullArea: string
-  fuelPrices: FuelPrice[]
-}
-
-interface FuelPrice {
-  name: string
-  price: number
-}
-
-interface CacheFuelPrice {
-  items: AreaFuelPrices[]
-  timestamp: number
-}
