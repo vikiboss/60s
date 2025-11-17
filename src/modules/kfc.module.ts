@@ -43,7 +43,7 @@ class ServiceKfc {
     const response = await Common.tryRepoUrl({
       repo: 'vikiboss/v50',
       path: 'static/v50.json',
-      alternatives: [`https://v50.deno.dev/list`],
+      alternatives: [`https://cdn.jsdelivr.net/gh/two2025/v50@main/static/v50.json`],
     })
 
     if (!response) return []
@@ -56,6 +56,7 @@ class ServiceKfc {
     }
 
     return data || []
+
   }
 }
 

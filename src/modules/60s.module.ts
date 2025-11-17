@@ -80,11 +80,11 @@ class Service60s {
 
   async tryUrl(date: string) {
     const response = await Common.tryRepoUrl({
-      repo: 'vikiboss/60s-static-host',
+      repo: 'two2025/60s-static-host',
       path: `static/60s/${date}.json`,
       alternatives: [
-        `https://60s-static.viki.moe/60s/${date}.json`,
-        `https://60s-static-host.vercel.app/60s/${date}.json`,
+        `https://raw.githubusercontent.com/two2025/60s-static-host/refs/heads/main/static/60s/${date}.json`,
+        `https://cdn.jsdelivr.net/gh/two2025/60s-static-host/static/60s/${date}.json`,
       ],
     })
 
