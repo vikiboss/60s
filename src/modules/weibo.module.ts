@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceWeibo {
   COOKIE =
-    'SUB=_2AkMfiZ0rf8NxqwFRmvsQzWzrb4t2wg7EieKp1WzwJRMxHRl-yT9kqlIitRB6NAmzxF4VA1utRFGp8rQgmyrgezcW39y0; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9W53ZGSdSzBm4kF5jod8B.He; _s_tentry=passport.weibo.com; Apache=6768551213104.772.1758794271221; SINAGLOBAL=6768551213104.772.1758794271221; ULV=1758794271230:1:1:1:6768551213104.772.1758794271221:'
+    'SUB=_2AkMflEwGf8NxqwFRmvsXxG7ia4h2wwrEieKpyL3dJRM3HRl-yT9yqk4mtRB6NBRi6maz6YaTyfIClrCyCUrm0-7nB1R9; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WhR9EPgz3BDPWy-YHwFuiIb; MLOGIN=0; _T_WM=29824971760; XSRF-TOKEN=3e7411; WEIBOCN_FROM=1110006030; mweibo_short_token=0f127e0728; M_WEIBOCN_PARAMS=fid%3D106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot%26uicode%3D10000011'
 
   handle(): RouterMiddleware<'/weibo'> {
     return async (ctx) => {
@@ -15,6 +15,13 @@ class ServiceWeibo {
           ctx.response.body = `微博实时热搜\n\n${data
             .map((e, i) => `${i + 1}. ${e.title}`)
             .slice(0, 20)
+            .join('\n')}`
+          break
+
+        case 'markdown':
+          ctx.response.body = `# 微博实时热搜\n\n${data
+            .slice(0, 20)
+            .map((e, i) => `${i + 1}. [${e.title}](${e.link})`)
             .join('\n')}`
           break
 

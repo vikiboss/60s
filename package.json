@@ -1,12 +1,19 @@
 {
   "name": "60s-api",
   "type": "module",
-  "version": "2.37.0",
-  "updateTime": "2025/10/28 10:48:09",
-  "packageManager": "pnpm@10.19.0",
+  "version": "2.39.0",
+  "updateTime": "2025/11/03 08:02:37",
+  "packageManager": "pnpm@10.20.0",
+  "prettier": {
+    "printWidth": 120,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "dependencies": {
     "@oak/oak": "npm:@jsr/oak__oak@^17.1.6",
     "cheerio": "^1.1.2",
+    "chinese-days": "^1.5.4",
     "dayjs": "^1.11.18",
     "filesize": "^11.0.13",
     "fontkit": "^2.0.4",
@@ -23,9 +30,9 @@
     "wrangler": "^4.44.0"
   },
   "scripts": {
-    "dev:no-watch": "DEV=1 PORT=4398 node node.ts",
-    "dev": "DEV=1 PORT=4398 node --watch node.ts",
-    "start": "PORT=4398 node node.ts",
+    "dev:no-watch": "DEV=1 PORT=4398 node --disable-warning=ExperimentalWarning node.ts",
+    "dev": "DEV=1 PORT=4398 node --disable-warning=ExperimentalWarning --watch node.ts",
+    "start": "PORT=4398 node --disable-warning=ExperimentalWarning node.ts",
     "prerelease": "node ./scripts/write-update-time.ts && git add . && git commit -m 'chore: update time in package.json'",
     "release": "bumpp",
     "update-lockfile": "pnpm install && bun install && deno install --allow-scripts",

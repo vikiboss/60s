@@ -31,6 +31,10 @@ class ServiceFabing {
           ctx.response.body = result
           break
 
+        case 'markdown':
+          ctx.response.body = `# 💝 发病文学\n\n${result}\n\n---\n\n*献给: **${name}***`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson({

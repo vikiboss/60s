@@ -18,6 +18,16 @@ class ServiceNcm {
             .join('\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 网易云音乐榜单\n\n${data
+            .slice(0, 20)
+            .map(
+              (e, i) =>
+                `### ${i + 1}. [${e.name}](${e.link}) \`${e.update_frequency}\`\n\n${e.description ? `${e.description}\n\n` : ''}${e.cover ? `![${e.name}](${e.cover})\n\n` : ''}**更新时间**: ${e.updated}\n\n---\n`,
+            )
+            .join('\n')}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)
@@ -42,6 +52,19 @@ class ServiceNcm {
                   .slice(0, 2)
                   .map((e) => e.name)
                   .join('、')}`,
+            )
+            .join('\n')}`
+          break
+
+        case 'markdown':
+          ctx.response.body = `# 网易云音乐${data?.[0]?.rank_name ?? ''}\n\n${data
+            .slice(0, size)
+            .map(
+              (e, i) =>
+                `### ${i + 1}. [${e.title}](${e.link}) \`${e.duration_desc}\`\n\n**歌手**: ${e.artist
+                  .slice(0, 3)
+                  .map((a) => `[${a.name}](${a.link})`)
+                  .join(' / ')}\n\n**专辑**: ${e.album.name}${e.album.cover ? `\n\n![${e.album.name}](${e.album.cover})` : ''}\n\n**热度**: ${e.popularity} | **评分**: ${e.score}\n\n---\n`,
             )
             .join('\n')}`
           break

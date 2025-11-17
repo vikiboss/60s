@@ -79,6 +79,17 @@ class ServiceKuan {
           break
         }
 
+        case 'markdown': {
+          ctx.response.body = `# 📱 酷安热门话题\n\n${data.topics
+            .slice(0, 20)
+            .map(
+              (item, idx) =>
+                `### ${idx + 1}. [${item.title}](${item.url})\n\n${item.description ? `${item.description}\n\n` : ''}${item.cover ? `![${item.title}](${item.cover})\n\n` : ''}📊 **热度**: ${item.hotness} | 👥 **关注**: ${item.followers} | 💬 **评论**: ${item.comments} | ⭐ **评分**: ${item.rating.score} (${item.rating.total}人)\n\n---`,
+            )
+            .join('\n\n')}\n\n*更新时间: ${data.updated}*`
+          break
+        }
+
         case 'json':
         default: {
           ctx.response.body = Common.buildJson(data)

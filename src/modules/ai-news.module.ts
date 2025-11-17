@@ -16,10 +16,27 @@ class ServiceAINews {
 
       switch (ctx.state.encoding) {
         case 'text': {
-          ctx.response.body = `AI 资讯快报（${data.date}${isToday ? '，实时更新' : ''}）\n\n${data.news
-            .map((e, idx) => `${idx + 1}. ${e.title}\n${e.link}`)
-            .slice(0, 20)
-            .join('\n\n')}`
+          ctx.response.body = `AI 资讯快报（${data.date}${isToday ? '，实时更新' : ''}）\n\n${
+            data.news.length > 0
+              ? data.news
+                  .map((e, idx) => `${idx + 1}. ${e.title}\n\n${e.detail}（来自: ${e.source}）\n\n> 详情: ${e.link}`)
+                  .join('\n\n')
+              : '今日暂无重大 AI 资讯'
+          }`
+          break
+        }
+
+        case 'markdown': {
+          ctx.response.body = `# AI 资讯快报\n\n> ${data.date}${isToday ? ' · 实时更新' : ''}\n\n${
+            data.news.length > 0
+              ? data.news
+                  .map(
+                    (e, idx) =>
+                      `### ${idx + 1}. [${e.title}](${e.link})\n\n${e.detail}\n\n**来源**: ${e.source}\n\n---\n`,
+                  )
+                  .join('\n')
+              : '*今日暂无重大 AI 资讯*'
+          }`
           break
         }
 

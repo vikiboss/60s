@@ -38,6 +38,16 @@ class ServiceHackerNews {
           break
         }
 
+        case 'markdown': {
+          ctx.response.body = `# Hacker News - ${HackerNewsTypeMap[type]}\n\n${data
+            .map(
+              (e, idx) =>
+                `### ${idx + 1}. [${e.title}](${e.link || `https://news.ycombinator.com/item?id=${e.id}`})\n\n**${e.score}** points by **${e.author}** · ${e.created}\n\n---\n`,
+            )
+            .join('\n')}`
+          break
+        }
+
         case 'json':
         default: {
           ctx.response.body = Common.buildJson(data)

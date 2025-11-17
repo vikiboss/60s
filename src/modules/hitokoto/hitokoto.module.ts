@@ -30,6 +30,10 @@ class ServiceHitokoto {
           ctx.response.body = result
           break
 
+        case 'markdown':
+          ctx.response.body = `# 一言\n\n> ${result}\n\n---\n\n*第 ${hitokotoData.findIndex((item) => item === result) + 1} 条*`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson({

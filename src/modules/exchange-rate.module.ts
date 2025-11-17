@@ -19,6 +19,13 @@ class ServiceExRate {
             .join('\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# ${currency} 汇率\n\n> 更新时间: ${data.updated}\n\n| 货币 | 汇率 |\n|------|------|\n${data.rates
+            .slice(0, 30)
+            .map((e) => `| **${e.currency}** | ${e.rate.toFixed(4)} |`)
+            .join('\n')}\n\n*下次更新: ${data.next_updated}*`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)

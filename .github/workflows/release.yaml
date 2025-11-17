@@ -52,7 +52,7 @@ jobs:
           platforms: |
             linux/amd64
             linux/arm64
-            linux/arm/v7
+            linux/s390x
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -26,6 +26,18 @@ class Service60s {
           break
         }
 
+        case 'markdown': {
+          ctx.response.body = `# 每天 60s 看世界\n\n> ${data.date} ${data.day_of_week} ${data.lunar_date}\n\n${data.news
+            .map((e, idx) => {
+              const newsItem = typeof e === 'string' ? { title: e, link: '' } : e
+              return newsItem.link
+                ? `${idx + 1}. [${newsItem.title}](${newsItem.link})`
+                : `${idx + 1}. ${newsItem.title}`
+            })
+            .join('\n')}\n\n${data.tip ? `---\n\n**【微语】** *${data.tip}*` : ''}${data.image ? `\n\n![每天60s看世界](${data.image})` : ''}`
+          break
+        }
+
         case 'image': {
           // test image url
           const response = await fetch(data.image, { method: 'HEAD' })

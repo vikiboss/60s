@@ -100,7 +100,7 @@ class ServiceHealth {
       const age = await Common.getParam('age', ctx.request)
 
       if (!height || !weight || !gender || !age) {
-        Common.requireArguments(['height', 'weight', 'gender', 'age'], ctx)
+        Common.requireArguments(['height', 'weight', 'gender', 'age'], ctx.response)
         return
       }
 
@@ -143,6 +143,11 @@ class ServiceHealth {
         case 'text':
           ctx.response.body = this.formatAsText(result)
           break
+
+        case 'markdown':
+          ctx.response.body = this.formatAsMarkdown(result)
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(result)
@@ -450,7 +455,7 @@ class ServiceHealth {
 
   private getNutritionAdvice(bmiCategory: string, gender: string, age: number) {
     let baseAdvice = ''
-    const specialTips = []
+    const specialTips: string[] = []
 
     // BMI基础营养建议
     switch (bmiCategory) {
@@ -603,6 +608,83 @@ ${result.health_advice.health_tips
 
 ⚠️ ${result.disclaimer}
     `.trim()
+  }
+
+  private formatAsMarkdown(result: HealthResult): string {
+    return `# 🏥 健康评估报告
+
+## 👤 基本信息
+
+| 项目 | 数值 |
+|------|------|
+| **身高** | ${result.basic_info.height} |
+| **体重** | ${result.basic_info.weight} |
+| **性别** | ${result.basic_info.gender} |
+| **年龄** | ${result.basic_info.age} |
+
+## 📊 体质指数 (BMI)
+
+**BMI**: ${result.bmi.value} | **${result.bmi.category}**
+
+*${result.bmi.evaluation}*
+
+- 健康风险: ${result.bmi.risk}
+
+## ⚖️ 体重评估
+
+- **当前状态**: ${result.weight_assessment.status}
+- **理想体重范围**: ${result.weight_assessment.ideal_weight_range}
+- **标准体重**: ${result.weight_assessment.standard_weight}
+- **调整建议**: ${result.weight_assessment.adjustment}
+
+## 🔥 代谢与热量
+
+| 指标 | 数值 |
+|------|------|
+| **基础代谢率 (BMR)** | ${result.metabolism.bmr} |
+| **每日总消耗 (TDEE)** | ${result.metabolism.tdee} |
+| **维持体重卡路里** | ${result.metabolism.recommended_calories} |
+| **减重卡路里** | ${result.metabolism.weight_loss_calories} |
+| **增重卡路里** | ${result.metabolism.weight_gain_calories} |
+
+## 🏃 体脂与身体组成
+
+- **体脂率**: ${result.body_fat.percentage} (${result.body_fat.category})
+- **脂肪重量**: ${result.body_fat.fat_weight}
+- **瘦体重**: ${result.body_fat.lean_weight}
+- **体表面积**: ${result.body_surface_area.value}
+
+## 👗 理想三围参考
+
+| 部位 | 尺寸 |
+|------|------|
+| **胸围** | ${result.ideal_measurements.chest} |
+| **腰围** | ${result.ideal_measurements.waist} |
+| **臀围** | ${result.ideal_measurements.hip} |
+
+*${result.ideal_measurements.note}*
+
+## 💧 个性化健康建议
+
+### 每日饮水
+
+${result.health_advice.daily_water_intake}
+
+### 🏃‍♀️ 运动建议
+
+${result.health_advice.exercise_recommendation}
+
+### 🥗 营养建议
+
+${result.health_advice.nutrition_advice}
+
+### 💡 健康提示
+
+${result.health_advice.health_tips.map((tip) => `- ${tip}`).join('\n')}
+
+---
+
+⚠️ **免责声明**: ${result.disclaimer}`
   }
 }
 

@@ -15,6 +15,16 @@ class ServiceBaidu {
             .join('\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 百度实时热搜\n\n${data
+            .slice(0, 20)
+            .map(
+              (e, i) =>
+                `### ${i + 1}. [${e.title}](${e.url}) ${e.type_desc ? `\`${e.type_desc}\`` : ''} \`${e.score_desc}\`\n\n${e.desc ? `${e.desc}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
+            )
+            .join('\n')}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)
@@ -35,6 +45,16 @@ class ServiceBaidu {
             .join('\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 百度电视剧榜单\n\n${data
+            .slice(0, 20)
+            .map(
+              (e, i) =>
+                `### ${i + 1}. [${e.title}](${e.url}) \`${e.score_desc}\`\n\n${e.desc ? `${e.desc}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
+            )
+            .join('\n')}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)
@@ -52,6 +72,16 @@ class ServiceBaidu {
           ctx.response.body = `百度贴吧热门话题\n\n${data
             .slice(0, 20)
             .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
+            .join('\n')}`
+          break
+
+        case 'markdown':
+          ctx.response.body = `# 百度贴吧热门话题\n\n${data
+            .slice(0, 20)
+            .map(
+              (e, i) =>
+                `### ${i + 1}. [${e.title}](${e.url}) \`讨论: ${e.score_desc}\`\n\n${e.desc ? `**话题描述**: ${e.desc}\n\n` : ''}${e.abstract ? `${e.abstract}\n\n` : ''}${e.avatar ? `![${e.title}](${e.avatar})\n\n` : ''}---\n`,
+            )
             .join('\n')}`
           break
 

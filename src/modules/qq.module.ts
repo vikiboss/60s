@@ -9,7 +9,7 @@ class ServiceQQ {
       const size = +((await Common.getParam('size', ctx.request)) || 0)
 
       if (!qq) {
-        return Common.requireArguments('qq', ctx)
+        return Common.requireArguments('qq', ctx.response)
       }
 
       if (!/^\d{5,11}$/.test(qq)) {
@@ -31,6 +31,10 @@ class ServiceQQ {
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = data.nickname
+          break
+
+        case 'markdown':
+          ctx.response.body = `# 👤 QQ 用户信息\n\n![${data.nickname}](${data.avatar_url})\n\n**昵称**: ${data.nickname}\n\n**QQ 号**: ${data.qq}\n\n**头像尺寸**: ${data.avatar_size}px`
           break
 
         case 'image':

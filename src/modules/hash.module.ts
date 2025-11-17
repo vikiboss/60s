@@ -11,7 +11,7 @@ class ServiceHash {
       const content = await Common.getParam('content', ctx.request, true)
 
       if (!content) {
-        return Common.requireArguments('content', ctx)
+        return Common.requireArguments('content', ctx.response)
       }
 
       const data = {
@@ -45,15 +45,19 @@ class ServiceHash {
       }
 
       switch (ctx.state.encoding) {
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-
         case 'text':
           ctx.response.body = `Hash 等编码转换结果\n\n${Object.entries(data)
             .map((e) => `${e[0]} => ${e[1]}`)
             .join('\n')}`
+          break
+
+        case 'markdown':
+          ctx.response.body = `# 🔐 Hash & 编码转换\n\n## 原始内容\n\n\`\`\`\n${data.source}\n\`\`\`\n\n## Hash 值\n\n**MD5**: \`${data.md5}\`\n\n**SHA1**: \`${data.sha.sha1}\`\n\n**SHA256**: \`${data.sha.sha256}\`\n\n**SHA512**: \`${data.sha.sha512}\`\n\n## 编码结果\n\n### Base64\n- **编码**: \`${data.base64.encoded}\`\n- **解码**: \`${data.base64.decoded}\`\n\n### URL\n- **编码**: \`${data.url.encoded}\`\n- **解码**: \`${data.url.decoded}\``
+          break
+
+        case 'json':
+        default:
+          ctx.response.body = Common.buildJson(data)
           break
       }
     }

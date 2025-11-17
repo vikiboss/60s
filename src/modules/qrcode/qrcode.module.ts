@@ -10,7 +10,7 @@ class ServiceQRCode {
       const text = await Common.getParam('text', ctx.request)
 
       if (!text) {
-        return Common.requireArguments('text', ctx)
+        return Common.requireArguments('text', ctx.response)
       }
 
       const size = await Common.getParam('size', ctx.request)
@@ -31,6 +31,11 @@ class ServiceQRCode {
           break
         }
 
+        case 'markdown': {
+          ctx.response.body = `# 📱 二维码生成\n\n**内容**: ${text}\n\n**尺寸**: ${size || 256}px\n\n**纠错级别**: ${(level || 'M').toUpperCase()}\n\n![QR Code](${dataURI})`
+          break
+        }
+
         case 'json': {
           ctx.response.body = Common.buildJson({
             mime_type: 'image/gif',
@@ -40,13 +45,13 @@ class ServiceQRCode {
           })
           break
         }
+
         case 'image':
-        default:
-          {
-            ctx.response.headers.set('Content-Type', 'image/gif')
-            ctx.response.body = Buffer.from(rawBase64, 'base64')
-          }
+        default: {
+          ctx.response.headers.set('Content-Type', 'image/gif')
+          ctx.response.body = Buffer.from(rawBase64, 'base64')
           break
+        }
       }
     }
   }

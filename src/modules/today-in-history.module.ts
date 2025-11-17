@@ -16,6 +16,15 @@ class ServiceTodayInHistory {
             .join('\n')}`
           break
 
+        case 'markdown':
+          ctx.response.body = `# 历史上的今天 (${data.date})\n\n${data.items
+            .map(
+              (e, idx) =>
+                `### ${idx + 1}. [${e.title}](${e.link}) \`${e.year} 年\`\n\n${e.description}\n\n---\n`,
+            )
+            .join('\n')}`
+          break
+
         case 'json':
         default:
           ctx.response.body = Common.buildJson(data)

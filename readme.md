@@ -16,22 +16,34 @@
 
 
 
+# JSON 格式 (默认)
+curl "https://60s.cccccc.life/v2/60s"
+
+# 纯文本格式
+curl "https://60s.cccccc.life/v2/60s?encoding=text"
+
+# 原图直链 (重定向到数据仓库原图直链)
+curl "https://60s.cccccc.life/v2/60s?encoding=image" --location --output "$(date +%Y-%m-%d).png"
+
+# 代理直链 (代理请求，直接返回图片二进制数据)
+curl "https://60s.cccccc.life/v2/60s?encoding=image-proxy" --output "$(date +%Y-%m-%d).png"
+```
+
+**📊 数据特性**
+
+
 目前包含的接口如下，仍在持续增加中，全面的 API 文档已公开托管在 [Apifox](https://doc.cccccc.plus) 上。
 
-主域名: https://60s.cccccc.plus 
+主域名: https://60s.cccccc.lfe 
 
 
 
-更多详情请看文档: https://doc.cccccc.plus
+更多详情请看文档: https://doc.cccccc.life
 
 
-- 默认 JSON 格式：https://60s.cccccc.plus/v2/60s
-- 文字版本：https://60s.cccccc.plus/v2/60s?encoding=text
-- 图片版本：https://60s.cccccc.plus/v2/60s?encoding=image （重定向到微信公众号链接，存在防盗链）
-- 代理图片版本：https://60s.cccccc.plus/v2/60s?encoding=image-proxy （代理链接，绕过防盗链限制，备用）
 
 
-> 更多详情请看文档: https://doc.cccccc.plus, 如果对你有帮助，请不要吝啬你的 Star～
+> 更多详情请看文档: https://doc.cccccc.life, 如果对你有帮助，请不要吝啬你的 Star～
 
 - ⏰ 日更资讯
   - 🌍 每天 60 秒读懂世界 (数据源来自 [two2025/60s-static-host](https://github.com/two2025/60s-static-host) 仓库，源头是微信公众号，正常情况下每天凌晨更新)
@@ -98,7 +110,7 @@ npm install && node --experimental-strip-types node.ts
 
 方式一，使用 Workers 的可视化界面：
 
-1. [Fork 本仓库](https://github.com/vikiboss/60s/fork)
+1. [Fork 本仓库](https://github.com/two2025/60s/fork)
 2. 在 [Cloudflare Workers](https://workers.cloudflare.com/) 通过 GitHub 创建项目
 3. 使用默认配置直接部署
 
@@ -124,7 +136,7 @@ npm install && npx wrangler publish
 > 可视化架构图: [60s 更新策略 - Excalidraw](https://excalidraw.com/#json=VRffPBlMuFBkOlTbGe7IH,0C6yClfLME65ZhmQ30ywdg)
 
 
-1. [fork](https://github.com/vikiboss/60s/fork) 本仓库
+1. [fork](https://github.com/two2025/60s/fork) 本仓库
 2. 打开 [workers.cloudflare.com](https://workers.cloudflare.com/)
 3. 按照引导，通过 fork 的仓库创建 Workers 项目，使用默认配置直接部署即可
 4. （可选）绑定自己的域名，或者使用 Cloudflare 提供的免费域名
@@ -144,16 +156,14 @@ npm install && npx wrangler publish
 ### 💬 交流
 
 - **QQ 群**: [![加入群聊](https://img.shields.io/badge/%E4%BC%81%E9%B5%9D%E7%BE%A4-595941841-ff69b4)](https://qm.qq.com/q/RpJXzgfAMG) (问题反馈、使用交流)
-- **GitHub**: [Issues](https://github.com/vikiboss/60s/issues) (Bug 报告、功能建议)
-- **文档**: [API 文档](https://docs.60s-api.viki.moe) (详细使用说明)
+- **GitHub**: [Issues](https://github.com/two2025/60s/issues) (Bug 报告、功能建议)
+- **文档**: [API 文档](https://docs.cccccc.life) (详细使用说明)
 
 ### 🎯 项目起源
 
 本项目最早源于 [这篇文章](https://xlog.viki.moe/60s) 中提到的想法。
 
-### 📈 项目 Star 历史
 
-[![Star History Chart](https://api.star-history.com/svg?repos=vikiboss/60s&type=Date)](https://star-history.com/#vikiboss/60s&Date)
 
 ## 💰 赞赏项目
 

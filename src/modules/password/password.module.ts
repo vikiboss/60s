@@ -100,6 +100,9 @@ class ServicePassword {
         case 'text':
           ctx.response.body = result.password
           break
+        case 'markdown':
+          ctx.response.body = this.formatPasswordAsMarkdown(result)
+          break
         case 'json':
         default:
           ctx.response.body = Common.buildJson(result)
@@ -113,7 +116,7 @@ class ServicePassword {
       const password = await Common.getParam('password', ctx.request)
 
       if (!password) {
-        Common.requireArguments(['password'], ctx)
+        Common.requireArguments(['password'], ctx.response)
         return
       }
 
@@ -126,12 +129,15 @@ class ServicePassword {
       const result = this.checkPasswordStrength(password)
 
       switch (ctx.state.encoding) {
+        case 'text':
+          ctx.response.body = this.formatStrengthAsText(result)
+          break
+        case 'markdown':
+          ctx.response.body = this.formatStrengthAsMarkdown(result)
+          break
         case 'json':
         default:
           ctx.response.body = Common.buildJson(result)
-          break
-        case 'text':
-          ctx.response.body = this.formatStrengthAsText(result)
           break
       }
     }
@@ -612,6 +618,95 @@ ${recommendations}
 🔒 安全提示:
 ${tips}
     `.trim()
+  }
+
+  private formatPasswordAsMarkdown(result: PasswordResult): string {
+    const usedSets = result.character_sets.used_sets
+      .map((set) => {
+        switch (set) {
+          case 'lowercase':
+            return '小写字母'
+          case 'uppercase':
+            return '大写字母'
+          case 'numbers':
+            return '数字'
+          case 'symbols':
+            return '特殊符号'
+          default:
+            return set
+        }
+      })
+      .join('、')
+
+    return `# 🔐 随机密码生成
+
+## 生成的密码
+
+\`\`\`
+${result.password}
+\`\`\`
+
+## 📊 密码信息
+
+- **长度**: ${result.length} 位
+- **字符类型**: ${usedSets}
+- **熵值**: ${result.generation_info.entropy} bits
+- **强度**: ${result.generation_info.strength}
+
+## ⏱️ 破解时间
+
+${result.generation_info.time_to_crack}
+
+## ⚙️ 生成配置
+
+| 配置项 | 状态 |
+|--------|------|
+| 包含数字 | ${result.config.include_numbers ? '✅' : '❌'} |
+| 包含符号 | ${result.config.include_symbols ? '✅' : '❌'} |
+| 包含小写 | ${result.config.include_lowercase ? '✅' : '❌'} |
+| 包含大写 | ${result.config.include_uppercase ? '✅' : '❌'} |
+| 排除相似字符 | ${result.config.exclude_similar ? '✅' : '❌'} |
+| 排除模糊字符 | ${result.config.exclude_ambiguous ? '✅' : '❌'} |`
+  }
+
+  private formatStrengthAsMarkdown(result: PasswordStrengthResult): string {
+    const recommendations =
+      result.recommendations.length > 0
+        ? result.recommendations.map((r) => `- ${r}`).join('\n')
+        : '- 密码强度已经很好！'
+
+    const tips = result.security_tips.slice(0, 5).map((t) => `- ${t}`).join('\n')
+
+    return `# 🛡️ 密码强度检测
+
+## 检测结果
+
+**评分**: ${result.score}/100 | **强度**: ${result.strength}
+
+**熵值**: ${result.entropy} bits
+
+**破解时间**: ${result.time_to_crack}
+
+## 🔍 字符分析
+
+| 类型 | 状态 |
+|------|------|
+| 小写字母 | ${result.character_analysis.has_lowercase ? '✅' : '❌'} |
+| 大写字母 | ${result.character_analysis.has_uppercase ? '✅' : '❌'} |
+| 数字 | ${result.character_analysis.has_numbers ? '✅' : '❌'} |
+| 特殊符号 | ${result.character_analysis.has_symbols ? '✅' : '❌'} |
+| 重复字符 | ${result.character_analysis.has_repeated ? '⚠️ 有' : '✅ 无'} |
+| 连续字符 | ${result.character_analysis.has_sequential ? '⚠️ 有' : '✅ 无'} |
+
+**字符种类数**: ${result.character_analysis.character_variety}
+
+## 📝 改进建议
+
+${recommendations}
+
+## 🔒 安全提示
+
+${tips}`
   }
 }
 

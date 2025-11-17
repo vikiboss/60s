@@ -237,6 +237,11 @@ class ServiceWeather {
           case 'text':
             ctx.response.body = this.formatWeatherText(result)
             break
+
+          case 'markdown':
+            ctx.response.body = this.formatWeatherMarkdown(result)
+            break
+
           case 'json':
           default:
             ctx.response.body = Common.buildJson(result)
@@ -317,6 +322,11 @@ class ServiceWeather {
           case 'text':
             ctx.response.body = this.formatForecastText(result)
             break
+
+          case 'markdown':
+            ctx.response.body = this.formatForecastMarkdown(result)
+            break
+
           case 'json':
           default:
             ctx.response.body = Common.buildJson(result)
@@ -580,6 +590,68 @@ class ServiceWeather {
     }
 
     return lines.join('\n')
+  }
+
+  private formatWeatherMarkdown(result: any): string {
+    const sections: string[] = []
+
+    // Header
+    sections.push(`# 🌤️ ${result.location.name} 天气`)
+
+    // Current weather
+    const w = result.weather
+    sections.push(`## 当前天气\n\n**${w.condition}** ${w.temperature}°C\n\n- 💧 **湿度**: ${w.humidity}%\n- 🌬️ **风向风力**: ${w.wind_direction} ${w.wind_power}\n- 🌡️ **气压**: ${w.pressure}hPa\n- 🌧️ **降水量**: ${w.precipitation}mm\n\n*更新时间: ${w.updated}*`)
+
+    // Air quality
+    if (result.air_quality) {
+      const aq = result.air_quality
+      const aqiEmoji = aq.aqi <= 50 ? '😊' : aq.aqi <= 100 ? '😐' : aq.aqi <= 150 ? '😟' : aq.aqi <= 200 ? '😷' : '🤢'
+      sections.push(`## 空气质量 ${aqiEmoji}\n\n**${aq.quality}** AQI: **${aq.aqi}** (全国排名 ${aq.rank}/${aq.total_cities})\n\n| 指标 | 数值 |\n|------|------|\n| PM2.5 | ${aq.pm25} μg/m³ |\n| PM10 | ${aq.pm10} μg/m³ |\n| NO₂ | ${aq.no2} μg/m³ |\n| SO₂ | ${aq.so2} μg/m³ |\n| O₃ | ${aq.o3} μg/m³ |\n| CO | ${aq.co} mg/m³ |\n\n*更新时间: ${aq.updated}*`)
+    }
+
+    // Sunrise/sunset
+    if (result.sunrise) {
+      sections.push(`## 日出日落 🌅\n\n- 🌄 **日出**: ${result.sunrise.sunrise_desc}\n- 🌆 **日落**: ${result.sunrise.sunset_desc}`)
+    }
+
+    // Life indices
+    if (result.life_indices && result.life_indices.length > 0) {
+      sections.push(`## 生活指数\n\n${result.life_indices.map((idx: any) => `### ${idx.name}\n\n**${idx.level}**\n\n${idx.description}`).join('\n\n')}`)
+    }
+
+    // Alerts
+    if (result.alerts && result.alerts.length > 0) {
+      sections.push(`## ⚠️ 预警信息\n\n${result.alerts.map((alert: any) => `### ${alert.type} ${alert.level}\n\n**地区**: ${alert.province} ${alert.city} ${alert.county}\n\n${alert.detail}\n\n*发布时间: ${alert.updated}*`).join('\n\n---\n\n')}`)
+    }
+
+    return sections.join('\n\n')
+  }
+
+  private formatForecastMarkdown(result: any): string {
+    const sections: string[] = []
+
+    // Header
+    sections.push(`# 🔮 ${result.location.name} 天气预报`)
+
+    // Hourly forecast
+    if (result.hourly_forecast && result.hourly_forecast.length > 0) {
+      sections.push(`## 逐小时预报\n\n| 时间 | 天气 | 温度 | 风向风力 |\n|------|------|------|----------|\n${result.hourly_forecast.slice(0, 12).map((hour: any) => `| ${hour.datetime.split(' ')[1].slice(0, 5)} | ${hour.condition} | ${hour.temperature}°C | ${hour.wind_direction}${hour.wind_power} |`).join('\n')}`)
+    }
+
+    // Daily forecast
+    if (result.daily_forecast && result.daily_forecast.length > 0) {
+      sections.push(`## 未来${result.daily_forecast.length}天预报\n\n${result.daily_forecast.map((day: any) => {
+        const aqiEmoji = day.aqi <= 50 ? '😊' : day.aqi <= 100 ? '😐' : day.aqi <= 150 ? '😟' : '😷'
+        return `### ${day.date}\n\n**白天**: ${day.day_condition} | **夜间**: ${day.night_condition}\n\n🌡️ **${day.min_temperature}°C ~ ${day.max_temperature}°C**\n\n- 💨 **白天风力**: ${day.day_wind_direction}${day.day_wind_power}\n- 🌙 **夜间风力**: ${day.night_wind_direction}${day.night_wind_power}\n- ${aqiEmoji} **空气质量**: ${day.air_quality} (AQI ${day.aqi})`
+      }).join('\n\n---\n\n')}`)
+    }
+
+    // Sunrise/sunset table
+    if (result.sunrise_sunset && result.sunrise_sunset.length > 0) {
+      sections.push(`## 日出日落时间\n\n| 日出 🌄 | 日落 🌆 |\n|---------|----------|\n${result.sunrise_sunset.map((day: any) => `| ${day.sunrise_desc} | ${day.sunset_desc} |`).join('\n')}`)
+    }
+
+    return sections.join('\n\n')
   }
 }
 
