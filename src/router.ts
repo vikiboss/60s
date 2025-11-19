@@ -2,6 +2,7 @@ import { Router } from '@oak/oak/router'
 import { Common } from './common.ts'
 
 import { service60s } from './modules/60s.module.ts'
+import { service60sRss } from './modules/60s-rss.module.ts'
 import { serviceAINews } from './modules/ai-news.module.ts'
 import { serviceAnswer } from './modules/answer/answer.module.ts'
 import { serviceAwesomeJs } from './modules/awesome-js/awesome-js.module.ts'
@@ -73,6 +74,7 @@ export const appRouter = new Router({
 
 // === 以下为已发布的正式接口 ===
 appRouter.get('/60s', service60s.handle())
+appRouter.get('/60s/rss', service60sRss.handle())
 appRouter.get('/answer', serviceAnswer.handle())
 appRouter.get('/baike', serviceBaike.handle())
 appRouter.get('/bili', serviceBili.handle())
