@@ -1,5 +1,18 @@
 import { Common, dayjs, TZ_SHANGHAI } from '../common.ts'
+import { SolarDay } from 'tyme4ts'
 import type { RouterMiddleware } from '@oak/oak'
+
+const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六']
+
+function getDayOfWeek(date: string) {
+  const day = new Date(date)
+  return `星期${WEEK_DAYS[day.getDay()]}`
+}
+
+function getLunarDate(date: string) {
+  const [year, month, day] = date.split('-').map(Number)
+  return SolarDay.fromYmd(year, month, day).getLunarDay().toString().replace('农历', '')
+}
 
 interface DailyNewsItem {
   date: string
@@ -42,8 +55,8 @@ class Service60sRss {
   async #fetchLast10Days(): Promise<DailyNewsItem[]> {
     const now = dayjs().tz(TZ_SHANGHAI)
 
-    // Generate date strings for the last 5 days
-    const dates = Array.from({ length: 5 }, (_, i) => now.subtract(i, 'day').format('YYYY-MM-DD'))
+    // Generate date strings for the last 7 days
+    const dates = Array.from({ length: 7 }, (_, i) => now.subtract(i, 'day').format('YYYY-MM-DD'))
 
     // Fetch all dates in parallel
     const results = await Promise.all(
@@ -80,24 +93,77 @@ class Service60sRss {
       .map((item) => {
         const pubDate = dayjs(item.date).tz(TZ_SHANGHAI).format('ddd, DD MMM YYYY 00:00:00 ZZ')
         const link = `https://60s-static.viki.moe?date=${item.date}`
+        const dayOfWeek = getDayOfWeek(item.date)
+        const lunarDate = getLunarDate(item.date)
 
-        // Generate description text (similar to text format)
-        const newsText = item.news
-          .map((e, idx) => {
-            const newsItem = typeof e === 'string' ? e : e.title
-            return `${idx + 1}. ${newsItem}`
+        // Generate HTML content with proper formatting
+        const newsHtml = item.news
+          .map((e) => {
+            const newsItem = typeof e === 'string' ? { title: e, link: '' } : e
+            const newsText = this.#escapeXml(newsItem.title)
+
+            if (newsItem.link) {
+              return `<li><a href="${this.#escapeXml(newsItem.link)}" target="_blank">${newsText}</a></li>`
+            }
+            return `<li>${newsText}</li>`
           })
-          .join('\n')
+          .join('')
 
-        const tipText = item.tip ? `\n\n【微语】${item.tip}` : ''
-        const imageHtml = item.image ? `<br/><br/><img src="${this.#escapeXml(item.image)}" alt="每天 60s 看世界"/>` : ''
+        const tipHtml = item.tip
+          ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
+               <tr>
+                 <td style="padding: 12px 16px; background-color: #f8f9fa; border-left: 4px solid #0066cc;">
+                   <strong style="color: #0066cc; font-size: 14px;">【微语】</strong>
+                   <div style="margin-top: 8px; line-height: 1.6; color: #333; font-size: 14px;">${this.#escapeXml(item.tip)}</div>
+                 </td>
+               </tr>
+             </table>`
+          : ''
+
+        const imageHtml = item.image
+          ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
+               <tr>
+                 <td align="center">
+                   <img src="${this.#escapeXml(item.image)}" alt="每天 60s 看世界" style="max-width: 100%; height: auto; display: block; border: 1px solid #e9ecef;"/>
+                 </td>
+               </tr>
+             </table>`
+          : ''
 
         const description = `<![CDATA[
-<pre>${this.#escapeXml(newsText)}${this.#escapeXml(tipText)}</pre>${imageHtml}
+<table width="100%" cellpadding="0" cellspacing="0" style="font-family: Arial, Helvetica, sans-serif; color: #333; font-size: 14px; line-height: 1.6;">
+  <tr>
+    <td style="padding: 16px;">
+      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px; border-bottom: 2px solid #e9ecef;">
+        <tr>
+          <td style="padding-bottom: 16px;">
+            <h2 style="margin: 0 0 8px 0; font-size: 22px; color: #0066cc; font-weight: bold;">每天 60s 看世界</h2>
+            <div style="color: #6c757d; font-size: 13px;">
+              📅 ${this.#escapeXml(item.date)} ${this.#escapeXml(dayOfWeek)} ${this.#escapeXml(lunarDate)}
+            </div>
+          </td>
+        </tr>
+      </table>
+
+      <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+          <td>
+            <ol style="margin: 0; padding-left: 20px; line-height: 1.8; font-size: 14px;">
+              ${newsHtml}
+            </ol>
+          </td>
+        </tr>
+      </table>
+
+      ${tipHtml}
+      ${imageHtml}
+    </td>
+  </tr>
+</table>
 ]]>`
 
         return `    <item>
-      <title>每天 60s 看世界 - ${item.date}</title>
+      <title>每天 60s 看世界 - ${item.date} ${dayOfWeek} ${lunarDate}</title>
       <link>${this.#escapeXml(link)}</link>
       <guid isPermaLink="true">${this.#escapeXml(link)}</guid>
       <pubDate>${pubDate}</pubDate>
@@ -111,7 +177,7 @@ class Service60sRss {
   <channel>
     <title>每天 60s 看世界</title>
     <link>https://60s-static.viki.moe</link>
-    <description>每天 60 秒读懂世界</description>
+    <description>每天 60 秒，一图一文，读懂世界大事！</description>
     <language>zh-CN</language>
     <lastBuildDate>${buildDate}</lastBuildDate>
     <atom:link href="https://60s-api.viki.moe/v2/60s/rss" rel="self" type="application/rss+xml"/>
