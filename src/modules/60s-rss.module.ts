@@ -155,7 +155,7 @@ class Service60sRss {
 ]]>`
 
         return `    <item>
-      <title>每天 60s 看世界 - ${item.date} ${dayOfWeek}</title>
+      <title>📅 ${item.date} ${dayOfWeek}</title>
       <link>${this.#escapeXml(link)}</link>
       <guid isPermaLink="true">${this.#escapeXml(link)}</guid>
       <pubDate>${pubDate}</pubDate>
