@@ -16,6 +16,8 @@ interface GoldStorePrice {
   brand: string
   product: string
   price: string
+  unit: string
+  formatted: string
   updated: string
   updated_at: number
 }
@@ -24,6 +26,8 @@ interface BankGoldPrice {
   bank: string
   product: string
   price: string
+  unit: string
+  formatted: string
   time: string
   updated: string
   updated_at: number
@@ -32,6 +36,8 @@ interface BankGoldPrice {
 interface RecycleGoldPrice {
   type: string
   price: string
+  unit: string
+  formatted: string
   purity: string
   updated: string
   updated_at: number
@@ -109,7 +115,7 @@ export class GoldPriceService {
     const $ = load(html)
 
     // 清理文本：去除多余的空白字符和换行符
-    const cleanText = (text: string) => text.replace(/\s+/g, ' ').trim()
+    const cleanText = (text: string) => text.replace(/\s+/g, ' ').trim().replace(' 元/克', '元/克')
     const todayDate = dayjs().tz(TZ_SHANGHAI).startOf('day')
 
     // 解析金店今日金价
@@ -121,8 +127,10 @@ export class GoldPriceService {
       if (tds.length >= 4) {
         stores.push({
           brand: cleanText($(tds[0]).text()),
-          product: cleanText($(tds[1]).text()),
-          price: cleanText($(tds[2]).text()),
+          product: cleanText($(tds[1]).text()).replace(/价格/, ''),
+          price: cleanText($(tds[2]).text()).replace('元/克', '').trim(),
+          unit: '元/克',
+          formatted: cleanText($(tds[2]).text()),
           updated: todayDate.format('YYYY-MM-DD'),
           updated_at: todayDate.valueOf(),
         })
@@ -144,8 +152,10 @@ export class GoldPriceService {
 
         banks.push({
           bank: cleanText($(tds[0]).text()),
-          product: cleanText($(tds[1]).text()),
-          price: cleanText($(tds[2]).text()),
+          product: cleanText($(tds[1]).text()).replace(/价格/, ''),
+          price: cleanText($(tds[2]).text()).replace('元/克', '').trim(),
+          unit: '元/克',
+          formatted: cleanText($(tds[2]).text()),
           time,
           updated: bankTime.format('YYYY-MM-DD HH:mm:ss'),
           updated_at: bankTime.valueOf(),
@@ -163,7 +173,9 @@ export class GoldPriceService {
       if (tds.length >= 4) {
         recycle.push({
           type: cleanText($(tds[0]).text()).replace(/价格/, ''),
-          price: cleanText($(tds[1]).text()),
+          price: cleanText($(tds[1]).text()).replace('元/克', '').trim(),
+          unit: '元/克',
+          formatted: cleanText($(tds[1]).text()),
           purity: cleanText($(tds[2]).text()),
           updated: todayDate.format('YYYY-MM-DD'),
           updated_at: todayDate.valueOf(),
