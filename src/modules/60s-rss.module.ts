@@ -110,60 +110,52 @@ class Service60sRss {
           .join('')
 
         const tipHtml = item.tip
-          ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
-               <tr>
-                 <td style="padding: 12px 16px; background-color: #f8f9fa; border-left: 4px solid #0066cc;">
-                   <strong style="color: #0066cc; font-size: 14px;">【微语】</strong>
-                   <div style="margin-top: 8px; line-height: 1.6; color: #333; font-size: 14px;">${this.#escapeXml(item.tip)}</div>
-                 </td>
-               </tr>
-             </table>`
+          ? `<div style="margin: 24px 20px; padding: 16px 20px; background-color: #f8f9fa; border-left: 4px solid #0066cc; border-radius: 4px;">
+               <div style="color: #0066cc; font-weight: 600; font-size: 14px; margin-bottom: 8px;">💬 微语</div>
+               <div style="line-height: 1.7; color: #555; font-size: 14px; font-style: italic;">${this.#escapeXml(item.tip)}</div>
+             </div>`
           : ''
 
         const imageHtml = item.image
-          ? `<table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 20px;">
-               <tr>
-                 <td align="center">
-                   <img src="${this.#escapeXml(item.image)}" alt="每天 60s 看世界" style="max-width: 100%; height: auto; display: block; border: 1px solid #e9ecef;"/>
-                 </td>
-               </tr>
-             </table>`
+          ? `<div style="margin: 24px 20px; text-align: center;">
+               <img src="${this.#escapeXml(item.image)}" alt="每天 60s 看世界" style="max-width: 100%; height: auto; border: 1px solid #e9ecef; border-radius: 6px;"/>
+             </div>`
           : ''
 
         const description = `<![CDATA[
-<table width="100%" cellpadding="0" cellspacing="0" style="font-family: Arial, Helvetica, sans-serif; color: #333; font-size: 14px; line-height: 1.6;">
-  <tr>
-    <td style="padding: 16px;">
-      <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 20px; border-bottom: 2px solid #e9ecef;">
-        <tr>
-          <td style="padding-bottom: 16px;">
-            <h2 style="margin: 0 0 8px 0; font-size: 22px; color: #0066cc; font-weight: bold;">每天 60s 看世界</h2>
-            <div style="color: #6c757d; font-size: 13px;">
-              📅 ${this.#escapeXml(item.date)} ${this.#escapeXml(dayOfWeek)} ${this.#escapeXml(lunarDate)}
-            </div>
-          </td>
-        </tr>
-      </table>
+<div style="max-width: 800px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #333; font-size: 15px; line-height: 1.7;">
 
-      <table width="100%" cellpadding="0" cellspacing="0">
-        <tr>
-          <td>
-            <ol style="margin: 0; padding-left: 20px; line-height: 1.8; font-size: 14px;">
-              ${newsHtml}
-            </ol>
-          </td>
-        </tr>
-      </table>
+  <div style="padding: 20px; border-bottom: 3px solid #0066cc; margin-bottom: 24px;">
+    <h2 style="margin: 0 0 12px 0; font-size: 24px; color: #0066cc; font-weight: 600;">每天 60s 看世界</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 8px 16px; color: #6c757d; font-size: 14px;">
+      <div style="display: flex; align-items: center;">
+        <span style="margin-right: 6px;">📅</span>
+        <span>${this.#escapeXml(item.date)}</span>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <span style="margin-right: 6px;">🗓️</span>
+        <span>${this.#escapeXml(dayOfWeek)}</span>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <span style="margin-right: 6px;">🌙</span>
+        <span>${this.#escapeXml(lunarDate)}</span>
+      </div>
+    </div>
+  </div>
 
-      ${tipHtml}
-      ${imageHtml}
-    </td>
-  </tr>
-</table>
+  <div style="padding: 0 20px;">
+    <ol style="margin: 0; padding-left: 24px; line-height: 2; font-size: 15px; counter-reset: item;">
+      ${newsHtml}
+    </ol>
+  </div>
+
+  ${tipHtml}
+  ${imageHtml}
+</div>
 ]]>`
 
         return `    <item>
-      <title>每天 60s 看世界 - ${item.date} ${dayOfWeek} ${lunarDate}</title>
+      <title>每天 60s 看世界 - ${item.date} ${dayOfWeek}</title>
       <link>${this.#escapeXml(link)}</link>
       <guid isPermaLink="true">${this.#escapeXml(link)}</guid>
       <pubDate>${pubDate}</pubDate>
