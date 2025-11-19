@@ -4,6 +4,7 @@
     "lib": ["esnext", "dom"],
     "target": "esnext",
     "module": "esnext",
+    "skipLibCheck": true,
     "noEmit": true,
     "noImplicitAny": false,
     "moduleResolution": "bundler",

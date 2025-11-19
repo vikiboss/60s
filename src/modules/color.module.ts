@@ -58,7 +58,7 @@ class ServiceColor {
           ctx.response.body = this.formatColorAsText(data)
           break
         case 'markdown':
-          ctx.response.body = `# 🎨 颜色信息\n\n## ${data.name}\n\n<div style="background: ${data.hex}; width: 100%; height: 100px; border-radius: 8px;"></div>\n\n**HEX**: ${data.hex}\n\n**RGB**: rgb(${data.rgb.r}, ${data.rgb.g}, ${data.rgb.b})\n\n**HSL**: hsl(${data.hsl.h}°, ${data.hsl.s}%, ${data.hsl.l}%)\n\n**CMYK**: cmyk(${data.cmyk.c}%, ${data.cmyk.m}%, ${data.cmyk.y}%, ${data.cmyk.k}%)\n\n### 互补色\n\n**${data.complementary.name}** - ${data.complementary.hex}`
+          ctx.response.body = `# 🎨 颜色信息\n\n## ${data.name}\n\n<div style="background: ${data.hex}; width: 100%; height: 100px; border-radius: 8px;"></div>\n\n**HEX**: ${data.hex}\n\n**RGB**: rgb(${data.rgb.r}, ${data.rgb.g}, ${data.rgb.b})\n\n**HSL**: hsl(${data.hsl.h}°, ${data.hsl.s}%, ${data.hsl.l}%)\n\n**CMYK**: cmyk(${data.cmyk.c}%, ${data.cmyk.m}%, ${data.cmyk.y}%, ${data.cmyk.k}%)\n\n### 互补色\n\n**${data.complementary}** - ${data.complementary}`
           break
         case 'html':
           ctx.response.headers.set('Content-Type', 'text/html; charset=utf-8')

@@ -34,7 +34,9 @@ class Service60s {
                 ? `${idx + 1}. [${newsItem.title}](${newsItem.link})`
                 : `${idx + 1}. ${newsItem.title}`
             })
-            .join('\n')}\n\n${data.tip ? `---\n\n**【微语】** *${data.tip}*` : ''}${data.image ? `\n\n![每天 60s 读懂世界](${data.image})` : ''}`
+            .join(
+              '\n',
+            )}\n\n${data.tip ? `---\n\n**【微语】** *${data.tip}*` : ''}${data.image ? `\n\n![每天 60s 读懂世界](${data.image})` : ''}`
           break
         }
 
@@ -132,19 +134,16 @@ export const service60s = new Service60s()
 
 interface DailyNewsItem {
   date: string
-  week: string
   news: {
     title: string
     link: string
   }[]
-  audio: {
-    news: string
-    music: string
-  }
   cover: string
   tip: string
   image: string
   link: string
+  day_of_week: string
+  lunar_date: string
   updated: string
   updated_at: number
   api_updated: string
