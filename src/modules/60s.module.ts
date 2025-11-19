@@ -20,21 +20,21 @@ class Service60s {
 
       switch (ctx.state.encoding) {
         case 'text': {
-          ctx.response.body = `每天 60s 看世界（${data.date}）\n\n${data.news
+          ctx.response.body = `每天 60s 读懂世界（${data.date}）\n\n${data.news
             .map((e, idx) => `${idx + 1}. ${e}`)
             .join('\n')}\n\n${data.tip ? `【微语】${data.tip}` : ''}`
           break
         }
 
         case 'markdown': {
-          ctx.response.body = `# 每天 60s 看世界\n\n> ${data.date} ${data.day_of_week} ${data.lunar_date}\n\n${data.news
+          ctx.response.body = `# 每天 60s 读懂世界\n\n> ${data.date} ${data.day_of_week} ${data.lunar_date}\n\n${data.news
             .map((e, idx) => {
               const newsItem = typeof e === 'string' ? { title: e, link: '' } : e
               return newsItem.link
                 ? `${idx + 1}. [${newsItem.title}](${newsItem.link})`
                 : `${idx + 1}. ${newsItem.title}`
             })
-            .join('\n')}\n\n${data.tip ? `---\n\n**【微语】** *${data.tip}*` : ''}${data.image ? `\n\n![每天60s看世界](${data.image})` : ''}`
+            .join('\n')}\n\n${data.tip ? `---\n\n**【微语】** *${data.tip}*` : ''}${data.image ? `\n\n![每天 60s 读懂世界](${data.image})` : ''}`
           break
         }
 

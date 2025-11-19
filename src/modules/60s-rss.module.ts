@@ -118,7 +118,7 @@ class Service60sRss {
 
         const imageHtml = item.image
           ? `<div style="margin: 24px 20px; text-align: center;">
-               <img src="${this.#escapeXml(item.image)}" alt="每天 60s 看世界" style="max-width: 100%; height: auto; border: 1px solid #e9ecef; border-radius: 6px;"/>
+               <img src="${this.#escapeXml(item.image)}" alt="每天 60s 读懂世界" style="max-width: 100%; height: auto; border: 1px solid #e9ecef; border-radius: 6px;"/>
              </div>`
           : ''
 
@@ -138,7 +138,7 @@ class Service60sRss {
   ${tipHtml}
 
   <div style="padding: 0 20px;">
-    图片版本如下，可以复制并分享给你的好朋友，欢迎访问 <a href="https://60s-static.viki.moe?date=${this.#escapeXml(item.date)}" target="_blank">每天 60s 看世界</a> 获取更多信息。本 RSS 订阅由开源项目 <a href="https://github.com/vikiboss/60s" target="_blank">vikiboss/60s</a> 提供数据支持。
+    图片版本如下，可以复制并分享给你的好朋友，欢迎访问 <a href="https://60s-static.viki.moe?date=${this.#escapeXml(item.date)}" target="_blank">每天 60s 读懂世界</a> 获取更多信息。本 RSS 订阅由开源项目 <a href="https://github.com/vikiboss/60s" target="_blank">vikiboss/60s</a> 提供数据支持。
   </div>
 
   ${imageHtml}
@@ -158,7 +158,7 @@ class Service60sRss {
     return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>每天 60s 看世界</title>
+    <title>每天 60s 读懂世界</title>
     <link>https://60s-static.viki.moe</link>
     <description>每天 60 秒，一图一文，读懂世界大事！</description>
     <language>zh-CN</language>
@@ -166,7 +166,7 @@ class Service60sRss {
     <atom:link href="https://60s-api.viki.moe/v2/60s/rss" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://60s-static.viki.moe/favicon.ico</url>
-      <title>每天 60s 看世界</title>
+      <title>每天 60s 读懂世界</title>
       <link>https://60s-static.viki.moe</link>
     </image>
 ${itemsXml}
