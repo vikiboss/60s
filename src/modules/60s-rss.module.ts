@@ -125,8 +125,8 @@ class Service60sRss {
         const description = `<![CDATA[
 <div style="max-width: 800px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #333; font-size: 15px; line-height: 1.7;">
 
-  <div style="padding: 0 20px; color: #6c757d; font-size: 14px;">
-    今天是 ${this.#escapeXml(dayjs(item.date).tz(TZ_SHANGHAI).format('YYYY年M月D日'))}，${this.#escapeXml(dayOfWeek)}，农历${this.#escapeXml(lunarDate)}，今日要闻如下：
+  <div style="padding: 0 20px; margin: 20px auto; color: #6c757d; font-size: 14px;">
+    早上好，今天是 ${this.#escapeXml(dayjs(item.date).tz(TZ_SHANGHAI).format('YYYY年M月D日'))}，${this.#escapeXml(dayOfWeek)}，农历${this.#escapeXml(lunarDate)}，今日要闻如下：
   </div>
 
   <div style="padding: 0 20px;">
@@ -137,21 +137,11 @@ class Service60sRss {
 
   ${tipHtml}
 
-  <div style="height: 1px; background-color: #e9ecef; margin: 24px 0;"></div>
-
   <div style="padding: 0 20px;">
-    欢迎访问 <a href="https://60s-static.viki.moe?date=${this.#escapeXml(item.date)}" target="_blank">每天 60s 看世界</a> 获取更多信息。
-  </div>
-
-  <div style="padding: 0 20px; margin-top: 12px; color: #6c757d; font-size: 12px;">
-    图片版本如下，可以复制并分享给你的好朋友：
+    图片版本如下，可以复制并分享给你的好朋友。欢迎访问 <a href="https://60s-static.viki.moe?date=${this.#escapeXml(item.date)}" target="_blank">每天 60s 看世界</a> 获取更多信息。本 RSS 订阅由开源项目 <a href="https://github.com/vikiboss/60s" target="_blank">60s</a> 提供数据支持。
   </div>
 
   ${imageHtml}
-
-  <div style="padding: 0 20px; margin-top: 12px; color: #6c757d; font-size: 12px;">
-    本 RSS 订阅由开源项目 <a href="https://github.com/vikiboss/60s" target="_blank">60s</a> 提供数据支持。
-  </div>
 </div>
 ]]>`
 
