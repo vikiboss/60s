@@ -96,54 +96,30 @@ class Service60sRss {
         const dayOfWeek = getDayOfWeek(item.date)
         const lunarDate = getLunarDate(item.date)
 
-        // Generate HTML content with proper formatting
-        const newsHtml = item.news
-          .map((e) => {
+        // Build content as plain text for better dark mode compatibility
+        const newsText = item.news
+          .map((e, index) => {
             const newsItem = typeof e === 'string' ? { title: e, link: '' } : e
-            const newsText = this.#escapeXml(newsItem.title)
+            const text = `${index + 1}. ${newsItem.title}`
 
             if (newsItem.link) {
-              return `<li><a href="${this.#escapeXml(newsItem.link)}" target="_blank">${newsText}</a></li>`
+              return `${text}\n   🔗 ${newsItem.link}`
             }
-            return `<li>${newsText}</li>`
+            return text
           })
-          .join('')
+          .join('\n\n')
 
-        const tipHtml = item.tip
-          ? `<div style="margin: 24px 20px; padding: 16px 20px; background-color: #f8f9fa; border-left: 4px solid #0066cc; border-radius: 4px;">
-               <div style="color: #0066cc; font-weight: 600; font-size: 14px; margin-bottom: 8px;">💬 微语</div>
-               <div style="line-height: 1.7; color: #555; font-size: 14px; font-style: italic;">${this.#escapeXml(item.tip)}</div>
-             </div>`
-          : ''
+        const tipText = item.tip ? `\n\n💬 微语\n${item.tip}` : ''
 
-        const imageHtml = item.image
-          ? `<div style="margin: 24px 20px; text-align: center;">
-               <img src="${this.#escapeXml(item.image)}" alt="每天 60s 读懂世界" style="max-width: 100%; height: auto; border: 1px solid #e9ecef; border-radius: 6px;"/>
-             </div>`
-          : ''
+        const imageText = item.image ? `\n\n📷 图片版本\n${item.image}` : ''
 
-        const description = `<![CDATA[
-<div style="max-width: 800px; margin: 0 auto; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; color: #333; font-size: 15px; line-height: 1.7;">
+        const footerText = `\n\n---\n图片版本可以复制并分享给你的好朋友。\n\n🔗 访问 https://60s-static.viki.moe?date=${item.date} 获取更多信息\n📦 本 RSS 订阅由开源项目 vikiboss/60s 提供数据支持\n   https://github.com/vikiboss/60s`
 
-  <div style="padding: 0 20px; margin: 20px auto; color: #6c757d; font-size: 14px;">
-    早上好，今天是 ${this.#escapeXml(dayjs(item.date).tz(TZ_SHANGHAI).format('YYYY年M月D日'))}，${this.#escapeXml(dayOfWeek)}，农历${this.#escapeXml(lunarDate)}。
-  </div>
+        const description = `<![CDATA[<pre style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; white-space: pre-wrap; word-wrap: break-word;">早上好，今天是 ${this.#escapeXml(
+          dayjs(item.date).tz(TZ_SHANGHAI).format('YYYY年M月D日'),
+        )}，${this.#escapeXml(dayOfWeek)}，农历${this.#escapeXml(lunarDate)}。
 
-  <div style="padding: 0 20px;">
-    <ol style="margin: 0; padding-left: 24px; line-height: 2; font-size: 15px; counter-reset: item;">
-      ${newsHtml}
-    </ol>
-  </div>
-
-  ${tipHtml}
-
-  <div style="padding: 0 20px;">
-    图片版本如下，可以复制并分享给你的好朋友，欢迎访问 <a href="https://60s-static.viki.moe?date=${this.#escapeXml(item.date)}" target="_blank">每天 60s 读懂世界</a> 获取更多信息。本 RSS 订阅由开源项目 <a href="https://github.com/vikiboss/60s" target="_blank">vikiboss/60s</a> 提供数据支持。
-  </div>
-
-  ${imageHtml}
-</div>
-]]>`
+${this.#escapeXml(newsText)}${this.#escapeXml(tipText)}${this.#escapeXml(imageText)}${this.#escapeXml(footerText)}</pre>]]>`
 
         return `    <item>
       <title>📅 ${item.date} ${dayOfWeek}</title>
