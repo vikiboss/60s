@@ -96,30 +96,36 @@ class Service60sRss {
         const dayOfWeek = getDayOfWeek(item.date)
         const lunarDate = getLunarDate(item.date)
 
-        // Build content as plain text for better dark mode compatibility
-        const newsText = item.news
+        // Build content with standard HTML elements
+        const newsHtml = item.news
           .map((e, index) => {
             const newsItem = typeof e === 'string' ? { title: e, link: '' } : e
-            const text = `${index + 1}. ${newsItem.title}`
+            const text = `${index + 1}. ${this.#escapeXml(newsItem.title)}`
 
             if (newsItem.link) {
-              return `${text}\n   🔗 ${newsItem.link}`
+              return `<p>${text}<br/><a href="${this.#escapeXml(newsItem.link)}" target="_blank">🔗 ${this.#escapeXml(newsItem.link)}</a></p>`
             }
-            return text
+            return `<p>${text}</p>`
           })
-          .join('\n\n')
+          .join('\n')
 
-        const tipText = item.tip ? `\n\n💬 微语\n${item.tip}` : ''
+        const tipHtml = item.tip
+          ? `<h3>💬 微语</h3><p>${this.#escapeXml(item.tip)}</p>`
+          : ''
 
-        const imageText = item.image ? `\n\n📷 图片版本\n${item.image}` : ''
+        const imageHtml = item.image
+          ? `<h3>📷 图片版本</h3><img src="${this.#escapeXml(item.image)}" alt="每天 60s 读懂世界" style="max-width: 100%; height: auto;"/>`
+          : ''
 
-        const footerText = `\n\n---\n图片版本可以复制并分享给你的好朋友。\n\n🔗 访问 https://60s-static.viki.moe?date=${item.date} 获取更多信息\n📦 本 RSS 订阅由开源项目 vikiboss/60s 提供数据支持\n   https://github.com/vikiboss/60s`
+        const footerHtml = `<hr/><p>图片版本可以复制并分享给你的好朋友。访问 <a href="https://60s-static.viki.moe?date=${item.date}" target="_blank">项目页面</a> 获取更多信息。本 RSS 订阅由开源项目 <a href="https://github.com/vikiboss/60s" target="_blank">vikiboss/60s</a> 提供数据支持。</p>`
 
-        const description = `<![CDATA[<pre style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; white-space: pre-wrap; word-wrap: break-word;">早上好，今天是 ${this.#escapeXml(
-          dayjs(item.date).tz(TZ_SHANGHAI).format('YYYY年M月D日'),
-        )}，${this.#escapeXml(dayOfWeek)}，农历${this.#escapeXml(lunarDate)}。
-
-${this.#escapeXml(newsText)}${this.#escapeXml(tipText)}${this.#escapeXml(imageText)}${this.#escapeXml(footerText)}</pre>]]>`
+        const description = `<![CDATA[
+<p>早上好，今天是 ${this.#escapeXml(dayjs(item.date).tz(TZ_SHANGHAI).format('YYYY年M月D日'))}，${this.#escapeXml(dayOfWeek)}，农历${this.#escapeXml(lunarDate)}。</p>
+${newsHtml}
+${tipHtml}
+${imageHtml}
+${footerHtml}
+]]>`
 
         return `    <item>
       <title>📅 ${item.date} ${dayOfWeek}</title>
