@@ -66,15 +66,62 @@ class ServiceOG {
       ogDescriptionPattern.exec(html),
     ]
 
-    const title = titleMatch?.groups?.title || ''
-    const image = imageMatch?.groups?.image || ''
-    const description = descriptionMatch?.groups?.description || ''
+    const title = this.decodeHtmlEntities(titleMatch?.groups?.title || '')
+    const image = this.decodeHtmlEntities(imageMatch?.groups?.image || '')
+    const description = this.decodeHtmlEntities(descriptionMatch?.groups?.description || '')
 
     return {
       title,
       image,
       description,
     }
+  }
+
+  decodeHtmlEntities(text: string): string {
+    const entities: Record<string, string> = {
+      '&nbsp;': ' ',
+      '&amp;': '&',
+      '&lt;': '<',
+      '&gt;': '>',
+      '&quot;': '"',
+      '&#39;': "'",
+      '&apos;': "'",
+      '&cent;': '¢',
+      '&pound;': '£',
+      '&yen;': '¥',
+      '&euro;': '€',
+      '&copy;': '©',
+      '&reg;': '®',
+      '&sol;': '/',
+      '&quest;': '?',
+      '&equals;': '=',
+      '&num;': '#',
+      '&percnt;': '%',
+      '&plus;': '+',
+      '&colon;': ':',
+      '&semi;': ';',
+    }
+
+    return text.replace(/&[a-z0-9]+;|&#[0-9]+;|&#x[0-9a-f]+;/gi, (match) => {
+      // Named entities
+      if (entities[match.toLowerCase()]) {
+        return entities[match.toLowerCase()]
+      }
+
+      // Decimal numeric entities (&#123;)
+      if (match.startsWith('&#') && !match.startsWith('&#x')) {
+        const code = parseInt(match.slice(2, -1), 10)
+        return isNaN(code) ? match : String.fromCharCode(code)
+      }
+
+      // Hexadecimal numeric entities (&#x7B;)
+      if (match.startsWith('&#x')) {
+        const code = parseInt(match.slice(3, -1), 16)
+        return isNaN(code) ? match : String.fromCharCode(code)
+      }
+
+      return match
+    })
   }
 }
 
