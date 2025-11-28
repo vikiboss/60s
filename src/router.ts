@@ -46,6 +46,7 @@ import { serviceLyric } from './modules/lyric.module.ts'
 import { serviceMoyu } from './modules/moyu.module.ts'
 import { serviceFuelPrice } from './modules/fuel-price/fuel-price.module.ts'
 import { GoldPriceService } from './modules/gold-price.module.ts'
+import { serviceQuark } from './modules/quark.module.ts'
 
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
@@ -102,6 +103,7 @@ appRouter.get('/dad-joke', serviceDadJoke.handle())
 appRouter.get('/rednote', serviceRednote.handle())
 appRouter.get('/dongchedi', serviceDongchedi.handle())
 appRouter.get('/moyu', serviceMoyu.handle())
+appRouter.get('/quark', serviceQuark.handle())
 
 appRouter.get('/health', serviceHealth.handle())
 appRouter.get('/password', servicePassword.handle())
