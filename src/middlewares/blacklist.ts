@@ -2,13 +2,13 @@ import { Common } from '../common.ts'
 
 import type { Middleware } from '@oak/oak'
 
-const blacklist: string[] = process.env.BLACKLIST_IPS ? JSON.parse(process.env.BLACKLIST_IPS) : []
+const list: string[] = process.env.BLACKLIST_IPS ? JSON.parse(process.env.BLACKLIST_IPS) : []
 
-export function debug(): Middleware {
+export function blacklist(): Middleware {
   return async (ctx, next) => {
     const ip = ctx.request.ip
 
-    if (ip && blacklist.includes(ip)) {
+    if (ip && list.includes(ip)) {
       ctx.response.status = 403
       ctx.response.body = Common.buildJson(
         null,
