@@ -2,7 +2,7 @@ import { Common } from '../common.ts'
 
 import type { Middleware } from '@oak/oak'
 
-const blacklist: string[] = []
+const blacklist: string[] = process.env.BLACKLIST_IPS ? JSON.parse(process.env.BLACKLIST_IPS) : []
 
 export function debug(): Middleware {
   return async (ctx, next) => {
