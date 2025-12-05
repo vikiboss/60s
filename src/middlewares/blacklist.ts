@@ -16,6 +16,8 @@ export function debug(): Middleware {
         `由于滥用等原因，该 IP (${ip}) 已被禁止，如有疑问请联系 Viki <hi@viki.moe>`,
       )
 
+      console.log(`[BLACKLIST] Blocked request from IP: ${ip}`)
+
       return
     }
 
