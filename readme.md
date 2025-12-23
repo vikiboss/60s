@@ -187,7 +187,7 @@ npm install && npx wrangler publish
 |             *斌             | 12.90  | Alipay |                   -                    |
 |             *杰             | 20.00  | Alipay |                   -                    |
 |            **杰             |  9.90  | Alipay |                   -                    |
-|             *瑞             | 666.66 | Alipay |               100 杯咖啡                |
+|             *瑞             | 666.66 | Alipay |               100 杯咖啡               |
 |             ---             |  ---   |  ---   |                  ---                   |
 |             Ko.             | 11.66  |   QQ   |                   -                    |
 |           yijiong           | 15.00  |   QQ   |            a cup of coffee             |
