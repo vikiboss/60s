@@ -1,36 +1,31 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceKfc {
   private lastFetchTime = 0
   private cacheDuration = 1 * 24 * 60 * 60 * 1000 // 缓存 1 天
   private cache: string[] = []
 
-  handle(): RouterMiddleware<'/kfc'> {
-    return async (ctx) => {
-      const list = await this.#fetch()
-      const result = Common.randomItem(list)
+  async handle(ctx: AppContext) {
+    const list = await this.#fetch()
+    const result = Common.randomItem(list)
 
-      switch (ctx.state.encoding) {
-        case 'text': {
-          ctx.response.body = result
-          break
-        }
+    switch (ctx.encoding) {
+      case 'text': {
+        return result
+      }
 
-        case 'markdown': {
-          ctx.response.body = `# 🍗 疯狂星期四文案\n\n${result}\n\n---\n\n*v50 文案第 ${list.findIndex((item: string) => item === result) + 1} 条*`
-          break
-        }
+      case 'markdown': {
+        return `# 🍗 疯狂星期四文案\n\n${result}\n\n---\n\n*v50 文案第 ${list.findIndex((item: string) => item === result) + 1} 条*`
+      }
 
-        case 'json':
-        default: {
-          ctx.response.body = Common.buildJson({
-            index: list.findIndex((item: string) => item === result),
-            kfc: result,
-          })
-          break
-        }
+      case 'json':
+      default: {
+        return Common.buildJson({
+          index: list.findIndex((item: string) => item === result),
+          kfc: result,
+        })
       }
     }
   }

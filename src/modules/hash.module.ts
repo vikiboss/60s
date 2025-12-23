@@ -3,63 +3,58 @@ import crypto from 'node:crypto'
 import { Buffer } from 'node:buffer'
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceHash {
-  handle(): RouterMiddleware<'/hash'> {
-    return async (ctx) => {
-      const content = await Common.getParam('content', ctx.request, true)
+  async handle(ctx: AppContext) {
+    const content = await Common.getParam('content', ctx, true)
 
-      if (!content) {
-        return Common.requireArguments('content', ctx.response)
-      }
+    if (!content) {
+      return Common.requireArguments('content')
+    }
 
-      const data = {
-        source: content,
-        md5: Common.md5(content, 'hex'),
-        sha: {
-          sha1: this.sha1(content),
-          sha256: this.sha256(content),
-          sha512: this.sha512(content),
-        },
-        base64: {
-          encoded: this.base64Encode(content),
-          decoded: this.base64Decode(content),
-        },
-        url: {
-          encoded: this.urlEncode(content),
-          decoded: this.urlDecode(content),
-        },
-        gzip: {
-          encoded: this.gzipEncode(content),
-          decoded: this.gzipDecode(content),
-        },
-        deflate: {
-          encoded: this.deflateEncode(content),
-          decoded: this.deflateDecode(content),
-        },
-        brotli: {
-          encoded: this.brotliEncode(content),
-          decoded: this.brotliDecode(content),
-        },
-      }
+    const data = {
+      source: content,
+      md5: Common.md5(content, 'hex'),
+      sha: {
+        sha1: this.sha1(content),
+        sha256: this.sha256(content),
+        sha512: this.sha512(content),
+      },
+      base64: {
+        encoded: this.base64Encode(content),
+        decoded: this.base64Decode(content),
+      },
+      url: {
+        encoded: this.urlEncode(content),
+        decoded: this.urlDecode(content),
+      },
+      gzip: {
+        encoded: this.gzipEncode(content),
+        decoded: this.gzipDecode(content),
+      },
+      deflate: {
+        encoded: this.deflateEncode(content),
+        decoded: this.deflateDecode(content),
+      },
+      brotli: {
+        encoded: this.brotliEncode(content),
+        decoded: this.brotliDecode(content),
+      },
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `Hash 等编码转换结果\n\n${Object.entries(data)
-            .map((e) => `${e[0]} => ${e[1]}`)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `Hash 等编码转换结果\n\n${Object.entries(data)
+          .map((e) => `${e[0]} => ${e[1]}`)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 🔐 Hash & 编码转换\n\n## 原始内容\n\n\`\`\`\n${data.source}\n\`\`\`\n\n## Hash 值\n\n**MD5**: \`${data.md5}\`\n\n**SHA1**: \`${data.sha.sha1}\`\n\n**SHA256**: \`${data.sha.sha256}\`\n\n**SHA512**: \`${data.sha.sha512}\`\n\n## 编码结果\n\n### Base64\n- **编码**: \`${data.base64.encoded}\`\n- **解码**: \`${data.base64.decoded}\`\n\n### URL\n- **编码**: \`${data.url.encoded}\`\n- **解码**: \`${data.url.decoded}\``
-          break
+      case 'markdown':
+        return `# 🔐 Hash & 编码转换\n\n## 原始内容\n\n\`\`\`\n${data.source}\n\`\`\`\n\n## Hash 值\n\n**MD5**: \`${data.md5}\`\n\n**SHA1**: \`${data.sha.sha1}\`\n\n**SHA256**: \`${data.sha.sha256}\`\n\n**SHA512**: \`${data.sha.sha512}\`\n\n## 编码结果\n\n### Base64\n- **编码**: \`${data.base64.encoded}\`\n- **解码**: \`${data.base64.decoded}\`\n\n### URL\n- **编码**: \`${data.url.encoded}\`\n- **解码**: \`${data.url.decoded}\``
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

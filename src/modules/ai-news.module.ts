@@ -1,50 +1,48 @@
 import { Common } from '../common.ts'
 import { load } from 'cheerio'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceAINews {
   #cache = new Map<string, AINewsItem>()
 
-  handle(): RouterMiddleware<'/ai-news'> {
-    return async (ctx) => {
-      const date = ctx.request.url.searchParams.get('date')
-      const all = ctx.request.url.searchParams.has('all')
-      const data = await this.#fetch(date, all)
+  async handle(ctx: AppContext) {
+    const date = ctx.query.date
+    const all = !!ctx.query.all
+    const data = await this.#fetch(date, all)
 
-      const isToday = !date || date === Common.localeDate(Date.now()).replace(/\//g, '-')
+    const isToday = !date || date === Common.localeDate(Date.now()).replace(/\//g, '-')
 
-      switch (ctx.state.encoding) {
-        case 'text': {
-          ctx.response.body = `AI 资讯快报（${data.date}${isToday ? '，实时更新' : ''}）\n\n${
-            data.news.length > 0
-              ? data.news
-                  .map((e, idx) => `${idx + 1}. ${e.title}\n\n${e.detail}（来自: ${e.source}）\n\n> 详情: ${e.link}`)
-                  .join('\n\n')
-              : '今日暂无重大 AI 资讯'
-          }`
-          break
-        }
+    switch (ctx.encoding) {
+      case 'text': {
+        return `AI 资讯快报（${data.date}${isToday ? '，实时更新' : ''}）\n\n${
+          data.news.length > 0
+            ? data.news
+                .map((e, idx) => `${idx + 1}. ${e.title}\n\n${e.detail}（来自: ${e.source}）\n\n> 详情: ${e.link}`)
+                .join('\n\n')
+            : '今日暂无重大 AI 资讯'
+        }`
+        break
+      }
 
-        case 'markdown': {
-          ctx.response.body = `# AI 资讯快报\n\n> ${data.date}${isToday ? ' · 实时更新' : ''}\n\n${
-            data.news.length > 0
-              ? data.news
-                  .map(
-                    (e, idx) =>
-                      `### ${idx + 1}. [${e.title}](${e.link})\n\n${e.detail}\n\n**来源**: ${e.source}\n\n---\n`,
-                  )
-                  .join('\n')
-              : '*今日暂无重大 AI 资讯*'
-          }`
-          break
-        }
+      case 'markdown': {
+        return `# AI 资讯快报\n\n> ${data.date}${isToday ? ' · 实时更新' : ''}\n\n${
+          data.news.length > 0
+            ? data.news
+                .map(
+                  (e, idx) =>
+                    `### ${idx + 1}. [${e.title}](${e.link})\n\n${e.detail}\n\n**来源**: ${e.source}\n\n---\n`,
+                )
+                .join('\n')
+            : '*今日暂无重大 AI 资讯*'
+        }`
+        break
+      }
 
-        case 'json':
-        default: {
-          ctx.response.body = Common.buildJson(data)
-          break
-        }
+      case 'json':
+      default: {
+        return Common.buildJson(data)
+        break
       }
     }
   }

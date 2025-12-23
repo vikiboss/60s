@@ -1,35 +1,30 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceWeibo {
   COOKIE =
     'SUB=_2AkMflEwGf8NxqwFRmvsXxG7ia4h2wwrEieKpyL3dJRM3HRl-yT9yqk4mtRB6NBRi6maz6YaTyfIClrCyCUrm0-7nB1R9; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WhR9EPgz3BDPWy-YHwFuiIb; MLOGIN=0; _T_WM=29824971760; XSRF-TOKEN=3e7411; WEIBOCN_FROM=1110006030; mweibo_short_token=0f127e0728; M_WEIBOCN_PARAMS=fid%3D106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot%26uicode%3D10000011'
 
-  handle(): RouterMiddleware<'/weibo'> {
-    return async (ctx) => {
-      const data = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const data = await this.#fetch()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `微博实时热搜\n\n${data
-            .map((e, i) => `${i + 1}. ${e.title}`)
-            .slice(0, 20)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `微博实时热搜\n\n${data
+          .map((e, i) => `${i + 1}. ${e.title}`)
+          .slice(0, 20)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 微博实时热搜\n\n${data
-            .slice(0, 20)
-            .map((e, i) => `${i + 1}. [${e.title}](${e.link})`)
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 微博实时热搜\n\n${data
+          .slice(0, 20)
+          .map((e, i) => `${i + 1}. [${e.title}](${e.link})`)
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

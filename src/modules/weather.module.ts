@@ -1,5 +1,5 @@
 import { Common, dayjs } from '../common.ts'
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 interface CityInfo {
   name: string
@@ -144,199 +144,189 @@ class ServiceWeather {
     return Number.isNaN(parsed) ? fallback : parsed
   }
 
-  handle(): RouterMiddleware<'/weather'> {
-    return async (ctx) => {
-      try {
-        const location = (await Common.getParam('query', ctx.request)) || '北京'
-        const cityInfo = await this.getCityInfo(location)
+  async handle(ctx: AppContext) {
+    try {
+      const location = (await Common.getParam('query', ctx)) || '北京'
+      const cityInfo = await this.getCityInfo(location)
 
-        const [weatherData, airData] = await Promise.all([
-          this.fetchCurrentWeather(cityInfo),
-          this.fetchAirQuality(cityInfo),
-        ])
+      const [weatherData, airData] = await Promise.all([
+        this.fetchCurrentWeather(cityInfo),
+        this.fetchAirQuality(cityInfo),
+      ])
 
-        const observe = weatherData.observe
+      const observe = weatherData.observe
 
-        if (!observe) {
-          throw new Error('无法获取当前天气观测数据')
-        }
-
-        if (!airData) {
-          throw new Error('无法获取空气质量数据')
-        }
-
-        const result = {
-          location: {
-            name: `${cityInfo.province}${cityInfo.city}${cityInfo.county || ''}`.replace(/省|市/g, ''),
-            province: cityInfo.province,
-            city: cityInfo.city,
-            county: cityInfo.county || '',
-          },
-          weather: {
-            condition: observe.weather,
-            condition_code: observe.weather_code,
-            temperature: this.safeParseInt(observe.degree),
-            humidity: this.safeParseInt(observe.humidity),
-            pressure: this.safeParseInt(observe.pressure),
-            precipitation: this.safeParseFloat(observe.precipitation),
-            wind_direction: observe.wind_direction_name,
-            wind_power: observe.wind_power,
-            weather_icon: observe.weather_url,
-            weather_colors: observe.weather_color || [],
-            updated: this.formatUpdateTime(observe.update_time),
-            updated_at: new Date(this.formatUpdateTime(observe.update_time)).getTime(),
-          },
-          air_quality: airData.air
-            ? {
-                aqi: airData.air.aqi,
-                level: airData.air.aqi_level,
-                quality: airData.air.aqi_name,
-                pm25: this.safeParseInt(airData.air.pm25),
-                pm10: this.safeParseInt(airData.air.pm10),
-                co: this.safeParseFloat(airData.air.co),
-                no2: this.safeParseInt(airData.air.no2),
-                o3: this.safeParseInt(airData.air.o3),
-                so2: this.safeParseInt(airData.air.so2),
-                rank: airData.air.rank,
-                total_cities: airData.air.total,
-                updated: this.formatUpdateTime(airData.air.update_time),
-                updated_at: new Date(this.formatUpdateTime(airData.air.update_time)).getTime(),
-              }
-            : null,
-          sunrise: weatherData.rise?.[0]
-            ? (() => {
-                const sunriseData = this.formatSunriseTime(weatherData.rise[0].time, weatherData.rise[0].sunrise)
-                const sunsetData = this.formatSunriseTime(weatherData.rise[0].time, weatherData.rise[0].sunset)
-                return {
-                  sunrise: sunriseData.formatted,
-                  sunrise_at: sunriseData.timestamp,
-                  sunrise_desc: weatherData.rise[0].sunrise,
-                  sunset: sunsetData.formatted,
-                  sunset_at: sunsetData.timestamp,
-                  sunset_desc: weatherData.rise[0].sunset,
-                }
-              })()
-            : null,
-          life_indices: this.formatLifeIndices(weatherData.index || {}),
-          alerts: Array.isArray(weatherData.alarm)
-            ? weatherData.alarm.map((alarm) => ({
-                type: alarm.type_name,
-                level: alarm.level_name,
-                level_code: alarm.level_code,
-                province: alarm.province,
-                city: alarm.city,
-                county: alarm.county,
-                detail: alarm.detail,
-                updated: dayjs(alarm.update_time).format('YYYY-MM-DD HH:mm:ss'),
-                updated_at: dayjs(alarm.update_time).toDate().getTime(),
-              }))
-            : [],
-        }
-
-        switch (ctx.state.encoding) {
-          case 'text':
-            ctx.response.body = this.formatWeatherText(result)
-            break
-
-          case 'markdown':
-            ctx.response.body = this.formatWeatherMarkdown(result)
-            break
-
-          case 'json':
-          default:
-            ctx.response.body = Common.buildJson(result)
-            break
-        }
-      } catch (error) {
-        const message = error instanceof Error ? error.message : '未知错误'
-        const statusCode = message.includes('未找到城市') ? 404 : 500
-        ctx.response.body = Common.buildJson({ error: message }, statusCode)
+      if (!observe) {
+        throw new Error('无法获取当前天气观测数据')
       }
+
+      if (!airData) {
+        throw new Error('无法获取空气质量数据')
+      }
+
+      const result = {
+        location: {
+          name: `${cityInfo.province}${cityInfo.city}${cityInfo.county || ''}`.replace(/省|市/g, ''),
+          province: cityInfo.province,
+          city: cityInfo.city,
+          county: cityInfo.county || '',
+        },
+        weather: {
+          condition: observe.weather,
+          condition_code: observe.weather_code,
+          temperature: this.safeParseInt(observe.degree),
+          humidity: this.safeParseInt(observe.humidity),
+          pressure: this.safeParseInt(observe.pressure),
+          precipitation: this.safeParseFloat(observe.precipitation),
+          wind_direction: observe.wind_direction_name,
+          wind_power: observe.wind_power,
+          weather_icon: observe.weather_url,
+          weather_colors: observe.weather_color || [],
+          updated: this.formatUpdateTime(observe.update_time),
+          updated_at: new Date(this.formatUpdateTime(observe.update_time)).getTime(),
+        },
+        air_quality: airData.air
+          ? {
+              aqi: airData.air.aqi,
+              level: airData.air.aqi_level,
+              quality: airData.air.aqi_name,
+              pm25: this.safeParseInt(airData.air.pm25),
+              pm10: this.safeParseInt(airData.air.pm10),
+              co: this.safeParseFloat(airData.air.co),
+              no2: this.safeParseInt(airData.air.no2),
+              o3: this.safeParseInt(airData.air.o3),
+              so2: this.safeParseInt(airData.air.so2),
+              rank: airData.air.rank,
+              total_cities: airData.air.total,
+              updated: this.formatUpdateTime(airData.air.update_time),
+              updated_at: new Date(this.formatUpdateTime(airData.air.update_time)).getTime(),
+            }
+          : null,
+        sunrise: weatherData.rise?.[0]
+          ? (() => {
+              const sunriseData = this.formatSunriseTime(weatherData.rise[0].time, weatherData.rise[0].sunrise)
+              const sunsetData = this.formatSunriseTime(weatherData.rise[0].time, weatherData.rise[0].sunset)
+              return {
+                sunrise: sunriseData.formatted,
+                sunrise_at: sunriseData.timestamp,
+                sunrise_desc: weatherData.rise[0].sunrise,
+                sunset: sunsetData.formatted,
+                sunset_at: sunsetData.timestamp,
+                sunset_desc: weatherData.rise[0].sunset,
+              }
+            })()
+          : null,
+        life_indices: this.formatLifeIndices(weatherData.index || {}),
+        alerts: Array.isArray(weatherData.alarm)
+          ? weatherData.alarm.map((alarm) => ({
+              type: alarm.type_name,
+              level: alarm.level_name,
+              level_code: alarm.level_code,
+              province: alarm.province,
+              city: alarm.city,
+              county: alarm.county,
+              detail: alarm.detail,
+              updated: dayjs(alarm.update_time).format('YYYY-MM-DD HH:mm:ss'),
+              updated_at: dayjs(alarm.update_time).toDate().getTime(),
+            }))
+          : [],
+      }
+
+      switch (ctx.encoding) {
+        case 'text':
+          return this.formatWeatherText(result)
+
+        case 'markdown':
+          return this.formatWeatherMarkdown(result)
+
+        case 'json':
+        default:
+          return Common.buildJson(result)
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '未知错误'
+      const statusCode = message.includes('未找到城市') ? 404 : 500
+      return Common.buildJson({ error: message }, statusCode)
     }
   }
 
-  handleForecast(): RouterMiddleware<'/weather/forecast'> {
-    return async (ctx) => {
-      try {
-        const location = (await Common.getParam('query', ctx.request)) || '北京'
-        const days = Number.parseInt((await Common.getParam('days', ctx.request)) || '7')
-        const cityInfo = await this.getCityInfo(location)
+  async handleForecast(ctx: AppContext) {
+    try {
+      const location = (await Common.getParam('query', ctx)) || '北京'
+      const days = Number.parseInt((await Common.getParam('days', ctx)) || '7')
+      const cityInfo = await this.getCityInfo(location)
 
-        const weatherData = await this.fetchCurrentWeather(cityInfo)
+      const weatherData = await this.fetchCurrentWeather(cityInfo)
 
-        const result = {
-          location: {
-            name: `${cityInfo.province}${cityInfo.city}${cityInfo.county || ''}`.replace(/省|市/g, ''),
-            province: cityInfo.province,
-            city: cityInfo.city,
-            county: cityInfo.county || '',
-          },
-          hourly_forecast: Array.isArray(weatherData.forecast_1h)
-            ? weatherData.forecast_1h.slice(0, 48).map((hour) => ({
-                datetime: this.formatHourlyTime(hour.update_time),
-                temperature: this.safeParseInt(hour.degree),
-                condition: hour.weather,
-                condition_code: hour.weather_code,
-                wind_direction: hour.wind_direction,
-                wind_power: hour.wind_power,
-                weather_icon: hour.weather_url,
-              }))
-            : [],
-          daily_forecast: Array.isArray(weatherData.forecast_24h)
-            ? weatherData.forecast_24h.slice(0, Math.min(days, 8)).map((day) => ({
-                date: day.time,
-                day_condition: day.day_weather,
-                day_condition_code: day.day_weather_code,
-                night_condition: day.night_weather,
-                night_condition_code: day.night_weather_code,
-                max_temperature: this.safeParseInt(day.max_degree),
-                min_temperature: this.safeParseInt(day.min_degree),
-                day_wind_direction: day.day_wind_direction,
-                day_wind_power: day.day_wind_power,
-                night_wind_direction: day.night_wind_direction,
-                night_wind_power: day.night_wind_power,
-                aqi: day.aqi,
-                aqi_level: day.aqi_level,
-                air_quality: day.aqi_name,
-                day_weather_icon: day.day_weather_url,
-                night_weather_icon: day.night_weather_url,
-              }))
-            : [],
-          sunrise_sunset: Array.isArray(weatherData.rise)
-            ? weatherData.rise.slice(0, Math.min(days, 15)).map((day) => {
-                const sunriseData = this.formatSunriseTime(day.time, day.sunrise)
-                const sunsetData = this.formatSunriseTime(day.time, day.sunset)
-                return {
-                  sunrise: sunriseData.formatted,
-                  sunrise_at: sunriseData.timestamp,
-                  sunrise_desc: day.sunrise,
-                  sunset: sunsetData.formatted,
-                  sunset_at: sunsetData.timestamp,
-                  sunset_desc: day.sunset,
-                }
-              })
-            : [],
-        }
-
-        switch (ctx.state.encoding) {
-          case 'text':
-            ctx.response.body = this.formatForecastText(result)
-            break
-
-          case 'markdown':
-            ctx.response.body = this.formatForecastMarkdown(result)
-            break
-
-          case 'json':
-          default:
-            ctx.response.body = Common.buildJson(result)
-            break
-        }
-      } catch (error) {
-        const message = error instanceof Error ? error.message : '未知错误'
-        const statusCode = message.includes('未找到城市') ? 404 : 500
-        ctx.response.body = Common.buildJson({ error: message }, statusCode)
+      const result = {
+        location: {
+          name: `${cityInfo.province}${cityInfo.city}${cityInfo.county || ''}`.replace(/省|市/g, ''),
+          province: cityInfo.province,
+          city: cityInfo.city,
+          county: cityInfo.county || '',
+        },
+        hourly_forecast: Array.isArray(weatherData.forecast_1h)
+          ? weatherData.forecast_1h.slice(0, 48).map((hour) => ({
+              datetime: this.formatHourlyTime(hour.update_time),
+              temperature: this.safeParseInt(hour.degree),
+              condition: hour.weather,
+              condition_code: hour.weather_code,
+              wind_direction: hour.wind_direction,
+              wind_power: hour.wind_power,
+              weather_icon: hour.weather_url,
+            }))
+          : [],
+        daily_forecast: Array.isArray(weatherData.forecast_24h)
+          ? weatherData.forecast_24h.slice(0, Math.min(days, 8)).map((day) => ({
+              date: day.time,
+              day_condition: day.day_weather,
+              day_condition_code: day.day_weather_code,
+              night_condition: day.night_weather,
+              night_condition_code: day.night_weather_code,
+              max_temperature: this.safeParseInt(day.max_degree),
+              min_temperature: this.safeParseInt(day.min_degree),
+              day_wind_direction: day.day_wind_direction,
+              day_wind_power: day.day_wind_power,
+              night_wind_direction: day.night_wind_direction,
+              night_wind_power: day.night_wind_power,
+              aqi: day.aqi,
+              aqi_level: day.aqi_level,
+              air_quality: day.aqi_name,
+              day_weather_icon: day.day_weather_url,
+              night_weather_icon: day.night_weather_url,
+            }))
+          : [],
+        sunrise_sunset: Array.isArray(weatherData.rise)
+          ? weatherData.rise.slice(0, Math.min(days, 15)).map((day) => {
+              const sunriseData = this.formatSunriseTime(day.time, day.sunrise)
+              const sunsetData = this.formatSunriseTime(day.time, day.sunset)
+              return {
+                sunrise: sunriseData.formatted,
+                sunrise_at: sunriseData.timestamp,
+                sunrise_desc: day.sunrise,
+                sunset: sunsetData.formatted,
+                sunset_at: sunsetData.timestamp,
+                sunset_desc: day.sunset,
+              }
+            })
+          : [],
       }
+
+      switch (ctx.encoding) {
+        case 'text':
+          return this.formatForecastText(result)
+
+        case 'markdown':
+          return this.formatForecastMarkdown(result)
+
+        case 'json':
+        default:
+          return Common.buildJson(result)
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '未知错误'
+      const statusCode = message.includes('未找到城市') ? 404 : 500
+      return Common.buildJson({ error: message }, statusCode)
     }
   }
 

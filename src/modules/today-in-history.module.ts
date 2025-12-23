@@ -1,35 +1,27 @@
 import { Common, dayjs } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceTodayInHistory {
   private cache = new Map<string, HistoryItem[]>()
 
-  handle(): RouterMiddleware<'/today_in_history'> {
-    return async (ctx) => {
-      const data = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const data = await this.#fetch()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `历史上的今天 (${data.date})\n\n${data.items
-            .map((e, idx) => `${idx + 1}. ${e.title} (${e.year} 年)`)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `历史上的今天 (${data.date})\n\n${data.items
+          .map((e, idx) => `${idx + 1}. ${e.title} (${e.year} 年)`)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 历史上的今天 (${data.date})\n\n${data.items
-            .map(
-              (e, idx) =>
-                `### ${idx + 1}. [${e.title}](${e.link}) \`${e.year} 年\`\n\n${e.description}\n\n---\n`,
-            )
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 历史上的今天 (${data.date})\n\n${data.items
+          .map((e, idx) => `### ${idx + 1}. [${e.title}](${e.link}) \`${e.year} 年\`\n\n${e.description}\n\n---\n`)
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

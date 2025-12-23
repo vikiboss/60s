@@ -1,7 +1,7 @@
 import chineseDays from 'chinese-days'
 import { Common, dayjs } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 const { isHoliday, isWorkday, getDayDetail, getLunarDate, getSolarTerms, getLunarFestivals } = chineseDays
 
@@ -26,183 +26,178 @@ class ServiceMoyu {
     return parts.length >= 2 ? parts[1].trim() : holidayName
   }
 
-  handle(): RouterMiddleware<'/moyu'> {
-    return async (ctx) => {
-      const dateParam = await Common.getParam('date', ctx.request)
-      const data = this.getCalendarInfo(dateParam)
+  async handle(ctx: AppContext) {
+    const dateParam = await Common.getParam('date', ctx)
+    const data = this.getCalendarInfo(dateParam)
 
-      switch (ctx.state.encoding) {
-        case 'text': {
-          let body = '🐟 摸鱼办·打工人日历\n\n'
-          body += `📆 ${data.date.gregorian} ${data.date.weekday}\n`
-          body += `🌙 农历 ${data.date.lunar.yearCN}年 ${data.date.lunar.monthCN}${data.date.lunar.dayCN}\n`
-          body += `🐯 ${data.date.lunar.zodiac}年 ${data.date.lunar.yearGanZhi}\n\n`
+    switch (ctx.encoding) {
+      case 'text': {
+        let body = '🐟 摸鱼办·打工人日历\n\n'
+        body += `📆 ${data.date.gregorian} ${data.date.weekday}\n`
+        body += `🌙 农历 ${data.date.lunar.yearCN}年 ${data.date.lunar.monthCN}${data.date.lunar.dayCN}\n`
+        body += `🐯 ${data.date.lunar.zodiac}年 ${data.date.lunar.yearGanZhi}\n\n`
 
-          // 当前假期状态
-          if (data.currentHoliday) {
-            body += `🎉 恭喜！您正处于【${this.extractChineseName(data.currentHoliday.name)}】假期中！\n`
-            body += `📅 今天是假期的第 ${data.currentHoliday.dayOfHoliday} 天，还剩 ${data.currentHoliday.daysRemaining} 天（含今天）\n`
-            body += `💡 好好享受假期吧，打工人！\n\n`
-          } else {
+        // 当前假期状态
+        if (data.currentHoliday) {
+          body += `🎉 恭喜！您正处于【${this.extractChineseName(data.currentHoliday.name)}】假期中！\n`
+          body += `📅 今天是假期的第 ${data.currentHoliday.dayOfHoliday} 天，还剩 ${data.currentHoliday.daysRemaining} 天（含今天）\n`
+          body += `💡 好好享受假期吧，打工人！\n\n`
+        } else {
+          if (data.today.isWeekend) {
+            body += `🎉 太好了！今天是周末，可以愉快摸鱼！\n\n`
+          } else if (data.today.isHoliday) {
+            body += `🎊 耶！今天是节假日【${this.extractChineseName(data.today.holidayName)}】，尽情摸鱼吧！\n\n`
+          } else if (data.today.isWorkday) {
             if (data.today.isWeekend) {
-              body += `🎉 太好了！今天是周末，可以愉快摸鱼！\n\n`
-            } else if (data.today.isHoliday) {
-              body += `🎊 耶！今天是节假日【${this.extractChineseName(data.today.holidayName)}】，尽情摸鱼吧！\n\n`
-            } else if (data.today.isWorkday) {
-              if (data.today.isWeekend) {
-                body += `😢 悲报：今天周末要调休上班，但也要坚持摸鱼！\n\n`
-              } else {
-                body += `💼 今天是工作日，低调摸鱼，注意老板！\n\n`
-              }
-            }
-          }
-
-          if (data.today.solarTerm) {
-            body += `🌾 今日节气：${data.today.solarTerm}\n`
-          }
-
-          if (data.today.lunarFestivals.length > 0) {
-            body += `🏮 农历节日：${data.today.lunarFestivals.join('、')}\n`
-          }
-
-          // 倒计时区域
-          body += `\n⏰ 摸鱼倒计时\n`
-
-          if (data.countdown.toWeekEnd > 0) {
-            body += `📅 距离周末：还要熬 ${data.countdown.toWeekEnd} 天\n`
-          } else {
-            body += `📅 距离周末：今天就是周末！尽情摸鱼！\n`
-          }
-
-          if (data.countdown.toFriday > 0) {
-            body += `🎊 距离周五：还要熬 ${data.countdown.toFriday} 天\n`
-          } else if (data.date.dayOfWeek === 5) {
-            body += `🎊 距离周五：今天就是周五！周末近在眼前！\n`
-          }
-
-          body += `🗓️ 距离月底：还剩 ${data.countdown.toMonthEnd} 天\n`
-          body += `📊 距离年底：还剩 ${data.countdown.toYearEnd} 天\n`
-
-          if (data.nextHoliday) {
-            if (data.nextHoliday.until === 0) {
-              body += `🎯 距离假期：就是明天啦！收拾行李准备摸鱼！\n`
+              body += `😢 悲报：今天周末要调休上班，但也要坚持摸鱼！\n\n`
             } else {
-              body += `🎯 距离【${this.extractChineseName(data.nextHoliday.name)}】：还要搬砖 ${data.nextHoliday.until} 天\n`
+              body += `💼 今天是工作日，低调摸鱼，注意老板！\n\n`
             }
           }
-
-          body += `\n📊 摸鱼进度条\n`
-          body += `▓${'█'.repeat(Math.floor(data.progress.week.percentage / 5))}${'░'.repeat(20 - Math.floor(data.progress.week.percentage / 5))}▓ 本周 ${data.progress.week.percentage}%\n`
-          body += `▓${'█'.repeat(Math.floor(data.progress.month.percentage / 5))}${'░'.repeat(20 - Math.floor(data.progress.month.percentage / 5))}▓ 本月 ${data.progress.month.percentage}%\n`
-          body += `▓${'█'.repeat(Math.floor(data.progress.year.percentage / 5))}${'░'.repeat(20 - Math.floor(data.progress.year.percentage / 5))}▓ 本年 ${data.progress.year.percentage}%\n`
-
-          if (data.nextHoliday) {
-            body += `\n🎯 下一个带薪摸鱼日\n`
-            body += `🎊 节日：${this.extractChineseName(data.nextHoliday.name)}\n`
-            body += `📅 日期：${data.nextHoliday.date}\n`
-            body += `⏱️ 时长：${data.nextHoliday.duration} 天\n`
-            if (data.nextHoliday.workdays && data.nextHoliday.workdays.length > 0) {
-              body += `💼 调休：需要，${data.nextHoliday.workdays.join('、')}\n`
-            } else {
-              body += `💼 调休：无需调休，爽！\n`
-            }
-          }
-
-          // 摸鱼格言
-          body += `\n💬 摸鱼格言\n`
-          body += data.moyuQuote + '\n'
-
-          ctx.response.body = body
-          break
         }
 
-        case 'markdown': {
-          let body = '# 🐟 摸鱼办·打工人日历\n\n'
-          body += `> 专为打工人打造的摸鱼必备工具\n\n`
-          body += `## 📆 今日信息\n\n`
-          body += `- **公历**: ${data.date.gregorian} ${data.date.weekday}\n`
-          body += `- **农历**: ${data.date.lunar.yearCN}年 ${data.date.lunar.monthCN}${data.date.lunar.dayCN}\n`
-          body += `- **干支**: ${data.date.lunar.zodiac}年 ${data.date.lunar.yearGanZhi}\n`
-          body += `- **月柱**: ${data.date.lunar.monthGanZhi}\n`
-          body += `- **日柱**: ${data.date.lunar.dayGanZhi}\n\n`
+        if (data.today.solarTerm) {
+          body += `🌾 今日节气：${data.today.solarTerm}\n`
+        }
 
-          body += `## 🎯 摸鱼状态\n\n`
+        if (data.today.lunarFestivals.length > 0) {
+          body += `🏮 农历节日：${data.today.lunarFestivals.join('、')}\n`
+        }
 
-          if (data.currentHoliday) {
-            body += `### 🎉 当前假期中\n\n`
-            body += `**【${this.extractChineseName(data.currentHoliday.name)}】假期进行中！**\n\n`
-            body += `- 📅 今天是假期的第 **${data.currentHoliday.dayOfHoliday}** 天\n`
-            body += `- ⏰ 还剩 **${data.currentHoliday.daysRemaining}** 天（含今天）\n`
-            body += `- 💡 好好享受假期吧，打工人！\n\n`
+        // 倒计时区域
+        body += `\n⏰ 摸鱼倒计时\n`
+
+        if (data.countdown.toWeekEnd > 0) {
+          body += `📅 距离周末：还要熬 ${data.countdown.toWeekEnd} 天\n`
+        } else {
+          body += `📅 距离周末：今天就是周末！尽情摸鱼！\n`
+        }
+
+        if (data.countdown.toFriday > 0) {
+          body += `🎊 距离周五：还要熬 ${data.countdown.toFriday} 天\n`
+        } else if (data.date.dayOfWeek === 5) {
+          body += `🎊 距离周五：今天就是周五！周末近在眼前！\n`
+        }
+
+        body += `🗓️ 距离月底：还剩 ${data.countdown.toMonthEnd} 天\n`
+        body += `📊 距离年底：还剩 ${data.countdown.toYearEnd} 天\n`
+
+        if (data.nextHoliday) {
+          if (data.nextHoliday.until === 0) {
+            body += `🎯 距离假期：就是明天啦！收拾行李准备摸鱼！\n`
           } else {
+            body += `🎯 距离【${this.extractChineseName(data.nextHoliday.name)}】：还要搬砖 ${data.nextHoliday.until} 天\n`
+          }
+        }
+
+        body += `\n📊 摸鱼进度条\n`
+        body += `▓${'█'.repeat(Math.floor(data.progress.week.percentage / 5))}${'░'.repeat(20 - Math.floor(data.progress.week.percentage / 5))}▓ 本周 ${data.progress.week.percentage}%\n`
+        body += `▓${'█'.repeat(Math.floor(data.progress.month.percentage / 5))}${'░'.repeat(20 - Math.floor(data.progress.month.percentage / 5))}▓ 本月 ${data.progress.month.percentage}%\n`
+        body += `▓${'█'.repeat(Math.floor(data.progress.year.percentage / 5))}${'░'.repeat(20 - Math.floor(data.progress.year.percentage / 5))}▓ 本年 ${data.progress.year.percentage}%\n`
+
+        if (data.nextHoliday) {
+          body += `\n🎯 下一个带薪摸鱼日\n`
+          body += `🎊 节日：${this.extractChineseName(data.nextHoliday.name)}\n`
+          body += `📅 日期：${data.nextHoliday.date}\n`
+          body += `⏱️ 时长：${data.nextHoliday.duration} 天\n`
+          if (data.nextHoliday.workdays && data.nextHoliday.workdays.length > 0) {
+            body += `💼 调休：需要，${data.nextHoliday.workdays.join('、')}\n`
+          } else {
+            body += `💼 调休：无需调休，爽！\n`
+          }
+        }
+
+        // 摸鱼格言
+        body += `\n💬 摸鱼格言\n`
+        body += data.moyuQuote + '\n'
+
+        return body
+      }
+
+      case 'markdown': {
+        let body = '# 🐟 摸鱼办·打工人日历\n\n'
+        body += `> 专为打工人打造的摸鱼必备工具\n\n`
+        body += `## 📆 今日信息\n\n`
+        body += `- **公历**: ${data.date.gregorian} ${data.date.weekday}\n`
+        body += `- **农历**: ${data.date.lunar.yearCN}年 ${data.date.lunar.monthCN}${data.date.lunar.dayCN}\n`
+        body += `- **干支**: ${data.date.lunar.zodiac}年 ${data.date.lunar.yearGanZhi}\n`
+        body += `- **月柱**: ${data.date.lunar.monthGanZhi}\n`
+        body += `- **日柱**: ${data.date.lunar.dayGanZhi}\n\n`
+
+        body += `## 🎯 摸鱼状态\n\n`
+
+        if (data.currentHoliday) {
+          body += `### 🎉 当前假期中\n\n`
+          body += `**【${this.extractChineseName(data.currentHoliday.name)}】假期进行中！**\n\n`
+          body += `- 📅 今天是假期的第 **${data.currentHoliday.dayOfHoliday}** 天\n`
+          body += `- ⏰ 还剩 **${data.currentHoliday.daysRemaining}** 天（含今天）\n`
+          body += `- 💡 好好享受假期吧，打工人！\n\n`
+        } else {
+          if (data.today.isWeekend) {
+            body += `🎉 **太好了！今天是周末，可以愉快摸鱼！**\n\n`
+          } else if (data.today.isHoliday) {
+            body += `🎊 **节假日**: ${this.extractChineseName(data.today.holidayName)}，尽情摸鱼吧！\n\n`
+          } else if (data.today.isWorkday) {
             if (data.today.isWeekend) {
-              body += `🎉 **太好了！今天是周末，可以愉快摸鱼！**\n\n`
-            } else if (data.today.isHoliday) {
-              body += `🎊 **节假日**: ${this.extractChineseName(data.today.holidayName)}，尽情摸鱼吧！\n\n`
-            } else if (data.today.isWorkday) {
-              if (data.today.isWeekend) {
-                body += `😢 **悲报**: 今天周末要调休上班，但也要坚持摸鱼！\n\n`
-              } else {
-                body += `💼 **工作日**: 低调摸鱼，注意老板！\n\n`
-              }
+              body += `😢 **悲报**: 今天周末要调休上班，但也要坚持摸鱼！\n\n`
+            } else {
+              body += `💼 **工作日**: 低调摸鱼，注意老板！\n\n`
             }
           }
+        }
 
-          if (data.today.solarTerm) {
-            body += `🌾 **节气**: ${data.today.solarTerm}\n\n`
-          }
+        if (data.today.solarTerm) {
+          body += `🌾 **节气**: ${data.today.solarTerm}\n\n`
+        }
 
-          if (data.today.lunarFestivals.length > 0) {
-            body += `🏮 **农历节日**: ${data.today.lunarFestivals.join('、')}\n\n`
-          }
+        if (data.today.lunarFestivals.length > 0) {
+          body += `🏮 **农历节日**: ${data.today.lunarFestivals.join('、')}\n\n`
+        }
 
-          body += `## ⏰ 摸鱼倒计时\n\n`
-          body += `| 项目 | 倒计时 |\n`
-          body += `|------|--------|\n`
-          body += `| 📅 距离周末 | ${data.countdown.toWeekEnd === 0 ? '今天就是周末！' : `还要熬 ${data.countdown.toWeekEnd} 天`} |\n`
-          if (data.countdown.toFriday >= 0) {
-            body += `| 🎊 距离周五 | ${data.countdown.toFriday === 0 ? '今天就是周五！' : `还要熬 ${data.countdown.toFriday} 天`} |\n`
-          }
-          body += `| 🗓️ 距离月底 | 还剩 ${data.countdown.toMonthEnd} 天 |\n`
-          body += `| 📊 距离年底 | 还剩 ${data.countdown.toYearEnd} 天 |\n`
-          if (data.nextHoliday) {
-            body += `| 🎯 距离假期 | ${data.nextHoliday.until === 0 ? '就是明天啦！' : `还要搬砖 ${data.nextHoliday.until} 天`} |\n`
+        body += `## ⏰ 摸鱼倒计时\n\n`
+        body += `| 项目 | 倒计时 |\n`
+        body += `|------|--------|\n`
+        body += `| 📅 距离周末 | ${data.countdown.toWeekEnd === 0 ? '今天就是周末！' : `还要熬 ${data.countdown.toWeekEnd} 天`} |\n`
+        if (data.countdown.toFriday >= 0) {
+          body += `| 🎊 距离周五 | ${data.countdown.toFriday === 0 ? '今天就是周五！' : `还要熬 ${data.countdown.toFriday} 天`} |\n`
+        }
+        body += `| 🗓️ 距离月底 | 还剩 ${data.countdown.toMonthEnd} 天 |\n`
+        body += `| 📊 距离年底 | 还剩 ${data.countdown.toYearEnd} 天 |\n`
+        if (data.nextHoliday) {
+          body += `| 🎯 距离假期 | ${data.nextHoliday.until === 0 ? '就是明天啦！' : `还要搬砖 ${data.nextHoliday.until} 天`} |\n`
+        }
+        body += `\n`
+
+        body += `## 📊 摸鱼进度条\n\n`
+        body += `| 维度 | 已摸 | 总共 | 进度 |\n`
+        body += `|------|------|------|------|\n`
+        body += `| 📅 本周 | ${data.progress.week.passed} 天 | ${data.progress.week.total} 天 | ${data.progress.week.percentage}% |\n`
+        body += `| 📆 本月 | ${data.progress.month.passed} 天 | ${data.progress.month.total} 天 | ${data.progress.month.percentage}% |\n`
+        body += `| 📊 本年 | ${data.progress.year.passed} 天 | ${data.progress.year.total} 天 | ${data.progress.year.percentage}% |\n\n`
+
+        if (data.nextHoliday) {
+          body += `## 🎯 下一个带薪摸鱼日\n\n`
+          body += `- **假期名称**: ${this.extractChineseName(data.nextHoliday.name)}\n`
+          body += `- **开始日期**: ${data.nextHoliday.date}\n`
+          body += `- **倒计时**: ${data.nextHoliday.until === 0 ? '就是明天啦！收拾行李准备摸鱼！' : `再坚持 ${data.nextHoliday.until} 天！`}\n`
+          body += `- **可摸时长**: ${data.nextHoliday.duration} 天\n`
+          if (data.nextHoliday.workdays && data.nextHoliday.workdays.length > 0) {
+            body += `- **调休日期**: ${data.nextHoliday.workdays.join('、')}\n`
+          } else {
+            body += `- **是否调休**: 无需调休，爽！\n`
           }
           body += `\n`
-
-          body += `## 📊 摸鱼进度条\n\n`
-          body += `| 维度 | 已摸 | 总共 | 进度 |\n`
-          body += `|------|------|------|------|\n`
-          body += `| 📅 本周 | ${data.progress.week.passed} 天 | ${data.progress.week.total} 天 | ${data.progress.week.percentage}% |\n`
-          body += `| 📆 本月 | ${data.progress.month.passed} 天 | ${data.progress.month.total} 天 | ${data.progress.month.percentage}% |\n`
-          body += `| 📊 本年 | ${data.progress.year.passed} 天 | ${data.progress.year.total} 天 | ${data.progress.year.percentage}% |\n\n`
-
-          if (data.nextHoliday) {
-            body += `## 🎯 下一个带薪摸鱼日\n\n`
-            body += `- **假期名称**: ${this.extractChineseName(data.nextHoliday.name)}\n`
-            body += `- **开始日期**: ${data.nextHoliday.date}\n`
-            body += `- **倒计时**: ${data.nextHoliday.until === 0 ? '就是明天啦！收拾行李准备摸鱼！' : `再坚持 ${data.nextHoliday.until} 天！`}\n`
-            body += `- **可摸时长**: ${data.nextHoliday.duration} 天\n`
-            if (data.nextHoliday.workdays && data.nextHoliday.workdays.length > 0) {
-              body += `- **调休日期**: ${data.nextHoliday.workdays.join('、')}\n`
-            } else {
-              body += `- **是否调休**: 无需调休，爽！\n`
-            }
-            body += `\n`
-          }
-
-          body += `## 💬 摸鱼格言\n\n`
-          body += `> ${data.moyuQuote}\n\n`
-
-          ctx.response.body = body
-          break
         }
 
-        case 'json':
-        default: {
-          ctx.response.body = Common.buildJson(data)
-          break
-        }
+        body += `## 💬 摸鱼格言\n\n`
+        body += `> ${data.moyuQuote}\n\n`
+
+        return body
+      }
+
+      case 'json':
+      default: {
+        return Common.buildJson(data)
       }
     }
   }

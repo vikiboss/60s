@@ -1,32 +1,27 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceBili {
-  handle(): RouterMiddleware<'/bili'> {
-    return async (ctx) => {
-      const data = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const data = await this.#fetch()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `B站实时热搜\n\n${data
-            .map((e, i) => `${i + 1}. ${e.title}`)
-            .slice(0, 20)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `B站实时热搜\n\n${data
+          .map((e, i) => `${i + 1}. ${e.title}`)
+          .slice(0, 20)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# B站实时热搜\n\n${data
-            .slice(0, 20)
-            .map((e, i) => `${i + 1}. [${e.title}](${e.link})`)
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# B站实时热搜\n\n${data
+          .slice(0, 20)
+          .map((e, i) => `${i + 1}. [${e.title}](${e.link})`)
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

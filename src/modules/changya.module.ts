@@ -1,30 +1,24 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceChangYa {
-  handle(): RouterMiddleware<'/changya'> {
-    return async (ctx) => {
-      const data = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const data = await this.#fetch()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = data.audio.url
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return data.audio.url
 
-        case 'markdown':
-          ctx.response.body = `# 🎤 唱鸭随机作品\n\n## ${data.song.name}\n\n**演唱**: ${data.user.nickname} ${data.user.gender === 'M' ? '♂' : '♀'}\n\n**原唱**: ${data.song.singer}\n\n**时长**: ${Math.floor(data.audio.duration / 60)}:${(data.audio.duration % 60).toString().padStart(2, '0')}\n\n**发布时间**: ${data.audio.publish}\n\n**点赞数**: ${data.audio.like_count}\n\n[🔗 在线收听](${data.audio.link}) | [🎵 音频链接](${data.audio.url})\n\n---\n\n### 歌词\n\n${data.song.lyrics.slice(0, 6).join('\n')}\n\n*...*`
-          break
+      case 'markdown':
+        return `# 🎤 唱鸭随机作品\n\n## ${data.song.name}\n\n**演唱**: ${data.user.nickname} ${data.user.gender === 'M' ? '♂' : '♀'}\n\n**原唱**: ${data.song.singer}\n\n**时长**: ${Math.floor(data.audio.duration / 60)}:${(data.audio.duration % 60).toString().padStart(2, '0')}\n\n**发布时间**: ${data.audio.publish}\n\n**点赞数**: ${data.audio.like_count}\n\n[🔗 在线收听](${data.audio.link}) | [🎵 音频链接](${data.audio.url})\n\n---\n\n### 歌词\n\n${data.song.lyrics.slice(0, 6).join('\n')}\n\n*...*`
 
-        case 'audio':
-          ctx.response.redirect(data.audio.url)
-          break
+      case 'audio':
+        return ctx.redirect(data.audio.url)
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

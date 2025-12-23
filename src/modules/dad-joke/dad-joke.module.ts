@@ -1,51 +1,44 @@
 import { Common } from '../../common.ts'
 import dadJokeList from './dad-joke.json' with { type: 'json' }
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 class ServiceDadJoke {
+  async handle(ctx: AppContext) {
+    const id = await Common.getParam('id', ctx)
 
-  handle(): RouterMiddleware<'/dad-joke'> {
-    return async (ctx) => {
-      const id = await Common.getParam('id', ctx.request)
+    let result: string
 
-      let result: string
-
-      if (id) {
-        // 获取指定 ID 的冷笑话
-        const index = parseInt(id)
-        if (index >= 0 && index < dadJokeList.length) {
-          result = dadJokeList[index]
-        } else {
-          ctx.response.status = 404
-          ctx.response.body = Common.buildJson(null, 404, `未找到 ID 为 ${index} 的冷笑话`)
-          return
-        }
+    if (id) {
+      // 获取指定 ID 的冷笑话
+      const index = parseInt(id)
+      if (index >= 0 && index < dadJokeList.length) {
+        result = dadJokeList[index]
       } else {
-        // 随机获取冷笑话（默认行为）
-        result = Common.randomItem(dadJokeList)
+        ctx.set.status = 404
+        return Common.buildJson(null, 404, `未找到 ID 为 ${index} 的冷笑话`)
+        return
       }
+    } else {
+      // 随机获取冷笑话（默认行为）
+      result = Common.randomItem(dadJokeList)
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = result
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return result
 
-        case 'markdown':
-          ctx.response.body = `# 😂 Dad Joke\n\n${result}\n\n---\n\n*#${dadJokeList.findIndex((item) => item === result) + 1}*`
-          break
+      case 'markdown':
+        return `# 😂 Dad Joke\n\n${result}\n\n---\n\n*#${dadJokeList.findIndex((item) => item === result) + 1}*`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson({
-            index: dadJokeList.findIndex((item) => item === result),
-            content: result,
-          })
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson({
+          index: dadJokeList.findIndex((item) => item === result),
+          content: result,
+        })
     }
   }
-
 }
 
 export const serviceDadJoke = new ServiceDadJoke()

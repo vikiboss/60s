@@ -1,9 +1,14 @@
-import { app } from './src/app.ts'
+import { node } from '@elysiajs/node'
+import { Elysia } from 'elysia'
+
+import { middlewares } from './src/middlewares.ts'
+import { appRouter, rootRouter } from './src/router.ts'
 import { config } from './src/config.ts'
 
-console.log(`service is running at http://localhost:${config.port}`)
+new Elysia({ adapter: node() })
+  .use(middlewares)
+  .use(rootRouter)
+  .use(appRouter)
+  .listen(config.port)
 
-await app.listen({
-  hostname: config.host,
-  port: config.port,
-})
+console.log(`service is running at http://localhost:${config.port}`)

@@ -1,7 +1,7 @@
 import { Common } from '../common.ts'
 import * as whois from 'whois'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 // ============== 类型定义 ==============
 
@@ -740,41 +740,37 @@ class ServiceWhois {
     }
   }
 
-  handle(): RouterMiddleware<'/whois'> {
-    return async (ctx) => {
-      const domain = ctx.request.url.searchParams.get('domain')?.trim()
+  async handle(ctx: AppContext) {
+    const domain = ctx.query.domain
 
-      if (!domain) {
-        return Common.requireArguments('domain', ctx.response)
-      }
+    if (!domain) {
+      return Common.requireArguments('domain')
+    }
 
-      try {
-        const data = await this.fetchWhois(domain)
-        this.formatResponse(ctx, data)
-      } catch (e: any) {
-        console.error('[whois]', e)
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, e.message || 'WHOIS 查询失败')
-      }
+    try {
+      const data = await this.fetchWhois(domain)
+      return this.formatResponse(ctx, data)
+    } catch (e: any) {
+      console.error('[whois]', e)
+      ctx.set.status = 400
+      return Common.buildJson(null, 400, e.message || 'WHOIS 查询失败')
     }
   }
 
   /**
    * 格式化响应
    */
-  private formatResponse(ctx: any, data: WhoisData): void {
-    switch (ctx.state.encoding) {
+  private formatResponse(ctx: any, data: WhoisData): string | object {
+    switch (ctx.encoding) {
       case 'text':
-        ctx.response.body = this.formatText(data)
-        break
+        return this.formatText(data)
 
       case 'markdown':
-        ctx.response.body = this.formatMarkdown(data)
-        break
+        return this.formatMarkdown(data)
 
       case 'json':
       default:
-        ctx.response.body = Common.buildJson(data)
+        return Common.buildJson(data)
     }
   }
 

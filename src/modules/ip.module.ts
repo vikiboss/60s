@@ -1,5 +1,5 @@
 import { Common } from '../common.ts'
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceIP {
   getClientIP(requestHeaders: Headers): string {
@@ -67,44 +67,39 @@ class ServiceIP {
     }
   }
 
-  handle(): RouterMiddleware<'/ip'> {
-    return async (ctx) => {
-      let ip = this.getClientIP(ctx.request.headers) || ctx.request.ip
-      const inputIp = ctx.request.url.searchParams.get('ip') || ''
+  async handle(ctx: AppContext) {
+    let ip = this.getClientIP(ctx.request.headers) || ''
+    const inputIp = ctx.query.ip ?? ''
 
-      // 优先使用请求参数中的 IP
-      if (inputIp) {
-        ip = inputIp
+    // 优先使用请求参数中的 IP
+    if (inputIp) {
+      ip = inputIp
+    }
+
+    // 如果是本地 IP，尝试获取公网 IP
+    if (!inputIp && this.isLocalIP(ip)) {
+      const publicIP = await this.getPublicIP()
+
+      if (publicIP) {
+        ip = publicIP
+      }
+    }
+
+    switch (ctx.encoding) {
+      case 'text':
+        return ip
+
+      case 'markdown': {
+        const api = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip}`
+        const { data = {} } = (await (await fetch(api)).json()) || {}
+        return `# 🌐 IP 地址查询\n\n## ${ip}\n\n${data.continent ? `**洲**: ${data.continent}\n\n` : ''}${data.country ? `**国家**: ${data.country}\n\n` : ''}${data.prov ? `**省份**: ${data.prov}\n\n` : ''}${data.city ? `**城市**: ${data.city}\n\n` : ''}${data.district ? `**区县**: ${data.district}\n\n` : ''}${data.isp ? `**运营商**: ${data.isp}` : ''}`
       }
 
-      // 如果是本地 IP，尝试获取公网 IP
-      if (!inputIp && this.isLocalIP(ip)) {
-        const publicIP = await this.getPublicIP()
-
-        if (publicIP) {
-          ip = publicIP
-        }
-      }
-
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = ip
-          break
-
-        case 'markdown': {
-          const api = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip}`
-          const { data = {} } = (await (await fetch(api)).json()) || {}
-          ctx.response.body = `# 🌐 IP 地址查询\n\n## ${ip}\n\n${data.continent ? `**洲**: ${data.continent}\n\n` : ''}${data.country ? `**国家**: ${data.country}\n\n` : ''}${data.prov ? `**省份**: ${data.prov}\n\n` : ''}${data.city ? `**城市**: ${data.city}\n\n` : ''}${data.district ? `**区县**: ${data.district}\n\n` : ''}${data.isp ? `**运营商**: ${data.isp}` : ''}`
-          break
-        }
-
-        case 'json':
-        default: {
-          const api = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip}`
-          const { data = {} } = (await (await fetch(api)).json()) || {}
-          ctx.response.body = Common.buildJson({ ip, ...data })
-          break
-        }
+      case 'json':
+      default: {
+        const api = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip}`
+        const { data = {} } = (await (await fetch(api)).json()) || {}
+        return Common.buildJson({ ip, ...data })
       }
     }
   }

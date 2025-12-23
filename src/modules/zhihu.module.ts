@@ -1,35 +1,30 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceZhihuHot {
-  handle(): RouterMiddleware<'/zhihu'> {
-    return async (ctx) => {
-      const data = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const data = await this.#fetch()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `知乎实时热搜\n\n${data
-            .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value_desc})`)
-            .slice(0, 20)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `知乎实时热搜\n\n${data
+          .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value_desc})`)
+          .slice(0, 20)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 知乎实时热搜\n\n${data
-            .slice(0, 20)
-            .map(
-              (e, i) =>
-                `### ${i + 1}. [${e.title}](${e.link}) \`${e.hot_value_desc}\`\n\n${e.detail ? `${e.detail}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
-            )
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 知乎实时热搜\n\n${data
+          .slice(0, 20)
+          .map(
+            (e, i) =>
+              `### ${i + 1}. [${e.title}](${e.link}) \`${e.hot_value_desc}\`\n\n${e.detail ? `${e.detail}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
+          )
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

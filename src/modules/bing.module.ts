@@ -1,6 +1,6 @@
 import { Common, dayjs } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 interface BingItem {
   title: string
@@ -15,34 +15,27 @@ interface BingItem {
 class ServiceBing {
   #cache = new Map<string, BingItem>()
 
-  handle(): RouterMiddleware<'/bing'> {
-    return async (ctx) => {
-      const data = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const data = await this.#fetch()
 
-      if (!data) {
-        ctx.response.status = 500
-        ctx.response.body = Common.buildJson(null, 500, '获取数据失败，可能是部署区域无法获取到 CN Bing 的数据')
-        return
-      }
+    if (!data) {
+      ctx.set.status = 500
+      return Common.buildJson(null, 500, '获取数据失败，可能是部署区域无法获取到 CN Bing 的数据')
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = data.cover || ''
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return data.cover || ''
 
-        case 'markdown':
-          ctx.response.body = `# ${data.title || '必应每日壁纸'}\n\n${data.headline ? `## ${data.headline}\n\n` : ''}${data.description ? `${data.description}\n\n` : ''}![${data.title}](${data.cover})\n\n${data.copyright ? `*${data.copyright}*` : ''}`
-          break
+      case 'markdown':
+        return `# ${data.title || '必应每日壁纸'}\n\n${data.headline ? `## ${data.headline}\n\n` : ''}${data.description ? `${data.description}\n\n` : ''}![${data.title}](${data.cover})\n\n${data.copyright ? `*${data.copyright}*` : ''}`
 
-        case 'image':
-          ctx.response.redirect(data.cover || '')
-          break
+      case 'image':
+        return ctx.redirect(data.cover || '')
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

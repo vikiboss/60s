@@ -55,7 +55,7 @@ src/
 ```typescript
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { ElysiaContext } from '../types.ts'
 
 // 定义接口类型
 interface DataItem {
@@ -69,16 +69,16 @@ class ServiceExample {
     return async (ctx) => {
       const data = await this.#fetch()
 
-      switch (ctx.state.encoding) {
+      switch (ctx.encoding) {
         case 'text':
-          ctx.response.body = `示例标题\n\n${data
+          return `示例标题\n\n${data
             .slice(0, 20)
             .map((e, i) => `${i + 1}. ${e.title}`)
             .join('\n')}`
           break
 
         case 'markdown':
-          ctx.response.body = `# 示例标题\n\n${data
+          return `# 示例标题\n\n${data
             .slice(0, 20)
             .map((e, i) => `### ${i + 1}. ${e.title}\n\n---\n`)
             .join('\n')}`
@@ -86,7 +86,7 @@ class ServiceExample {
 
         case 'json':
         default:
-          ctx.response.body = Common.buildJson(data)
+          return Common.buildJson(data)
           break
       }
     }
@@ -251,11 +251,11 @@ if (!param) {
 
 ```typescript
 // 成功响应
-ctx.response.body = Common.buildJson(data)
+return Common.buildJson(data)
 
 // 错误响应
-ctx.response.status = 400
-ctx.response.body = Common.buildJson(null, 400, '错误信息')
+ctx.set.status = 400
+return Common.buildJson(null, 400, '错误信息')
 ```
 
 ## 常用工具函数
@@ -286,7 +286,7 @@ ctx.response.body = Common.buildJson(null, 400, '错误信息')
 
 ```typescript
 import { Common } from '../common.ts'
-import type { RouterMiddleware } from '@oak/oak'
+import type { ElysiaContext } from '../types.ts'
 
 interface QuarkHotItem {
   id: string
@@ -306,7 +306,7 @@ class ServiceQuark {
     return async (ctx) => {
       const data = await this.#fetch()
       
-      switch (ctx.state.encoding) {
+      switch (ctx.encoding) {
         case 'text':
           // 纯文本格式
           break
@@ -315,7 +315,7 @@ class ServiceQuark {
           break
         case 'json':
         default:
-          ctx.response.body = Common.buildJson(data)
+          return Common.buildJson(data)
           break
       }
     }

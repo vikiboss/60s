@@ -1,5 +1,5 @@
 import { Common } from '../common.ts'
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 const xhsApiUrl = 'https://edith.xiaohongshu.com/api/sns/v1/search/hot_list'
 
@@ -17,49 +17,44 @@ const xhsHeaders = {
 }
 
 class ServiceRednote {
-  handle(): RouterMiddleware<'/rednote'> {
-    return async (ctx) => {
-      const response = await fetch(xhsApiUrl, {
-        method: 'GET',
-        headers: xhsHeaders,
-      })
+  async handle(ctx: AppContext) {
+    const response = await fetch(xhsApiUrl, {
+      method: 'GET',
+      headers: xhsHeaders,
+    })
 
-      const apiData = (await response.json()) as RednoteRawResponse
+    const apiData = (await response.json()) as RednoteRawResponse
 
-      const hotList: RednoteItem[] = apiData.data.items.map((item, idx) => {
-        return {
-          rank: idx + 1,
-          title: item.title,
-          score: item.score,
-          word_type: item.word_type,
-          work_type_icon: item.icon || '',
-          link: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(item.title)}&type=51`,
-          // type: item.type,
-        }
-      })
-
-      switch (ctx.state.encoding) {
-        case 'text': {
-          ctx.response.body = `小红书实时热点\n\n${hotList
-            .slice(0, 20)
-            .map((e) => `${e.rank}. ${e.title} (${e.score})`)
-            .join('\n')}`
-          break
-        }
-
-        case 'markdown': {
-          ctx.response.body = `# 小红书实时热点\n\n${hotList
-            .slice(0, 20)
-            .map((e) => `${e.rank}. [${e.title}](${e}) \`${e.score}\``)
-            .join('\n')}`
-          break
-        }
-
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(hotList)
-          break
+    const hotList: RednoteItem[] = apiData.data.items.map((item, idx) => {
+      return {
+        rank: idx + 1,
+        title: item.title,
+        score: item.score,
+        word_type: item.word_type,
+        work_type_icon: item.icon || '',
+        link: `https://www.xiaohongshu.com/search_result?keyword=${encodeURIComponent(item.title)}&type=51`,
+        // type: item.type,
       }
+    })
+
+    switch (ctx.encoding) {
+      case 'text': {
+        return `小红书实时热点\n\n${hotList
+          .slice(0, 20)
+          .map((e) => `${e.rank}. ${e.title} (${e.score})`)
+          .join('\n')}`
+      }
+
+      case 'markdown': {
+        return `# 小红书实时热点\n\n${hotList
+          .slice(0, 20)
+          .map((e) => `${e.rank}. [${e.title}](${e}) \`${e.score}\``)
+          .join('\n')}`
+      }
+
+      case 'json':
+      default:
+        return Common.buildJson(hotList)
     }
   }
 }

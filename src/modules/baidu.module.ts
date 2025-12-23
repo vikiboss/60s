@@ -1,95 +1,80 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceBaidu {
-  handleHotSearch(): RouterMiddleware<'/baidu/hot'> {
-    return async (ctx) => {
-      const data = await this.#fetchRealtimeHot()
+  async handleHotSearch(ctx: AppContext) {
+    const data = await this.#fetchRealtimeHot()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `百度实时热搜\n\n${data
-            .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `百度实时热搜\n\n${data
+          .slice(0, 20)
+          .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 百度实时热搜\n\n${data
-            .slice(0, 20)
-            .map(
-              (e, i) =>
-                `### ${i + 1}. [${e.title}](${e.url}) ${e.type_desc ? `\`${e.type_desc}\`` : ''} \`${e.score_desc}\`\n\n${e.desc ? `${e.desc}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
-            )
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 百度实时热搜\n\n${data
+          .slice(0, 20)
+          .map(
+            (e, i) =>
+              `### ${i + 1}. [${e.title}](${e.url}) ${e.type_desc ? `\`${e.type_desc}\`` : ''} \`${e.score_desc}\`\n\n${e.desc ? `${e.desc}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
+          )
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 
-  handleTeleplay(): RouterMiddleware<'/baidu/teleplay'> {
-    return async (ctx) => {
-      const data = await this.#fetchTeleplay()
+  async handleTeleplay(ctx: AppContext) {
+    const data = await this.#fetchTeleplay()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `百度电视剧榜单\n\n${data
-            .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `百度电视剧榜单\n\n${data
+          .slice(0, 20)
+          .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 百度电视剧榜单\n\n${data
-            .slice(0, 20)
-            .map(
-              (e, i) =>
-                `### ${i + 1}. [${e.title}](${e.url}) \`${e.score_desc}\`\n\n${e.desc ? `${e.desc}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
-            )
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 百度电视剧榜单\n\n${data
+          .slice(0, 20)
+          .map(
+            (e, i) =>
+              `### ${i + 1}. [${e.title}](${e.url}) \`${e.score_desc}\`\n\n${e.desc ? `${e.desc}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}---\n`,
+          )
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 
-  handleTieba(): RouterMiddleware<'/baidu/tieba'> {
-    return async (ctx) => {
-      const data = await this.#fetchTieba()
+  async handleTieba(ctx: AppContext) {
+    const data = await this.#fetchTieba()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `百度贴吧热门话题\n\n${data
-            .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `百度贴吧热门话题\n\n${data
+          .slice(0, 20)
+          .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 百度贴吧热门话题\n\n${data
-            .slice(0, 20)
-            .map(
-              (e, i) =>
-                `### ${i + 1}. [${e.title}](${e.url}) \`讨论: ${e.score_desc}\`\n\n${e.desc ? `**话题描述**: ${e.desc}\n\n` : ''}${e.abstract ? `${e.abstract}\n\n` : ''}${e.avatar ? `![${e.title}](${e.avatar})\n\n` : ''}---\n`,
-            )
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 百度贴吧热门话题\n\n${data
+          .slice(0, 20)
+          .map(
+            (e, i) =>
+              `### ${i + 1}. [${e.title}](${e.url}) \`讨论: ${e.score_desc}\`\n\n${e.desc ? `**话题描述**: ${e.desc}\n\n` : ''}${e.abstract ? `${e.abstract}\n\n` : ''}${e.avatar ? `![${e.title}](${e.avatar})\n\n` : ''}---\n`,
+          )
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

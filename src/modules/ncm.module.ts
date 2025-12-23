@@ -1,79 +1,69 @@
 import { Common, dayjs } from '../common.ts'
 import { filesize } from 'filesize'
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceNcm {
   private cache = new Map<string, { data: any; timestamp: number }>()
   private readonly CACHE_DURATION = 30 * 60 * 1000 // 30 minutes
 
-  handleRank(): RouterMiddleware<'/ncm-rank'> {
-    return async (ctx) => {
-      const data = await this.#fetchRank()
+  async handleRank(ctx: AppContext) {
+    const data = await this.#fetchRank()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `网易云音乐榜单\n\n${data
-            .map((e, i) => `${i + 1}. ${e.name} (${e.update_frequency})`)
-            .slice(0, 20)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `网易云音乐榜单\n\n${data
+          .map((e, i) => `${i + 1}. ${e.name} (${e.update_frequency})`)
+          .slice(0, 20)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 网易云音乐榜单\n\n${data
-            .slice(0, 20)
-            .map(
-              (e, i) =>
-                `### ${i + 1}. [${e.name}](${e.link}) \`${e.update_frequency}\`\n\n${e.description ? `${e.description}\n\n` : ''}${e.cover ? `![${e.name}](${e.cover})\n\n` : ''}**更新时间**: ${e.updated}\n\n---\n`,
-            )
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 网易云音乐榜单\n\n${data
+          .slice(0, 20)
+          .map(
+            (e, i) =>
+              `### ${i + 1}. [${e.name}](${e.link}) \`${e.update_frequency}\`\n\n${e.description ? `${e.description}\n\n` : ''}${e.cover ? `![${e.name}](${e.cover})\n\n` : ''}**更新时间**: ${e.updated}\n\n---\n`,
+          )
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 
-  handleRankDetail(): RouterMiddleware<'/ncm-rank/:id'> {
-    return async (ctx) => {
-      const id = ctx.params?.id || '3778678' // 默认热歌榜
-      const size = +(ctx.request.url.searchParams.get('size') || '36')
-      const data = await this.#fetchPlaylist(id)
+  async handleRankDetail(ctx: AppContext) {
+    const id = ctx.params?.id || '3778678' // 默认热歌榜
+    const size = +(ctx.query.size ?? '36')
+    const data = await this.#fetchPlaylist(id)
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `网易云音乐${data?.[0]?.rank_name ?? ''}\n\n${data
-            .slice(0, size)
-            .map(
-              (e, i) =>
-                `${i + 1}. ${e.title} - ${e.artist
-                  .slice(0, 2)
-                  .map((e) => e.name)
-                  .join('、')}`,
-            )
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `网易云音乐${data?.[0]?.rank_name ?? ''}\n\n${data
+          .slice(0, size)
+          .map(
+            (e, i) =>
+              `${i + 1}. ${e.title} - ${e.artist
+                .slice(0, 2)
+                .map((e) => e.name)
+                .join('、')}`,
+          )
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 网易云音乐${data?.[0]?.rank_name ?? ''}\n\n${data
-            .slice(0, size)
-            .map(
-              (e, i) =>
-                `### ${i + 1}. [${e.title}](${e.link}) \`${e.duration_desc}\`\n\n**歌手**: ${e.artist
-                  .slice(0, 3)
-                  .map((a) => `[${a.name}](${a.link})`)
-                  .join(' / ')}\n\n**专辑**: ${e.album.name}${e.album.cover ? `\n\n![${e.album.name}](${e.album.cover})` : ''}\n\n**热度**: ${e.popularity} | **评分**: ${e.score}\n\n---\n`,
-            )
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 网易云音乐${data?.[0]?.rank_name ?? ''}\n\n${data
+          .slice(0, size)
+          .map(
+            (e, i) =>
+              `### ${i + 1}. [${e.title}](${e.link}) \`${e.duration_desc}\`\n\n**歌手**: ${e.artist
+                .slice(0, 3)
+                .map((a) => `[${a.name}](${a.link})`)
+                .join(' / ')}\n\n**专辑**: ${e.album.name}${e.album.cover ? `\n\n![${e.album.name}](${e.album.cover})` : ''}\n\n**热度**: ${e.popularity} | **评分**: ${e.score}\n\n---\n`,
+          )
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

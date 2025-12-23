@@ -1,40 +1,34 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceLyric {
-  handle(): RouterMiddleware<'/lyric'> {
-    return async (ctx) => {
-      const query = ctx.request.url.searchParams.get('query')
+  async handle(ctx: AppContext) {
+    const query = ctx.query.query
 
-      if (!query) {
-        return Common.requireArguments('query', ctx.response)
-      }
+    if (!query) {
+      return Common.requireArguments('query')
+    }
 
-      const clean = ctx.request.url.searchParams.get('clean') !== 'false'
+    const clean = ctx.query.clean !== 'false'
 
-      const data = await this.#fetchLyric(query, clean)
+    const data = await this.#fetchLyric(query, clean)
 
-      if (!data) {
-        ctx.response.status = 404
-        ctx.response.body = Common.buildJson(null, 404, '未找到歌曲或歌词')
-        return
-      }
+    if (!data) {
+      ctx.set.status = 404
+      return Common.buildJson(null, 404, '未找到歌曲或歌词')
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = data.formatted
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return data.formatted
 
-        case 'markdown':
-          ctx.response.body = `# 🎵 ${data.title}\n\n**演唱**: ${data.artists.join(', ')}\n\n**专辑**: ${data.album}\n\n---\n\n${data.formatted}`
-          break
+      case 'markdown':
+        return `# 🎵 ${data.title}\n\n**演唱**: ${data.artists.join(', ')}\n\n**专辑**: ${data.album}\n\n---\n\n${data.formatted}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

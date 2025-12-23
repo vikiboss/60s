@@ -1,103 +1,94 @@
 import crypto from 'node:crypto'
 import { Common } from '../../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 class ServiceFanyi {
-  langMap = new Map<string, { label: string; code: string; alphabet: string }>()
+  public static langMap = new Map<string, { label: string; code: string; alphabet: string }>()
 
-  handle(): RouterMiddleware<'/fanyi'> {
-    this.initLangs()
+  async handle(ctx: AppContext) {
+    const text = await Common.getParam('text', ctx, true)
 
-    return async (ctx) => {
-      const text = await Common.getParam('text', ctx.request, true)
+    if (!text) {
+      return Common.requireArguments('text')
+    }
 
-      if (!text) {
-        return Common.requireArguments('text', ctx.response)
-      }
+    const from = (await Common.getParam('from', ctx, true)) || 'auto'
+    const to = (await Common.getParam('to', ctx, true)) || 'auto'
 
-      const from = (await Common.getParam('from', ctx.request, true)) || 'auto'
-      const to = (await Common.getParam('to', ctx.request, true)) || 'auto'
+    if (!this.isLangValid(from, to)) {
+      ctx.set.status = 400
+      return Common.buildJson(null, 400, '不支持的语言类型，请通过 /fanyi/langs 接口查询支持的语言类型')
+    }
 
-      if (!this.isLangValid(from, to)) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, '不支持的语言类型，请通过 /fanyi/langs 接口查询支持的语言类型')
-        return
-      }
+    const data = await this.#fetch(text, from, to)
+    const isSuccess = data.code === 0
+    const responseItems = data?.translateResult?.flat() || []
 
-      const data = await this.#fetch(text, from, to)
-      const isSuccess = data.code === 0
-      const responseItems = data?.translateResult?.flat() || []
+    ctx.set.status = isSuccess ? 200 : 500
+    const [sourceType, targetType] = data?.type?.split('2') || []
 
-      ctx.response.status = isSuccess ? 200 : 500
-      const [sourceType, targetType] = data?.type?.split('2') || []
+    switch (ctx.encoding) {
+      case 'text':
+        return isSuccess ? responseItems.map((e) => e.tgt).join('') || '' : '[翻译服务异常]'
+        break
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = isSuccess ? responseItems.map((e) => e.tgt).join('') || '' : '[翻译服务异常]'
-          break
-
-        case 'markdown': {
-          if (!isSuccess) {
-            ctx.response.body = '# 翻译服务异常'
-            break
-          }
-          const sourceText = responseItems.map((e) => e.src).join('') || ''
-          const targetText = responseItems.map((e) => e.tgt).join('') || ''
-          const sourcePronounce = responseItems.map((e) => e.srcPronounce).join('') || ''
-          const targetPronounce = responseItems.map((e) => e.tgtPronounce).join('') || ''
-          const sourceLang = this.langMap.get(sourceType)?.label || sourceType
-          const targetLang = this.langMap.get(targetType)?.label || targetType
-          ctx.response.body = `# 🌐 翻译结果\n\n## 原文 (${sourceLang})\n\n> ${sourceText}\n\n${sourcePronounce ? `*发音: ${sourcePronounce}*\n\n` : ''}## 译文 (${targetLang})\n\n> ${targetText}\n\n${targetPronounce ? `*发音: ${targetPronounce}*` : ''}`
+      case 'markdown': {
+        if (!isSuccess) {
+          return '# 翻译服务异常'
           break
         }
-
-        case 'json':
-        default:
-          ctx.response.body = isSuccess
-            ? Common.buildJson({
-                source: {
-                  text: responseItems.map((e) => e.src).join('') || '',
-                  type: sourceType,
-                  type_desc: this.langMap.get(sourceType)?.label || '',
-                  pronounce: responseItems.map((e) => e.srcPronounce).join('') || '',
-                },
-                target: {
-                  text: responseItems.map((e) => e.tgt).join('') || '',
-                  type: targetType,
-                  type_desc: this.langMap.get(targetType)?.label || '',
-                  pronounce: responseItems.map((e) => e.tgtPronounce).join('') || '',
-                },
-              })
-            : Common.buildJson(null, 500, `翻译服务异常，调试信息: ${JSON.stringify(data)}`)
-          break
+        const sourceText = responseItems.map((e) => e.src).join('') || ''
+        const targetText = responseItems.map((e) => e.tgt).join('') || ''
+        const sourcePronounce = responseItems.map((e) => e.srcPronounce).join('') || ''
+        const targetPronounce = responseItems.map((e) => e.tgtPronounce).join('') || ''
+        const sourceLang = ServiceFanyi.langMap.get(sourceType)?.label || sourceType
+        const targetLang = ServiceFanyi.langMap.get(targetType)?.label || targetType
+        return `# 🌐 翻译结果\n\n## 原文 (${sourceLang})\n\n> ${sourceText}\n\n${sourcePronounce ? `*发音: ${sourcePronounce}*\n\n` : ''}## 译文 (${targetLang})\n\n> ${targetText}\n\n${targetPronounce ? `*发音: ${targetPronounce}*` : ''}`
+        break
       }
+
+      case 'json':
+      default:
+        return isSuccess
+          ? Common.buildJson({
+              source: {
+                text: responseItems.map((e) => e.src).join('') || '',
+                type: sourceType,
+                type_desc: ServiceFanyi.langMap.get(sourceType)?.label || '',
+                pronounce: responseItems.map((e) => e.srcPronounce).join('') || '',
+              },
+              target: {
+                text: responseItems.map((e) => e.tgt).join('') || '',
+                type: targetType,
+                type_desc: ServiceFanyi.langMap.get(targetType)?.label || '',
+                pronounce: responseItems.map((e) => e.tgtPronounce).join('') || '',
+              },
+            })
+          : Common.buildJson(null, 500, `翻译服务异常，调试信息: ${JSON.stringify(data)}`)
+        break
     }
   }
 
-  handleLangs(): RouterMiddleware<'/fanyi/langs'> {
-    return (ctx) => {
-      ctx.response.body = Common.buildJson(
-        [...this.langMap.values()].toSorted((a, b) => a.alphabet.localeCompare(b.alphabet)),
-      )
-    }
+  async handleLangs() {
+    return Common.buildJson([...ServiceFanyi.langMap.values()].toSorted((a, b) => a.alphabet.localeCompare(b.alphabet)))
   }
 
   isLangValid(from: string, to: string) {
-    return (from === 'auto' || this.langMap.has(from)) && (to === 'auto' || this.langMap.has(to))
+    return (from === 'auto' || ServiceFanyi.langMap.has(from)) && (to === 'auto' || ServiceFanyi.langMap.has(to))
   }
 
-  async initLangs() {
+  static async initLangs() {
     const api = 'https://api-overmind.youdao.com/openapi/get/luna/dict/luna-front/prod/langType'
     const { data = {} } = (await (await fetch(api)).json()) || {}
     const langs = [...(data?.value?.textTranslate?.common || []), ...(data?.value?.textTranslate?.specify || [])]
 
     for (const lang of langs) {
-      this.langMap.set(lang.code, lang)
+      ServiceFanyi.langMap.set(lang.code, lang)
     }
 
     // const date = new Date().toLocaleString('zh-CN')
-    // console.log(`[${date}] [fanyi] 语言列表初始化完成，共 ${this.langMap.size} 种语言`)
+    // console.log(`[${date}] [fanyi] 语言列表初始化完成，共 ${ServiceFanyi.langMap.size} 种语言`)
   }
 
   async #fetch(text: string, from: string, to: string) {
@@ -199,3 +190,5 @@ interface YoudaoData {
   }[][]
   type: string
 }
+
+ServiceFanyi.initLangs()

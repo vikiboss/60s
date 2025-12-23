@@ -1,52 +1,47 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceEpic {
-  handle(): RouterMiddleware<'/epic'> {
-    return async (ctx) => {
-      const data = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const data = await this.#fetch()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `Epic Games 免费游戏\n\n${data
-            .slice(0, 20)
-            .map((e, idx) => {
-              const date = Common.localeTime(new Date(e.free_start_at), { seconds: false })
-              const endDate = Common.localeTime(new Date(e.free_end_at), { seconds: false })
-              const hasBookTitle = e.title.includes('《')
-              const title = hasBookTitle ? e.title : `《${e.title}》`
+    switch (ctx.encoding) {
+      case 'text':
+        return `Epic Games 免费游戏\n\n${data
+          .slice(0, 20)
+          .map((e, idx) => {
+            const date = Common.localeTime(new Date(e.free_start_at), { seconds: false })
+            const endDate = Common.localeTime(new Date(e.free_end_at), { seconds: false })
+            const hasBookTitle = e.title.includes('《')
+            const title = hasBookTitle ? e.title : `《${e.title}》`
 
-              const freeDesc = e.is_free_now ? `现在免费，截至到 ${endDate}` : `于 ${date} 至 ${endDate} 免费`
+            const freeDesc = e.is_free_now ? `现在免费，截至到 ${endDate}` : `于 ${date} 至 ${endDate} 免费`
 
-              return `${idx + 1}. ${title}，${freeDesc}\n\n${e.description}`
-            })
-            .join('\n\n')}`
-          break
+            return `${idx + 1}. ${title}，${freeDesc}\n\n${e.description}`
+          })
+          .join('\n\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# Epic Games 免费游戏\n\n${data
-            .slice(0, 20)
-            .map((e, idx) => {
-              const date = Common.localeTime(new Date(e.free_start_at), { seconds: false })
-              const endDate = Common.localeTime(new Date(e.free_end_at), { seconds: false })
-              const hasBookTitle = e.title.includes('《')
-              const title = hasBookTitle ? e.title : `《${e.title}》`
+      case 'markdown':
+        return `# Epic Games 免费游戏\n\n${data
+          .slice(0, 20)
+          .map((e, idx) => {
+            const date = Common.localeTime(new Date(e.free_start_at), { seconds: false })
+            const endDate = Common.localeTime(new Date(e.free_end_at), { seconds: false })
+            const hasBookTitle = e.title.includes('《')
+            const title = hasBookTitle ? e.title : `《${e.title}》`
 
-              const freeDesc = e.is_free_now
-                ? `🎮 **现在免费** 截至 ${endDate}`
-                : `⏰ ${date} 至 ${endDate} 免费`
+            const freeDesc = e.is_free_now
+              ? `🎮 **现在免费** 截至 ${endDate}`
+              : `⏰ ${date} 至 ${endDate} 免费`
 
-              return `### ${idx + 1}. [${title}](${e.link}) ${e.is_free_now ? '🔥' : ''}\n\n${freeDesc}\n\n${e.description}\n\n${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}**发行商**: ${e.seller} | **原价**: ${e.original_price_desc}\n\n---\n`
-            })
-            .join('\n')}`
-          break
+            return `### ${idx + 1}. [${title}](${e.link}) ${e.is_free_now ? '🔥' : ''}\n\n${freeDesc}\n\n${e.description}\n\n${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}**发行商**: ${e.seller} | **原价**: ${e.original_price_desc}\n\n---\n`
+          })
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

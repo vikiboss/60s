@@ -1,6 +1,6 @@
 import dayjs from 'dayjs'
 import { Common } from '../common.ts'
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 const HN_BASE_URL: string = 'https://hacker-news.firebaseio.com/v0'
 const DEFAULT_LIMIT_SIZE: number = 10
@@ -11,48 +11,42 @@ class ServiceHackerNews {
   // 10 minutes
   private readonly CACHE_TTL_MS = 10 * 60 * 1000
 
-  handle(type: HackerNewsType = 'top'): RouterMiddleware<'/hacker-news'> {
-    return async (ctx) => {
-      const isValidType = Object.keys(HackerNewsTypeMap).includes(type)
+  async handle(type: HackerNewsType = 'top', ctx: AppContext) {
+    const isValidType = Object.keys(HackerNewsTypeMap).includes(type)
 
-      if (!isValidType) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, `暂不支持 ${type} 文章类型查询`)
-        return
+    if (!isValidType) {
+      ctx.set.status = 400
+      return Common.buildJson(null, 400, `暂不支持 ${type} 文章类型查询`)
+    }
+    // 查询数限制
+    let limit = Number.parseInt(await Common.getParam('limit', ctx)) || DEFAULT_LIMIT_SIZE
+    limit = Math.min(limit, DEFAULT_MAX_LIMIT_SIZE)
+
+    // 是否需要强制刷新缓存
+    const forceUpdate = !!(await Common.getParam('force-update', ctx))
+
+    const data = await this.#fetch(type, limit, forceUpdate)
+
+    switch (ctx.encoding) {
+      case 'text': {
+        return `Hacker News（${HackerNewsTypeMap[type]}）\n\n${data
+          .map((e, idx) => `${idx + 1}. ${e.title}\n${e.score} points by ${e.author}\n${e.link}\n${e.created}`)
+          .slice(0, 20)
+          .join('\n\n')}`
       }
-      // 查询数限制
-      let limit = Number.parseInt(await Common.getParam('limit', ctx.request)) || DEFAULT_LIMIT_SIZE
-      limit = Math.min(limit, DEFAULT_MAX_LIMIT_SIZE)
 
-      // 是否需要强制刷新缓存
-      const forceUpdate = !!(await Common.getParam('force-update', ctx.request))
+      case 'markdown': {
+        return `# Hacker News - ${HackerNewsTypeMap[type]}\n\n${data
+          .map(
+            (e, idx) =>
+              `### ${idx + 1}. [${e.title}](${e.link || `https://news.ycombinator.com/item?id=${e.id}`})\n\n**${e.score}** points by **${e.author}** · ${e.created}\n\n---\n`,
+          )
+          .join('\n')}`
+      }
 
-      const data = await this.#fetch(type, limit, forceUpdate)
-
-      switch (ctx.state.encoding) {
-        case 'text': {
-          ctx.response.body = `Hacker News（${HackerNewsTypeMap[type]}）\n\n${data
-            .map((e, idx) => `${idx + 1}. ${e.title}\n${e.score} points by ${e.author}\n${e.link}\n${e.created}`)
-            .slice(0, 20)
-            .join('\n\n')}`
-          break
-        }
-
-        case 'markdown': {
-          ctx.response.body = `# Hacker News - ${HackerNewsTypeMap[type]}\n\n${data
-            .map(
-              (e, idx) =>
-                `### ${idx + 1}. [${e.title}](${e.link || `https://news.ycombinator.com/item?id=${e.id}`})\n\n**${e.score}** points by **${e.author}** · ${e.created}\n\n---\n`,
-            )
-            .join('\n')}`
-          break
-        }
-
-        case 'json':
-        default: {
-          ctx.response.body = Common.buildJson(data)
-          break
-        }
+      case 'json':
+      default: {
+        return Common.buildJson(data)
       }
     }
   }

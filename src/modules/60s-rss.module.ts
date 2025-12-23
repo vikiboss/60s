@@ -1,6 +1,6 @@
 import { Common, dayjs, TZ_SHANGHAI } from '../common.ts'
 import { SolarDay } from 'tyme4ts'
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六']
 
@@ -24,14 +24,12 @@ interface DailyNewsItem {
 class Service60sRss {
   #cache = new Map<string, DailyNewsItem>()
 
-  handle(): RouterMiddleware<'/60s/rss'> {
-    return async (ctx) => {
-      const items = await this.#fetchLast10Days()
-      const rssXml = this.#generateRSS(items)
+  async handle(ctx: AppContext) {
+    const items = await this.#fetchLast10Days()
+    const rssXml = this.#generateRSS(items)
 
-      ctx.response.type = 'application/xml'
-      ctx.response.body = rssXml
-    }
+    ctx.set.headers['content-type'] = 'application/xml'
+    return rssXml
   }
 
   async #tryUrl(date: string): Promise<DailyNewsItem | null> {

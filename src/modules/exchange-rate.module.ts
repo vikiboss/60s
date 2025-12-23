@@ -1,36 +1,31 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceExRate {
   #cache = new Map<string, RateItem>()
 
-  handle(): RouterMiddleware<'/exchange_rate'> {
-    return async (ctx) => {
-      const currency = ctx.request.url.searchParams.get('currency') || 'CNY'
+  async handle(ctx: AppContext) {
+    const currency = ctx.query.currency || 'CNY'
 
-      const data = await this.#fetch(currency)
+    const data = await this.#fetch(currency)
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `${Common.localeDate()} 的 ${currency} 汇率\n\n${data.rates
-            .slice(0, 20)
-            .map((e) => `${e.currency} => ${e.rate}`)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `${Common.localeDate()} 的 ${currency} 汇率\n\n${data.rates
+          .slice(0, 20)
+          .map((e) => `${e.currency} => ${e.rate}`)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# ${currency} 汇率\n\n> 更新时间: ${data.updated}\n\n| 货币 | 汇率 |\n|------|------|\n${data.rates
-            .slice(0, 30)
-            .map((e) => `| **${e.currency}** | ${e.rate.toFixed(4)} |`)
-            .join('\n')}\n\n*下次更新: ${data.next_updated}*`
-          break
+      case 'markdown':
+        return `# ${currency} 汇率\n\n> 更新时间: ${data.updated}\n\n| 货币 | 汇率 |\n|------|------|\n${data.rates
+          .slice(0, 30)
+          .map((e) => `| **${e.currency}** | ${e.rate.toFixed(4)} |`)
+          .join('\n')}\n\n*下次更新: ${data.next_updated}*`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

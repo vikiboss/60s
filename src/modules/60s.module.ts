@@ -1,7 +1,7 @@
 import { Common, dayjs, TZ_SHANGHAI } from '../common.ts'
 import { SolarDay } from 'tyme4ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六']
 
@@ -13,69 +13,59 @@ function getDayOfWeek(date?: string) {
 class Service60s {
   #cache = new Map<string, DailyNewsItem>()
 
-  handle(): RouterMiddleware<'/60s'> {
-    return async (ctx) => {
-      const forceUpdate = ctx.request.url.searchParams.has('force-update')
-      const data = await this.#fetch(ctx.request.url.searchParams.get('date'), forceUpdate)
+  async handle(ctx: AppContext) {
+    const forceUpdate = !!ctx.query['force-update']
+    const data = await this.#fetch(ctx.query.date ?? null, forceUpdate)
 
-      switch (ctx.state.encoding) {
-        case 'text': {
-          ctx.response.body = `每天 60s 读懂世界（${data.date}）\n\n${data.news
-            .map((e, idx) => `${idx + 1}. ${e}`)
-            .join('\n')}\n\n${data.tip ? `【微语】${data.tip}` : ''}`
-          break
+    switch (ctx.encoding) {
+      case 'text': {
+        ctx.set.headers['content-type'] = 'text/plain; charset=utf-8'
+
+        return `每天 60s 读懂世界（${data.date}）\n\n${data.news
+          .map((e, idx) => `${idx + 1}. ${e}`)
+          .join('\n')}\n\n${data.tip ? `【微语】${data.tip}` : ''}`
+      }
+
+      case 'markdown': {
+        return `# 每天 60s 读懂世界\n\n> ${data.date} ${data.day_of_week} ${data.lunar_date}\n\n${data.news
+          .map((e, idx) => {
+            const newsItem = typeof e === 'string' ? { title: e, link: '' } : e
+            return newsItem.link ? `${idx + 1}. [${newsItem.title}](${newsItem.link})` : `${idx + 1}. ${newsItem.title}`
+          })
+          .join(
+            '\n',
+          )}\n\n${data.tip ? `---\n\n**【微语】** *${data.tip}*` : ''}${data.image ? `\n\n![每天 60s 读懂世界](${data.image})` : ''}`
+      }
+
+      case 'image': {
+        // test image url
+        const response = await fetch(data.image, { method: 'HEAD' })
+        return ctx.redirect(response.ok ? data.image : `https://60s-static.viki.moe/images/${data.date}.png`)
+      }
+
+      case 'image-proxy': {
+        let response: Response | null = await fetch(data.image)
+
+        if (!response.ok) {
+          response = await Common.tryRepoUrl({
+            repo: 'vikiboss/60s-static-host',
+            path: `static/images/${data.date}.png`,
+            alternatives: [`https://60s-static.viki.moe/images/${data.date}.png`],
+          })
         }
 
-        case 'markdown': {
-          ctx.response.body = `# 每天 60s 读懂世界\n\n> ${data.date} ${data.day_of_week} ${data.lunar_date}\n\n${data.news
-            .map((e, idx) => {
-              const newsItem = typeof e === 'string' ? { title: e, link: '' } : e
-              return newsItem.link
-                ? `${idx + 1}. [${newsItem.title}](${newsItem.link})`
-                : `${idx + 1}. ${newsItem.title}`
-            })
-            .join(
-              '\n',
-            )}\n\n${data.tip ? `---\n\n**【微语】** *${data.tip}*` : ''}${data.image ? `\n\n![每天 60s 读懂世界](${data.image})` : ''}`
-          break
+        if (response) {
+          ctx.set.headers['content-type'] = response.headers.get('content-type') || 'image/png'
+          return response.body
+        } else {
+          ctx.set.status = 404
+          return 'Image not found'
         }
+      }
 
-        case 'image': {
-          // test image url
-          const response = await fetch(data.image, { method: 'HEAD' })
-          ctx.response.redirect(response.ok ? data.image : `https://60s-static.viki.moe/images/${data.date}.png`)
-          break
-        }
-
-        case 'image-proxy': {
-          let response: Response | null = await fetch(data.image)
-
-          if (!response.ok) {
-            response = await Common.tryRepoUrl({
-              repo: 'vikiboss/60s-static-host',
-              path: `static/images/${data.date}.png`,
-              alternatives: [`https://60s-static.viki.moe/images/${data.date}.png`],
-            })
-          }
-
-          if (response) {
-            ctx.response.headers = response.headers
-            ctx.response.body = response.body
-            ctx.response.type = response.type
-            ctx.response.status = response.status
-          } else {
-            ctx.response.status = 404
-            ctx.response.body = 'Image not found'
-          }
-
-          break
-        }
-
-        case 'json':
-        default: {
-          ctx.response.body = Common.buildJson(data)
-          break
-        }
+      case 'json':
+      default: {
+        return Common.buildJson(data)
       }
     }
   }

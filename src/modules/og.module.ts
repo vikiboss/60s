@@ -1,38 +1,33 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceOG {
-  handle(): RouterMiddleware<'/og'> {
-    return async (ctx) => {
-      const url = await Common.getParam('url', ctx.request, true)
+  async handle(ctx: AppContext) {
+    const url = await Common.getParam('url', ctx, true)
 
-      if (!url) {
-        return Common.requireArguments('url', ctx.response)
+    if (!url) {
+      return Common.requireArguments('url')
+    }
+
+    try {
+      const data = await this.#fetch(url)
+
+      switch (ctx.encoding) {
+        case 'text':
+          return `标题: ${data.title}\n描述: ${data.description}`
+
+        case 'markdown':
+          return `# 🔗 Open Graph 信息\n\n## [${data.title || '无标题'}](${url})\n\n${data.description ? `> ${data.description}\n\n` : ''}${data.image ? `![预览图](${data.image})` : '*无预览图*'}`
+
+        case 'json':
+        default:
+          return Common.buildJson(data)
       }
-
-      try {
-        const data = await this.#fetch(url)
-
-        switch (ctx.state.encoding) {
-          case 'text':
-            ctx.response.body = `标题: ${data.title}\n描述: ${data.description}`
-            break
-
-          case 'markdown':
-            ctx.response.body = `# 🔗 Open Graph 信息\n\n## [${data.title || '无标题'}](${url})\n\n${data.description ? `> ${data.description}\n\n` : ''}${data.image ? `![预览图](${data.image})` : '*无预览图*'}`
-            break
-
-          case 'json':
-          default:
-            ctx.response.body = Common.buildJson(data)
-            break
-        }
-      } catch (e: any) {
-        console.error(e)
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 500, `OG 信息解析失败: ${e.message || e}`)
-      }
+    } catch (e: any) {
+      console.error(e)
+      ctx.set.status = 400
+      return Common.buildJson(null, 500, `OG 信息解析失败: ${e.message || e}`)
     }
   }
 

@@ -2,7 +2,7 @@ import regions from './regions.json' with { type: 'json' }
 import { load } from 'cheerio'
 import { Common } from '../../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 type FuelRegion = (typeof regions)[number]
 
@@ -21,53 +21,47 @@ class ServiceFuelPrice {
   // 60 minutes
   private readonly CACHE_TTL_MS = 60 * 60 * 1000
 
-  handle(): RouterMiddleware<'/fuel/price'> {
-    return async (ctx) => {
-      try {
-        const queryRegion = ctx.request.url.searchParams.get('region') || '北京'
-        const forceUpdate = !!ctx.request.url.searchParams.get('force-update')
-        const target = sortedRegion.find((e) => e.region.endsWith(queryRegion))
+  async handle(ctx: AppContext) {
+    try {
+      const queryRegion = ctx.query.region || '北京'
+      const forceUpdate = !!ctx.query['force-update']
+      const target = sortedRegion.find((e) => e.region.endsWith(queryRegion))
 
-        if (!target) {
-          ctx.response.body = Common.buildJson(null, 400, `暂不支持 ${queryRegion} 区域查询`)
-          return
-        }
-
-        const { items, ts } = await this.#fetch(target, forceUpdate)
-
-        const data = {
-          region: target.region,
-          items,
-          link: `${this.#BASE_URL}${target.url}`,
-          updated: Common.localeTime(ts),
-          updated_at: ts,
-        }
-
-        switch (ctx.state.encoding) {
-          case 'text': {
-            ctx.response.body = `今日油价 (${queryRegion})\n\n${data.items
-              .map((e) => `${e.name}: ${e.price_desc}`)
-              .join('\n')}\n\n更新时间: ${data.updated}`
-            break
-          }
-
-          case 'markdown': {
-            ctx.response.body = `# 今日油价 (${queryRegion})\n\n${data.items
-              .map((e) => `- **${e.name}**: ${e.price_desc}`)
-              .join('\n')}\n\n更新时间: ${data.updated}`
-            break
-          }
-
-          case 'json':
-          default: {
-            ctx.response.body = Common.buildJson(data)
-            break
-          }
-        }
-      } catch (error) {
-        const message = error instanceof Error ? error.message : '未知错误'
-        ctx.response.body = Common.buildJson({ error: message }, 500, message)
+      if (!target) {
+        return Common.buildJson(null, 400, `暂不支持 ${queryRegion} 区域查询`)
       }
+
+      const { items, ts } = await this.#fetch(target, forceUpdate)
+
+      const data = {
+        region: target.region,
+        items,
+        link: `${this.#BASE_URL}${target.url}`,
+        updated: Common.localeTime(ts),
+        updated_at: ts,
+      }
+
+      switch (ctx.encoding) {
+        case 'text': {
+          return `今日油价 (${queryRegion})\n\n${data.items
+            .map((e) => `${e.name}: ${e.price_desc}`)
+            .join('\n')}\n\n更新时间: ${data.updated}`
+        }
+
+        case 'markdown': {
+          return `# 今日油价 (${queryRegion})\n\n${data.items
+            .map((e) => `- **${e.name}**: ${e.price_desc}`)
+            .join('\n')}\n\n更新时间: ${data.updated}`
+        }
+
+        case 'json':
+        default: {
+          return Common.buildJson(data)
+        }
+      }
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '未知错误'
+      return Common.buildJson({ error: message }, 500, message)
     }
   }
 

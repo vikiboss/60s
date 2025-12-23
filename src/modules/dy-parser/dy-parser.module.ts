@@ -1,11 +1,7 @@
-import { Common } from '../../common.ts'
-
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 class ServiceDyParser {
-  handle(): RouterMiddleware<'/dy-parser'> {
-    return async (ctx) => {}
-  }
+  async handle(_ctx: AppContext) {}
 }
 
 export const serviceKfc = new ServiceDyParser()

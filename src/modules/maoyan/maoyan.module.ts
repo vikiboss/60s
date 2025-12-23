@@ -1,124 +1,106 @@
 import { Common, dayjs } from '../../common.ts'
 import { fetchBoxOffice } from './encode.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 class ServiceMaoyan {
-  handleAllMovie(): RouterMiddleware<'/maoyan/all/movie'> {
-    return async (ctx) => {
-      const { list, tips } = await this.fetchHTMLData()
+  async handleAllMovie(ctx: AppContext) {
+    const { list, tips } = await this.fetchHTMLData()
 
-      const data = {
-        list: list
-          .toSorted((a, b) => b.rawValue - a.rawValue)
-          .map((e, idx) => ({
-            rank: idx + 1,
-            maoyan_id: e.movieId,
-            movie_name: e.movieName,
-            release_year: e.releaseTime,
-            box_office: e.rawValue,
-            box_office_desc: formatBoxOffice(e.rawValue),
-          })),
-        tip: tips,
-        update_time: Common.localeTime(),
-        update_time_at: new Date().getTime(),
-      }
+    const data = {
+      list: list
+        .toSorted((a, b) => b.rawValue - a.rawValue)
+        .map((e, idx) => ({
+          rank: idx + 1,
+          maoyan_id: e.movieId,
+          movie_name: e.movieName,
+          release_year: e.releaseTime,
+          box_office: e.rawValue,
+          box_office_desc: formatBoxOffice(e.rawValue),
+        })),
+      tip: tips,
+      update_time: Common.localeTime(),
+      update_time_at: new Date().getTime(),
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `全球电影票房总榜（猫眼）\n\n${data.list
-            .map((e) => `${e.rank}. ${e.movie_name} (${e.release_year}) - ${e.box_office_desc}`)
-            .slice(0, 20)
-            .join('\n')}\n\n${data.tip}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `全球电影票房总榜（猫眼）\n\n${data.list
+          .map((e) => `${e.rank}. ${e.movie_name} (${e.release_year}) - ${e.box_office_desc}`)
+          .slice(0, 20)
+          .join('\n')}\n\n${data.tip}`
 
-        case 'markdown':
-          ctx.response.body = `# 🎬 全球电影票房总榜\n\n| 排名 | 电影名称 | 上映年份 | 票房 |\n|------|----------|----------|------|\n${data.list
-            .slice(0, 20)
-            .map((e) => `| ${e.rank} | ${e.movie_name} | ${e.release_year} | ${e.box_office_desc} |`)
-            .join('\n')}\n\n${data.tip ? `> ${data.tip}\n\n` : ''}*更新时间: ${data.update_time}*\n\n*数据来源: 猫眼专业版*`
-          break
+      case 'markdown':
+        return `# 🎬 全球电影票房总榜\n\n| 排名 | 电影名称 | 上映年份 | 票房 |\n|------|----------|----------|------|\n${data.list
+          .slice(0, 20)
+          .map((e) => `| ${e.rank} | ${e.movie_name} | ${e.release_year} | ${e.box_office_desc} |`)
+          .join('\n')}\n\n${data.tip ? `> ${data.tip}\n\n` : ''}*更新时间: ${data.update_time}*\n\n*数据来源: 猫眼专业版*`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 
-  handleRealtime(type: 'movie' | 'tv' | 'web'): RouterMiddleware<'/maoyan/movie'> {
-    return async (ctx) => {
-      const data = await fetchBoxOffice()
+  async handleRealtime(type: 'movie' | 'tv' | 'web', ctx: AppContext) {
+    const data = await fetchBoxOffice()
 
-      switch (ctx.state.encoding) {
-        case 'text': {
-          switch (type) {
-            case 'movie':
-            default: {
-              ctx.response.body = `今日实时票房排行 (${dayjs().format('M/D HH:mm')})\n\n${data.movie.list
-                .map((e, idx) => `${idx + 1}. ${e.movie_name} - ${e.box_office_desc}/${e.release_info}`)
-                .slice(0, 20)
-                .join('\n')}\n\n数据来源：猫眼专业版`
-              break
-            }
-
-            case 'tv': {
-              ctx.response.body = `今日实时电视收视排行 (${dayjs().format('M/D HH:mm')})\n\n${data.tv.list
-                .map((e, idx) => `${idx + 1}. ${e.programme_name} - ${e.channel_name}/${e.market_rate.toFixed(2)}%`)
-                .slice(0, 20)
-                .join('\n')}\n\n数据来源：猫眼专业版`
-              break
-            }
-
-            case 'web': {
-              ctx.response.body = `今日实时网播热度排行 (${dayjs().format('M/D HH:mm')})\n\n${data.web.list
-                .map((e, idx) => `${idx + 1}. ${e.series_name} - ${e.curr_heat_desc}/${e.release_info}`)
-                .slice(0, 20)
-                .join('\n')}\n\n数据来源：猫眼专业版`
-              break
-            }
+    switch (ctx.encoding) {
+      case 'text': {
+        switch (type) {
+          case 'movie':
+          default: {
+            return `今日实时票房排行 (${dayjs().format('M/D HH:mm')})\n\n${data.movie.list
+              .map((e, idx) => `${idx + 1}. ${e.movie_name} - ${e.box_office_desc}/${e.release_info}`)
+              .slice(0, 20)
+              .join('\n')}\n\n数据来源：猫眼专业版`
           }
 
-          break
-        }
-
-        case 'markdown': {
-          switch (type) {
-            case 'movie':
-            default: {
-              ctx.response.body = `# 🎬 今日实时票房排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 电影名称 | 实时票房 | 上映信息 |\n|------|----------|----------|----------|\n${data.movie.list
-                .slice(0, 20)
-                .map((e, idx) => `| ${idx + 1} | ${e.movie_name} | ${e.box_office_desc} | ${e.release_info} |`)
-                .join('\n')}\n\n*数据来源: 猫眼专业版*`
-              break
-            }
-
-            case 'tv': {
-              ctx.response.body = `# 📺 今日实时电视收视排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 节目名称 | 频道 | 收视率 |\n|------|----------|------|--------|\n${data.tv.list
-                .slice(0, 20)
-                .map((e, idx) => `| ${idx + 1} | ${e.programme_name} | ${e.channel_name} | ${e.market_rate.toFixed(2)}% |`)
-                .join('\n')}\n\n*数据来源: 猫眼专业版*`
-              break
-            }
-
-            case 'web': {
-              ctx.response.body = `# 🌐 今日实时网播热度排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 剧集名称 | 当前热度 | 上映信息 |\n|------|----------|----------|----------|\n${data.web.list
-                .slice(0, 20)
-                .map((e, idx) => `| ${idx + 1} | ${e.series_name} | ${e.curr_heat_desc} | ${e.release_info} |`)
-                .join('\n')}\n\n*数据来源: 猫眼专业版*`
-              break
-            }
+          case 'tv': {
+            return `今日实时电视收视排行 (${dayjs().format('M/D HH:mm')})\n\n${data.tv.list
+              .map((e, idx) => `${idx + 1}. ${e.programme_name} - ${e.channel_name}/${e.market_rate.toFixed(2)}%`)
+              .slice(0, 20)
+              .join('\n')}\n\n数据来源：猫眼专业版`
           }
 
-          break
+          case 'web': {
+            return `今日实时网播热度排行 (${dayjs().format('M/D HH:mm')})\n\n${data.web.list
+              .map((e, idx) => `${idx + 1}. ${e.series_name} - ${e.curr_heat_desc}/${e.release_info}`)
+              .slice(0, 20)
+              .join('\n')}\n\n数据来源：猫眼专业版`
+          }
         }
+      }
 
-        case 'json':
-        default: {
-          ctx.response.body = Common.buildJson(data[type] ?? {})
-          break
+      case 'markdown': {
+        switch (type) {
+          case 'movie':
+          default: {
+            return `# 🎬 今日实时票房排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 电影名称 | 实时票房 | 上映信息 |\n|------|----------|----------|----------|\n${data.movie.list
+              .slice(0, 20)
+              .map((e, idx) => `| ${idx + 1} | ${e.movie_name} | ${e.box_office_desc} | ${e.release_info} |`)
+              .join('\n')}\n\n*数据来源: 猫眼专业版*`
+          }
+
+          case 'tv': {
+            return `# 📺 今日实时电视收视排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 节目名称 | 频道 | 收视率 |\n|------|----------|------|--------|\n${data.tv.list
+              .slice(0, 20)
+              .map((e, idx) => `| ${idx + 1} | ${e.programme_name} | ${e.channel_name} | ${e.market_rate.toFixed(2)}% |`)
+              .join('\n')}\n\n*数据来源: 猫眼专业版*`
+          }
+
+          case 'web': {
+            return `# 🌐 今日实时网播热度排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 剧集名称 | 当前热度 | 上映信息 |\n|------|----------|----------|----------|\n${data.web.list
+              .slice(0, 20)
+              .map((e, idx) => `| ${idx + 1} | ${e.series_name} | ${e.curr_heat_desc} | ${e.release_info} |`)
+              .join('\n')}\n\n*数据来源: 猫眼专业版*`
+          }
         }
+      }
+
+      case 'json':
+      default: {
+        return Common.buildJson(data[type] ?? {})
       }
     }
   }

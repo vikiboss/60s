@@ -1,47 +1,41 @@
 import { Common } from '../../common.ts'
 import duanziData from './duanzi.json' with { type: 'json' }
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 class ServiceDuanzi {
-  handle(): RouterMiddleware<'/duanzi'> {
-    return async (ctx) => {
-      const id = await Common.getParam('id', ctx.request)
+  async handle(ctx: AppContext) {
+    const id = await Common.getParam('id', ctx)
 
-      let result: string
+    let result: string
 
-      if (id) {
-        // 获取指定ID的段子
-        const index = parseInt(id)
-        if (index >= 0 && index < duanziData.length) {
-          result = duanziData[index]
-        } else {
-          ctx.response.status = 404
-          ctx.response.body = Common.buildJson(null, 404, `未找到ID为 ${index} 的段子`)
-          return
-        }
+    if (id) {
+      // 获取指定ID的段子
+      const index = parseInt(id)
+      if (index >= 0 && index < duanziData.length) {
+        result = duanziData[index]
       } else {
-        // 随机获取段子（默认行为）
-        result = Common.randomItem(duanziData)
+        ctx.set.status = 404
+        return Common.buildJson(null, 404, `未找到ID为 ${index} 的段子`)
       }
+    } else {
+      // 随机获取段子（默认行为）
+      result = Common.randomItem(duanziData)
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = result
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return result
 
-        case 'markdown':
-          ctx.response.body = `# 😄 段子\n\n${result}\n\n---\n\n*第 ${duanziData.findIndex((item) => item === result) + 1} 条段子*`
-          break
+      case 'markdown':
+        return `# 😄 段子\n\n${result}\n\n---\n\n*第 ${duanziData.findIndex((item) => item === result) + 1} 条段子*`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson({
-            index: duanziData.findIndex((item) => item === result),
-            duanzi: result,
-          })
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson({
+          index: duanziData.findIndex((item) => item === result),
+          duanzi: result,
+        })
     }
   }
 }

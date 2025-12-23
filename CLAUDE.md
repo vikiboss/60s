@@ -61,15 +61,15 @@ Example structure:
 export class MyModule {
   async handle(): RouterMiddleware<any> {
     return async (ctx) => {
-      const encoding = ctx.state.encoding
+      const encoding = ctx.encoding
       const data = await this.fetchData()
 
       if (encoding === 'text') {
-        ctx.response.body = this.formatAsText(data)
+        return this.formatAsText(data)
       } else if (encoding === 'markdown') {
-        ctx.response.body = this.formatAsMarkdown(data)
+        return this.formatAsMarkdown(data)
       } else {
-        ctx.response.body = Common.buildJson(data)
+        return Common.buildJson(data)
       }
     }
   }
@@ -113,11 +113,11 @@ const parsedDate = dayjs(timestamp).tz(TZ_SHANGHAI)
 **Response Building:**
 ```typescript
 // Success response
-ctx.response.body = Common.buildJson(data)
+return Common.buildJson(data)
 
 // Error response with custom message
-ctx.response.status = 400
-ctx.response.body = Common.buildJson(null, 400, 'Custom error message')
+ctx.set.status = 400
+return Common.buildJson(null, 400, 'Custom error message')
 
 // Require arguments
 if (!param) {

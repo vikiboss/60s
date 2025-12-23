@@ -4,7 +4,6 @@ import { Buffer } from 'node:buffer'
 import { COMMON_MSG, config } from './config.ts'
 
 import type { BinaryToTextEncoding } from 'node:crypto'
-import type { Request, RouterContext } from '@oak/oak'
 
 import _dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc.js'
@@ -43,12 +42,13 @@ export class Common {
     return response
   }
 
-  static requireArguments(name: string | string[], response: RouterContext<any, Record<string, any>>['response']) {
-    response.status = 400
-    const args = Array.isArray(name) ? name : [name]
+  static buildError(code: number, message: string) {
+    return Common.buildJson(null, code, message)
+  }
 
-    response.body = Common.buildJson(
-      null,
+  static requireArguments(name: string | string[]) {
+    const args = Array.isArray(name) ? name : [name]
+    return Common.buildError(
       400,
       `参数 ${args.join(', ')} 不能为空。如为 query 参数，请进行必要的 URL 编码`,
     )
@@ -103,18 +103,19 @@ export class Common {
     return arr[Math.floor(Math.random() * arr.length)]
   }
 
-  static async getParam(name: string, request: Request & { _bodyJson?: Record<string, any> }, parseBody = false) {
-    const value = request.url.searchParams.get(name) ?? ''
+  static async getParam(
+    name: string,
+    ctx: { query: Record<string, string | undefined>; body?: unknown },
+    parseBody = false,
+  ) {
+    const value = ctx.query[name] ?? ''
 
     if (!parseBody && value) return value
 
     try {
-      const json = request?._bodyJson
-
-      if (!json) {
-        request._bodyJson = await request.body.json()
-      } else {
-        return json[name] ?? ''
+      const bodyObj = ctx.body as Record<string, any> | undefined
+      if (bodyObj && typeof bodyObj === 'object' && name in bodyObj) {
+        return String(bodyObj[name] ?? '')
       }
     } catch {}
 

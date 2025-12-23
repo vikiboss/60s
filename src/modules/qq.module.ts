@@ -1,51 +1,43 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceQQ {
-  handle(): RouterMiddleware<'/qq/profile'> {
-    return async (ctx) => {
-      const qq = await Common.getParam('qq', ctx.request)
-      const size = +((await Common.getParam('size', ctx.request)) || 0)
+  async handle(ctx: AppContext) {
+    const qq = await Common.getParam('qq', ctx)
+    const size = +((await Common.getParam('size', ctx)) || 0)
 
-      if (!qq) {
-        return Common.requireArguments('qq', ctx.response)
-      }
+    if (!qq) {
+      return Common.requireArguments('qq')
+    }
 
-      if (!/^\d{5,11}$/.test(qq)) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, '无效的 QQ 号码')
-        return
-      }
+    if (!/^\d{5,11}$/.test(qq)) {
+      ctx.set.status = 400
+      return Common.buildJson(null, 400, '无效的 QQ 号码')
+    }
 
-      const validSizes = [0, 40, 100, 160, 640]
+    const validSizes = [0, 40, 100, 160, 640]
 
-      if (!validSizes.includes(size)) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, `无效的 size 参数。必须是以下之一: ${validSizes.join(', ')}`)
-        return
-      }
+    if (!validSizes.includes(size)) {
+      ctx.set.status = 400
+      return Common.buildJson(null, 400, `无效的 size 参数。必须是以下之一: ${validSizes.join(', ')}`)
+    }
 
-      const data = await this.#fetch(qq, size)
+    const data = await this.#fetch(qq, size)
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = data.nickname
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return data.nickname
 
-        case 'markdown':
-          ctx.response.body = `# 👤 QQ 用户信息\n\n![${data.nickname}](${data.avatar_url})\n\n**昵称**: ${data.nickname}\n\n**QQ 号**: ${data.qq}\n\n**头像尺寸**: ${data.avatar_size}px`
-          break
+      case 'markdown':
+        return `# 👤 QQ 用户信息\n\n![${data.nickname}](${data.avatar_url})\n\n**昵称**: ${data.nickname}\n\n**QQ 号**: ${data.qq}\n\n**头像尺寸**: ${data.avatar_size}px`
 
-        case 'image':
-          ctx.response.redirect(data.avatar_url)
-          break
+      case 'image':
+        return ctx.redirect(data.avatar_url)
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

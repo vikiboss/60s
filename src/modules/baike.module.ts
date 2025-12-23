@@ -1,37 +1,32 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceBaike {
-  handle(): RouterMiddleware<'/baike'> {
-    return async (ctx) => {
-      const word = await Common.getParam('word', ctx.request)
+  async handle(ctx: AppContext) {
+    const word = await Common.getParam('word', ctx)
 
-      if (!word) {
-        return Common.requireArguments('word', ctx.response)
+    if (!word) {
+      return Common.requireArguments('word')
+    }
+
+    try {
+      const data = await this.#fetch(word)
+
+      switch (ctx.encoding) {
+        case 'text':
+          return `${data.title}: ${data.abstract} (详情: ${data.link})`
+
+        case 'markdown':
+          return `# 📖 ${data.title}\n\n${data.description ? `> ${data.description}\n\n` : ''}${data.cover ? `![${data.title}](${data.cover})\n\n` : ''}## 摘要\n\n${data.abstract}\n\n${data.has_other ? '**注**: 该词条有其他义项\n\n' : ''}[查看完整词条](${data.link})`
+
+        case 'json':
+        default:
+          return Common.buildJson(data)
       }
-
-      try {
-        const data = await this.#fetch(word)
-
-        switch (ctx.state.encoding) {
-          case 'text':
-            ctx.response.body = `${data.title}: ${data.abstract} (详情: ${data.link})`
-            break
-
-          case 'markdown':
-            ctx.response.body = `# 📖 ${data.title}\n\n${data.description ? `> ${data.description}\n\n` : ''}${data.cover ? `![${data.title}](${data.cover})\n\n` : ''}## 摘要\n\n${data.abstract}\n\n${data.has_other ? '**注**: 该词条有其他义项\n\n' : ''}[查看完整词条](${data.link})`
-            break
-
-          case 'json':
-          default:
-            ctx.response.body = Common.buildJson(data)
-            break
-        }
-      } catch {
-        ctx.response.status = 404
-        ctx.response.body = Common.buildJson(null, 404, '未找到相关词条')
-      }
+    } catch {
+      ctx.set.status = 404
+      return Common.buildJson(null, 404, '未找到相关词条')
     }
   }
 

@@ -1,6 +1,6 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 interface QuarkImage {
   url: string
@@ -81,33 +81,28 @@ interface QuarkHotItem {
 }
 
 class ServiceQuark {
-  handle(): RouterMiddleware<'/quark'> {
-    return async (ctx) => {
-      const data = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const data = await this.#fetch()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `夸克热点\n\n${data
-            .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.title}${e.summary ? `\n   ${e.summary}` : ''}`)
-            .join('\n\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `夸克热点\n\n${data
+          .slice(0, 20)
+          .map((e, i) => `${i + 1}. ${e.title}${e.summary ? `\n   ${e.summary}` : ''}`)
+          .join('\n\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 夸克热点\n\n${data
-            .slice(0, 20)
-            .map(
-              (e, i) =>
-                `### ${i + 1}. ${e.title}\n\n${e.summary ? `> ${e.summary}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}- 来源：${e.source}\n- 时间：${Common.localeTime(e.published)}\n- 分类：${e.category.join(' / ') || '未分类'}\n${e.tags.length > 0 ? `- 标签：${e.tags.join(', ')}\n` : ''}\n---\n`,
-            )
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 夸克热点\n\n${data
+          .slice(0, 20)
+          .map(
+            (e, i) =>
+              `### ${i + 1}. ${e.title}\n\n${e.summary ? `> ${e.summary}\n\n` : ''}${e.cover ? `![${e.title}](${e.cover})\n\n` : ''}- 来源：${e.source}\n- 时间：${Common.localeTime(e.published)}\n- 分类：${e.category.join(' / ') || '未分类'}\n${e.tags.length > 0 ? `- 标签：${e.tags.join(', ')}\n` : ''}\n---\n`,
+          )
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

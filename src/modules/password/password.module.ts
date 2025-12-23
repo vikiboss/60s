@@ -1,7 +1,7 @@
 import { Common } from '../../common.ts'
 import commonPasswordsData from './passwords.json' with { type: 'json' }
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 interface PasswordParams {
   length: number
@@ -67,79 +67,68 @@ class ServicePassword {
   private readonly SIMILAR_CHARS = 'il1Lo0O'
   private readonly AMBIGUOUS_CHARS = '{}[]()/\\\'"`~,;.<>'
 
-  handle(): RouterMiddleware<'/password'> {
-    return async (ctx) => {
-      const length = await Common.getParam('length', ctx.request)
-      const includeNumbers = await Common.getParam('numbers', ctx.request)
-      const includeSymbols = await Common.getParam('symbols', ctx.request)
-      const includeLowercase = await Common.getParam('lowercase', ctx.request)
-      const includeUppercase = await Common.getParam('uppercase', ctx.request)
-      const excludeSimilar = (await Common.getParam('exclude_similar', ctx.request)) || 'true'
-      const excludeAmbiguous = (await Common.getParam('exclude_ambiguous', ctx.request)) || 'true'
+  async handle(ctx: AppContext) {
+    const length = await Common.getParam('length', ctx)
+    const includeNumbers = await Common.getParam('numbers', ctx)
+    const includeSymbols = await Common.getParam('symbols', ctx)
+    const includeLowercase = await Common.getParam('lowercase', ctx)
+    const includeUppercase = await Common.getParam('uppercase', ctx)
+    const excludeSimilar = (await Common.getParam('exclude_similar', ctx)) || 'true'
+    const excludeAmbiguous = (await Common.getParam('exclude_ambiguous', ctx)) || 'true'
 
-      const params = this.parsePasswordParams({
-        length,
-        includeNumbers,
-        includeSymbols,
-        includeLowercase,
-        includeUppercase,
-        excludeSimilar,
-        excludeAmbiguous,
-      })
+    const params = this.parsePasswordParams({
+      length,
+      includeNumbers,
+      includeSymbols,
+      includeLowercase,
+      includeUppercase,
+      excludeSimilar,
+      excludeAmbiguous,
+    })
 
-      if (!this.validateParams(params, ctx)) {
-        return
-      }
+    const validationResult = this.validateParams(params)
+    if (validationResult) {
+      ctx.set.status = 400
+      return validationResult
+    }
 
-      const result = this.generatePassword(params)
+    const result = this.generatePassword(params)
 
-      switch (ctx.state.encoding) {
-        case 'text-detail':
-          ctx.response.body = this.formatPasswordAsText(result)
-          break
-        case 'text':
-          ctx.response.body = result.password
-          break
-        case 'markdown':
-          ctx.response.body = this.formatPasswordAsMarkdown(result)
-          break
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(result)
-          break
-      }
+    switch (ctx.encoding) {
+      case 'text-detail':
+        return this.formatPasswordAsText(result)
+      case 'text':
+        return result.password
+      case 'markdown':
+        return this.formatPasswordAsMarkdown(result)
+      case 'json':
+      default:
+        return Common.buildJson(result)
     }
   }
 
-  handleCheck(): RouterMiddleware<'/password/check'> {
-    return async (ctx) => {
-      const password = await Common.getParam('password', ctx.request)
+  async handleCheck(ctx: AppContext) {
+    const password = await Common.getParam('password', ctx)
 
-      if (!password) {
-        Common.requireArguments(['password'], ctx.response)
-        return
-      }
+    if (!password) {
+      return Common.requireArguments('password')
+    }
 
-      if (password.length > 128) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, '密码长度不能超过 128 个字符')
-        return
-      }
+    if (password.length > 128) {
+      ctx.set.status = 400
+      return Common.buildJson(null, 400, '密码长度不能超过 128 个字符')
+    }
 
-      const result = this.checkPasswordStrength(password)
+    const result = this.checkPasswordStrength(password)
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = this.formatStrengthAsText(result)
-          break
-        case 'markdown':
-          ctx.response.body = this.formatStrengthAsMarkdown(result)
-          break
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(result)
-          break
-      }
+    switch (ctx.encoding) {
+      case 'text':
+        return this.formatStrengthAsText(result)
+      case 'markdown':
+        return this.formatStrengthAsMarkdown(result)
+      case 'json':
+      default:
+        return Common.buildJson(result)
     }
   }
 
@@ -155,20 +144,16 @@ class ServicePassword {
     }
   }
 
-  private validateParams(params: PasswordParams, ctx: any): boolean {
+  private validateParams(params: PasswordParams): object | null {
     if (Number.isNaN(params.length) || params.length < 4 || params.length > 128) {
-      ctx.response.status = 400
-      ctx.response.body = Common.buildJson(null, 400, '密码长度必须在 4-128 之间')
-      return false
+      return Common.buildJson(null, 400, '密码长度必须在 4-128 之间')
     }
 
     if (!params.includeNumbers && !params.includeSymbols && !params.includeLowercase && !params.includeUppercase) {
-      ctx.response.status = 400
-      ctx.response.body = Common.buildJson(null, 400, '至少需要包含一种字符类型（数字、符号、小写字母、大写字母）')
-      return false
+      return Common.buildJson(null, 400, '至少需要包含一种字符类型（数字、符号、小写字母、大写字母）')
     }
 
-    return true
+    return null
   }
 
   private generatePassword(params: PasswordParams): PasswordResult {

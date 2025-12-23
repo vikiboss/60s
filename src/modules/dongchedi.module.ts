@@ -1,33 +1,28 @@
 import { load } from 'cheerio'
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 class ServiceDongchedi {
-  handle(): RouterMiddleware<'/dongchedi'> {
-    return async (ctx) => {
-      const list = await this.#fetch()
+  async handle(ctx: AppContext) {
+    const list = await this.#fetch()
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `懂车帝热搜\n\n${list
-            .slice(0, 20)
-            .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
-            .join('\n')}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `懂车帝热搜\n\n${list
+          .slice(0, 20)
+          .map((e, i) => `${i + 1}. ${e.title} (${e.score_desc})`)
+          .join('\n')}`
 
-        case 'markdown':
-          ctx.response.body = `# 懂车帝热搜\n\n${list
-            .slice(0, 20)
-            .map((e, i) => `${i + 1}. [${e.title}](${e.url}) \`${e.score_desc}\``)
-            .join('\n')}`
-          break
+      case 'markdown':
+        return `# 懂车帝热搜\n\n${list
+          .slice(0, 20)
+          .map((e, i) => `${i + 1}. [${e.title}](${e.url}) \`${e.score_desc}\``)
+          .join('\n')}`
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(list)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(list)
     }
   }
 

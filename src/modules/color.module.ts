@@ -1,5 +1,5 @@
 import { Common } from '../common.ts'
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 interface HSLColor {
   h: number
@@ -25,103 +25,89 @@ interface ColorPalette {
 }
 
 class ServiceColor {
-  handle(): RouterMiddleware<'/color'> {
-    return async (ctx) => {
-      const color = await Common.getParam('color', ctx.request)
+  async handle(ctx: AppContext) {
+    const color = await Common.getParam('color', ctx)
 
-      let hex: string
+    let hex: string
 
-      if (color) {
-        // 转换已有颜色到各种格式
-        const normalizedHex = this.normalizeHex(color)
+    if (color) {
+      // 转换已有颜色到各种格式
+      const normalizedHex = this.normalizeHex(color)
 
-        if (!this.isValidHex(normalizedHex)) {
-          ctx.response.status = 400
-          ctx.response.body = Common.buildJson(
-            null,
-            400,
-            '无效的颜色编码。请提供有效的 HEX 颜色编码，例如：#FF5733 或 FF5733',
-          )
-          return
-        }
-
-        hex = normalizedHex
-      } else {
-        // 生成随机颜色
-        hex = this.generateRandomColor()
+      if (!this.isValidHex(normalizedHex)) {
+        ctx.set.status = 400
+        return Common.buildJson(
+          null,
+          400,
+          '无效的颜色编码。请提供有效的 HEX 颜色编码，例如：#FF5733 或 FF5733',
+        )
       }
 
-      const data = this.convertColorFormats(hex)
+      hex = normalizedHex
+    } else {
+      // 生成随机颜色
+      hex = this.generateRandomColor()
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = this.formatColorAsText(data)
-          break
-        case 'markdown':
-          ctx.response.body = `# 🎨 颜色信息\n\n## ${data.name}\n\n<div style="background: ${data.hex}; width: 100%; height: 100px; border-radius: 8px;"></div>\n\n**HEX**: ${data.hex}\n\n**RGB**: rgb(${data.rgb.r}, ${data.rgb.g}, ${data.rgb.b})\n\n**HSL**: hsl(${data.hsl.h}°, ${data.hsl.s}%, ${data.hsl.l}%)\n\n**CMYK**: cmyk(${data.cmyk.c}%, ${data.cmyk.m}%, ${data.cmyk.y}%, ${data.cmyk.k}%)\n\n### 互补色\n\n**${data.complementary}** - ${data.complementary}`
-          break
-        case 'html':
-          ctx.response.headers.set('Content-Type', 'text/html; charset=utf-8')
-          ctx.response.body = this.formatColorAsHTML(data)
-          break
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+    const data = this.convertColorFormats(hex)
+
+    switch (ctx.encoding) {
+      case 'text':
+        return this.formatColorAsText(data)
+      case 'markdown':
+        return `# 🎨 颜色信息\n\n## ${data.name}\n\n<div style="background: ${data.hex}; width: 100%; height: 100px; border-radius: 8px;"></div>\n\n**HEX**: ${data.hex}\n\n**RGB**: rgb(${data.rgb.r}, ${data.rgb.g}, ${data.rgb.b})\n\n**HSL**: hsl(${data.hsl.h}°, ${data.hsl.s}%, ${data.hsl.l}%)\n\n**CMYK**: cmyk(${data.cmyk.c}%, ${data.cmyk.m}%, ${data.cmyk.y}%, ${data.cmyk.k}%)\n\n### 互补色\n\n**${data.complementary}** - ${data.complementary}`
+      case 'html':
+        ctx.set.headers['Content-Type'] = 'text/html; charset=utf-8'
+        return this.formatColorAsHTML(data)
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 
-  handlePalette(): RouterMiddleware<'/color/palette'> {
-    return async (ctx) => {
-      const hex = (await Common.getParam('color', ctx.request)) || this.generateRandomColor()
+  async handlePalette(ctx: AppContext) {
+    const hex = (await Common.getParam('color', ctx)) || this.generateRandomColor()
 
-      const normalizedHex = this.normalizeHex(hex)
+    const normalizedHex = this.normalizeHex(hex)
 
-      if (!this.isValidHex(normalizedHex)) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(
-          null,
-          400,
-          'color 参数不是有效的 HEX 颜色编码。请提供有效的 6 位或 3 位 HEX 编码，例如：#FF5733 或 FF5733',
-        )
-        return
-      }
+    if (!this.isValidHex(normalizedHex)) {
+      ctx.set.status = 400
+      return Common.buildJson(
+        null,
+        400,
+        'color 参数不是有效的 HEX 颜色编码。请提供有效的 6 位或 3 位 HEX 编码，例如：#FF5733 或 FF5733',
+      )
+    }
 
-      const baseColor = this.hexToHSL(normalizedHex)
-      const palettes = this.generateColorPalettes(normalizedHex, baseColor)
+    const baseColor = this.hexToHSL(normalizedHex)
+    const palettes = this.generateColorPalettes(normalizedHex, baseColor)
 
-      const data = {
-        input: {
-          hex: normalizedHex,
-          rgb: this.hexToRGB(normalizedHex),
-          hsl: baseColor,
-          name: this.getColorName(normalizedHex),
-        },
-        palettes: palettes,
-        metadata: {
-          color_theory: '基于色彩理论生成的专业配色方案',
-          total_palettes: palettes.length,
-          applications: ['Web 设计', 'UI/UX', '品牌设计', '室内设计', '服装搭配'],
-        },
-      }
+    const data = {
+      input: {
+        hex: normalizedHex,
+        rgb: this.hexToRGB(normalizedHex),
+        hsl: baseColor,
+        name: this.getColorName(normalizedHex),
+      },
+      palettes: palettes,
+      metadata: {
+        color_theory: '基于色彩理论生成的专业配色方案',
+        total_palettes: palettes.length,
+        applications: ['Web 设计', 'UI/UX', '品牌设计', '室内设计', '服装搭配'],
+      },
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = this.formatAsText(data)
-          break
-        case 'markdown':
-          ctx.response.body = `# 🎨 配色方案\n\n## 基础颜色\n\n**${data.input.name}** - ${data.input.hex}\n\n${data.palettes.map((p: ColorPalette) => `### ${p.name}\n\n${p.description}\n\n${p.colors.map(c => `- **${c.name}** (${c.role}) - ${c.hex}`).join('\n')}\n`).join('\n')}`
-          break
-        case 'html':
-          ctx.response.headers.set('Content-Type', 'text/html; charset=utf-8')
-          ctx.response.body = this.formatAsHTML(data)
-          break
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+    switch (ctx.encoding) {
+      case 'text':
+        return this.formatAsText(data)
+      case 'markdown':
+        return `# 🎨 配色方案\n\n## 基础颜色\n\n**${data.input.name}** - ${data.input.hex}\n\n${data.palettes.map((p: ColorPalette) => `### ${p.name}\n\n${p.description}\n\n${p.colors.map(c => `- **${c.name}** (${c.role}) - ${c.hex}`).join('\n')}\n`).join('\n')}`
+      case 'html':
+        ctx.set.headers['Content-Type'] = 'text/html; charset=utf-8'
+        return this.formatAsHTML(data)
+      case 'json':
+      default:
+        return Common.buildJson(data)
     }
   }
 

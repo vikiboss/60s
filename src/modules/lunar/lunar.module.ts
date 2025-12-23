@@ -1,243 +1,240 @@
 import { SolarTime, LegalHoliday, Zodiac, Week, Phase, Constellation } from 'tyme4ts'
 import { Common, dayjs, TZ_SHANGHAI } from '../../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 class ServiceLunar {
-  handle(): RouterMiddleware<'/lunar'> {
-    return (ctx) => {
-      const date = ctx.request.url.searchParams.get('date')?.trim()
+  async handle(ctx: AppContext) {
+    const date = ctx.query.date?.trim()
 
-      const initDate = date
-        ? date.match(/^\d{10}$/)
-          ? +date * 1000
-          : date.match(/^\d{13}$/)
-            ? +date
-            : date
-        : undefined
+    const initDate = date ? (date.match(/^\d{10}$/) ? +date * 1000 : date.match(/^\d{13}$/) ? +date : date) : undefined
 
-      const now = dayjs(initDate).tz(TZ_SHANGHAI)
+    const now = dayjs(initDate).tz(TZ_SHANGHAI)
 
-      const solarTime = SolarTime.fromYmdHms(
-        now.year(),
-        now.month() + 1,
-        now.date(),
-        now.hour(),
-        now.minute(),
-        now.second(),
-      )
+    const solarTime = SolarTime.fromYmdHms(
+      now.year(),
+      now.month() + 1,
+      now.date(),
+      now.hour(),
+      now.minute(),
+      now.second(),
+    )
 
-      const solarDay = solarTime.getSolarDay()
-      const solarMonth = solarDay.getSolarMonth()
-      const solarYear = solarMonth.getSolarYear()
-      const solarWeek = solarDay.getSolarWeek(0)
-      // const solarWeekCN = solarDay.getSolarWeek(1)
+    const solarDay = solarTime.getSolarDay()
+    const solarMonth = solarDay.getSolarMonth()
+    const solarYear = solarMonth.getSolarYear()
+    const solarWeek = solarDay.getSolarWeek(0)
+    // const solarWeekCN = solarDay.getSolarWeek(1)
 
-      const lunarHour = solarTime.getLunarHour()
-      const lunarDay = lunarHour.getLunarDay()
-      const lunarMonth = lunarDay.getLunarMonth()
-      const lunarYear = lunarMonth.getLunarYear()
+    const lunarHour = solarTime.getLunarHour()
+    const lunarDay = lunarHour.getLunarDay()
+    const lunarMonth = lunarDay.getLunarMonth()
+    const lunarYear = lunarMonth.getLunarYear()
 
-      const holiday = solarDay.getLegalHoliday()
+    const holiday = solarDay.getLegalHoliday()
 
-      const data = {
-        solar: {
-          year: now.year(),
-          month: now.month() + 1,
-          day: now.date(),
-          hour: now.hour(),
-          minute: now.minute(),
-          second: now.second(),
-          full: dayjs(now).format('YYYY-MM-DD'),
-          full_with_time: dayjs(now).format('YYYY-MM-DD HH:mm:ss'),
-          week: now.day(),
-          week_desc: `星期${Week.fromIndex(now.day()).getName()}`,
-          week_desc_short: Week.fromIndex(now.day()).getName(),
-          season: solarMonth.getSeason().getIndex() + 1,
-          season_desc: solarMonth.getSeason().getName(),
-          season_desc_short: solarMonth.getSeason().getName().replace('季度', ''),
-          season_name: ['春', '夏', '秋', '冬'][solarMonth.getSeason().getIndex()],
-          season_name_desc: ['春天', '夏天', '秋天', '冬天'][solarMonth.getSeason().getIndex()],
-          is_leap_year: solarYear.isLeap(),
+    const data = {
+      solar: {
+        year: now.year(),
+        month: now.month() + 1,
+        day: now.date(),
+        hour: now.hour(),
+        minute: now.minute(),
+        second: now.second(),
+        full: dayjs(now).format('YYYY-MM-DD'),
+        full_with_time: dayjs(now).format('YYYY-MM-DD HH:mm:ss'),
+        week: now.day(),
+        week_desc: `星期${Week.fromIndex(now.day()).getName()}`,
+        week_desc_short: Week.fromIndex(now.day()).getName(),
+        season: solarMonth.getSeason().getIndex() + 1,
+        season_desc: solarMonth.getSeason().getName(),
+        season_desc_short: solarMonth.getSeason().getName().replace('季度', ''),
+        season_name: ['春', '夏', '秋', '冬'][solarMonth.getSeason().getIndex()],
+        season_name_desc: ['春天', '夏天', '秋天', '冬天'][solarMonth.getSeason().getIndex()],
+        is_leap_year: solarYear.isLeap(),
+      },
+      lunar: {
+        year: lunarYear.getName().replace('农历', '').replace('年', ''),
+        month: lunarMonth.getName().replace('闰', '').replace('月', ''),
+        day: lunarDay.getName(),
+        hour: lunarHour.getName().replace('时', ''),
+        full_with_hour: `${lunarDay.toString()}${lunarHour.getName()}`,
+        desc_short: lunarDay.toString(),
+        year_desc: lunarYear.getName(),
+        month_desc: lunarMonth.getName(),
+        day_desc: lunarDay.getName(),
+        hour_desc: lunarHour.getName(),
+        is_leap_month: lunarMonth.isLeap(),
+      },
+      stats: {
+        day_of_year: solarDay.getIndexInYear() + 1,
+        week_of_year: solarWeek.getIndexInYear() + 1,
+        week_of_month: solarWeek.getIndex() + 1,
+        percents: {
+          year: solarDay.getIndexInYear() / (solarYear.isLeap() ? 366 : 365),
+          month: now.date() / solarMonth.getDayCount(),
+          week: now.day() / 7,
+          day: (now.valueOf() - dayjs(now).startOf('day').toDate().valueOf()) / (24 * 60 * 60 * 1000),
         },
-        lunar: {
-          year: lunarYear.getName().replace('农历', '').replace('年', ''),
-          month: lunarMonth.getName().replace('闰', '').replace('月', ''),
-          day: lunarDay.getName(),
-          hour: lunarHour.getName().replace('时', ''),
-          full_with_hour: `${lunarDay.toString()}${lunarHour.getName()}`,
-          desc_short: lunarDay.toString(),
-          year_desc: lunarYear.getName(),
-          month_desc: lunarMonth.getName(),
-          day_desc: lunarDay.getName(),
-          hour_desc: lunarHour.getName(),
-          is_leap_month: lunarMonth.isLeap(),
+        percents_formatted: {
+          year: ((solarDay.getIndexInYear() / (solarYear.isLeap() ? 366 : 365)) * 100).toFixed(2) + '%',
+          month: ((now.date() / solarMonth.getDayCount()) * 100).toFixed(2) + '%',
+          week: ((now.day() / 7) * 100).toFixed(2) + '%',
+          day:
+            (((now.valueOf() - dayjs(now).startOf('day').toDate().valueOf()) / (24 * 60 * 60 * 1000)) * 100).toFixed(
+              2,
+            ) + '%',
         },
-        stats: {
-          day_of_year: solarDay.getIndexInYear() + 1,
-          week_of_year: solarWeek.getIndexInYear() + 1,
-          week_of_month: solarWeek.getIndex() + 1,
-          percents: {
-            year: solarDay.getIndexInYear() / (solarYear.isLeap() ? 366 : 365),
-            month: now.date() / solarMonth.getDayCount(),
-            week: now.day() / 7,
-            day: (now.valueOf() - dayjs(now).startOf('day').toDate().valueOf()) / (24 * 60 * 60 * 1000),
-          },
-          percents_formatted: {
-            year: ((solarDay.getIndexInYear() / (solarYear.isLeap() ? 366 : 365)) * 100).toFixed(2) + '%',
-            month: ((now.date() / solarMonth.getDayCount()) * 100).toFixed(2) + '%',
-            week: ((now.day() / 7) * 100).toFixed(2) + '%',
-            day:
-              (((now.valueOf() - dayjs(now).startOf('day').toDate().valueOf()) / (24 * 60 * 60 * 1000)) * 100).toFixed(
-                2,
-              ) + '%',
-          },
+      },
+      term: {
+        today: solarDay.getTermDay().getDayIndex() === 0 ? solarDay.getTermDay().getName() : null,
+        stage: {
+          name: solarDay.getTerm().getName(),
+          position: solarDay.getTermDay().getDayIndex() + 1,
+          is_jie: solarDay.getTerm().isJie(),
+          is_qi: solarDay.getTerm().isQi(),
         },
-        term: {
-          today: solarDay.getTermDay().getDayIndex() === 0 ? solarDay.getTermDay().getName() : null,
-          stage: {
-            name: solarDay.getTerm().getName(),
-            position: solarDay.getTermDay().getDayIndex() + 1,
-            is_jie: solarDay.getTerm().isJie(),
-            is_qi: solarDay.getTerm().isQi(),
-          },
+      },
+      zodiac: {
+        year: lunarYear.getSixtyCycle().getEarthBranch().getZodiac().getName(),
+        month: lunarMonth.getSixtyCycle().getEarthBranch().getZodiac().getName(),
+        day: lunarDay.getSixtyCycle().getEarthBranch().getZodiac().getName(),
+        hour: lunarHour.getSixtyCycle().getEarthBranch().getZodiac().getName(),
+      },
+      sixty_cycle: {
+        year: {
+          heaven_stem: lunarYear.getSixtyCycle().getHeavenStem().getName(),
+          earth_branch: lunarYear.getSixtyCycle().getEarthBranch().getName(),
+          name: lunarYear.getSixtyCycle().getName() + '年',
+          name_short: lunarYear.getSixtyCycle().getName(),
         },
-        zodiac: {
-          year: lunarYear.getSixtyCycle().getEarthBranch().getZodiac().getName(),
-          month: lunarMonth.getSixtyCycle().getEarthBranch().getZodiac().getName(),
-          day: lunarDay.getSixtyCycle().getEarthBranch().getZodiac().getName(),
-          hour: lunarHour.getSixtyCycle().getEarthBranch().getZodiac().getName(),
+        month: {
+          heaven_stem: lunarMonth.getSixtyCycle().getHeavenStem().getName(),
+          earth_branch: lunarMonth.getSixtyCycle().getEarthBranch().getName(),
+          name: lunarMonth.getSixtyCycle().getName() + '月',
+          name_short: lunarMonth.getSixtyCycle().getName(),
         },
-        sixty_cycle: {
-          year: {
-            heaven_stem: lunarYear.getSixtyCycle().getHeavenStem().getName(),
-            earth_branch: lunarYear.getSixtyCycle().getEarthBranch().getName(),
-            name: lunarYear.getSixtyCycle().getName() + '年',
-            name_short: lunarYear.getSixtyCycle().getName(),
-          },
-          month: {
-            heaven_stem: lunarMonth.getSixtyCycle().getHeavenStem().getName(),
-            earth_branch: lunarMonth.getSixtyCycle().getEarthBranch().getName(),
-            name: lunarMonth.getSixtyCycle().getName() + '月',
-            name_short: lunarMonth.getSixtyCycle().getName(),
-          },
-          day: {
-            heaven_stem: lunarDay.getSixtyCycle().getHeavenStem().getName(),
-            earth_branch: lunarDay.getSixtyCycle().getEarthBranch().getName(),
-            name: lunarDay.getSixtyCycle().getName() + '日',
-            name_short: lunarDay.getSixtyCycle().getName(),
-          },
-          hour: {
-            heaven_stem: lunarHour.getSixtyCycle().getHeavenStem().getName(),
-            earth_branch: lunarHour.getSixtyCycle().getEarthBranch().getName(),
-            name: lunarHour.getSixtyCycle().getName() + '时',
-            name_short: lunarHour.getSixtyCycle().getName(),
-          },
+        day: {
+          heaven_stem: lunarDay.getSixtyCycle().getHeavenStem().getName(),
+          earth_branch: lunarDay.getSixtyCycle().getEarthBranch().getName(),
+          name: lunarDay.getSixtyCycle().getName() + '日',
+          name_short: lunarDay.getSixtyCycle().getName(),
         },
-        legal_holiday: holiday
-          ? {
-              name: holiday?.getName(),
-              is_work: holiday?.isWork(),
-            }
-          : null,
-        festival: {
-          solar: solarDay.getFestival()?.getName() ?? null,
-          lunar: lunarDay.getFestival()?.getName() ?? null,
-          both_desc:
-            [solarDay.getFestival()?.getName(), lunarDay.getFestival()?.getName()].filter(Boolean).join('、') || null,
+        hour: {
+          heaven_stem: lunarHour.getSixtyCycle().getHeavenStem().getName(),
+          earth_branch: lunarHour.getSixtyCycle().getEarthBranch().getName(),
+          name: lunarHour.getSixtyCycle().getName() + '时',
+          name_short: lunarHour.getSixtyCycle().getName(),
         },
-        phase: {
-          name: lunarDay.getPhase().getName(),
-          position: lunarDay.getPhase().getIndex() + 1,
+      },
+      legal_holiday: holiday
+        ? {
+            name: holiday?.getName(),
+            is_work: holiday?.isWork(),
+          }
+        : null,
+      festival: {
+        solar: solarDay.getFestival()?.getName() ?? null,
+        lunar: lunarDay.getFestival()?.getName() ?? null,
+        both_desc:
+          [solarDay.getFestival()?.getName(), lunarDay.getFestival()?.getName()].filter(Boolean).join('、') || null,
+      },
+      phase: {
+        name: lunarDay.getPhase().getName(),
+        position: lunarDay.getPhase().getIndex() + 1,
+      },
+      constellation: {
+        name: solarDay.getConstellation().getName() + '座',
+        name_short: solarDay.getConstellation().getName(),
+      },
+      taboo: {
+        day: {
+          recommends: lunarDay
+            .getRecommends()
+            .map((e) => e.getName())
+            .join('.'),
+          avoids: lunarDay
+            .getAvoids()
+            .map((e) => e.getName())
+            .join('.'),
         },
-        constellation: {
-          name: solarDay.getConstellation().getName() + '座',
-          name_short: solarDay.getConstellation().getName(),
+        hour: {
+          hour: lunarHour.getName(),
+          hour_short: lunarHour.getName().replace('时', ''),
+          avoids: lunarHour
+            .getAvoids()
+            .map((e) => e.getName())
+            .join('.'),
+          recommends: lunarHour
+            .getRecommends()
+            .map((e) => e.getName())
+            .join('.'),
         },
-        taboo: {
-          day: {
-            recommends: lunarDay
+        hours: Array.from({ length: 12 }, (_, i) => {
+          const hour = lunarHour.next(i)
+          return {
+            hour: hour.getName(),
+            hour_short: hour.getName().replace('时', ''),
+            recommends: hour
               .getRecommends()
               .map((e) => e.getName())
               .join('.'),
-            avoids: lunarDay
+            avoids: hour
               .getAvoids()
               .map((e) => e.getName())
               .join('.'),
-          },
-          hour: {
-            hour: lunarHour.getName(),
-            hour_short: lunarHour.getName().replace('时', ''),
-            avoids: lunarHour
-              .getAvoids()
-              .map((e) => e.getName())
-              .join('.'),
-            recommends: lunarHour
-              .getRecommends()
-              .map((e) => e.getName())
-              .join('.'),
-          },
-          hours: Array.from({ length: 12 }, (_, i) => {
-            const hour = lunarHour.next(i)
-            return {
-              hour: hour.getName(),
-              hour_short: hour.getName().replace('时', ''),
-              recommends: hour
-                .getRecommends()
-                .map((e) => e.getName())
-                .join('.'),
-              avoids: hour
-                .getAvoids()
-                .map((e) => e.getName())
-                .join('.'),
-            }
-          }),
-        },
-        julian_day: solarDay.getJulianDay().getDay(),
-        nayin: {
-          year: getNayin(lunarYear.getSixtyCycle().getName()),
-          month: getNayin(lunarMonth.getSixtyCycle().getName()),
-          day: getNayin(lunarDay.getSixtyCycle().getName()),
-          hour: getNayin(lunarHour.getSixtyCycle().getName()),
-        },
-        baizi: {
-          year_baizi: getBaiziDescription(lunarYear.getSixtyCycle().getName()),
-          day_baizi: getBaiziDescription(lunarDay.getSixtyCycle().getName()),
-        },
-        fortune: {
-          today_luck: getDailyFortune(lunarDay.getSixtyCycle().getName()),
-          career: getCareerFortune(lunarDay.getSixtyCycle().getName()),
-          money: getMoneyFortune(lunarDay.getSixtyCycle().getName()),
-          love: getLoveFortune(lunarDay.getSixtyCycle().getName()),
-        },
-        constants: {
-          legal_holiday_list: getHoliday(now.year()),
-          phase_list: Phase.NAMES.map((e, idx) => ({ name: e, lunar_day: idx + 1 })),
-          zodiac_list: Zodiac.NAMES,
-          constellation_list: getConstellation(),
-          heaven_stems: ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'],
-          earth_branches: ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'],
-          solar_terms: getSolarTerms(),
-        },
-      }
+          }
+        }),
+      },
+      julian_day: solarDay.getJulianDay().getDay(),
+      nayin: {
+        year: getNayin(lunarYear.getSixtyCycle().getName()),
+        month: getNayin(lunarMonth.getSixtyCycle().getName()),
+        day: getNayin(lunarDay.getSixtyCycle().getName()),
+        hour: getNayin(lunarHour.getSixtyCycle().getName()),
+      },
+      baizi: {
+        year_baizi: getBaiziDescription(lunarYear.getSixtyCycle().getName()),
+        day_baizi: getBaiziDescription(lunarDay.getSixtyCycle().getName()),
+      },
+      fortune: {
+        today_luck: getDailyFortune(lunarDay.getSixtyCycle().getName()),
+        career: getCareerFortune(lunarDay.getSixtyCycle().getName()),
+        money: getMoneyFortune(lunarDay.getSixtyCycle().getName()),
+        love: getLoveFortune(lunarDay.getSixtyCycle().getName()),
+      },
+      constants: {
+        legal_holiday_list: getHoliday(now.year()),
+        phase_list: Phase.NAMES.map((e, idx) => ({ name: e, lunar_day: idx + 1 })),
+        zodiac_list: Zodiac.NAMES,
+        constellation_list: getConstellation(),
+        heaven_stems: ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'],
+        earth_branches: ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'],
+        solar_terms: getSolarTerms(),
+      },
+    }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = `${data.solar.full} ${data.solar.week_desc} ${data.lunar.desc_short}\n${data.term.stage.name}第${data.term.stage.position}天\n${data.constellation.name} ${data.zodiac.year}年\n宜: ${data.taboo.day.recommends || '无'}\n忌: ${data.taboo.day.avoids || '无'}`
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return `${data.solar.full} ${data.solar.week_desc} ${data.lunar.desc_short}\n${data.term.stage.name}第${data.term.stage.position}天\n${data.constellation.name} ${data.zodiac.year}年\n宜: ${data.taboo.day.recommends || '无'}\n忌: ${data.taboo.day.avoids || '无'}`
+        break
 
-        case 'markdown':
-          ctx.response.body = `# 📅 ${data.solar.full} ${data.solar.week_desc}\n\n## 农历信息\n\n**${data.lunar.desc_short}** (${data.lunar.is_leap_month ? '闰月' : '平月'})\n\n**干支**: ${data.sixty_cycle.year.name} ${data.sixty_cycle.month.name} ${data.sixty_cycle.day.name}\n\n**生肖**: ${data.zodiac.year}年 ${data.zodiac.month}月 ${data.zodiac.day}日\n\n**纳音**: ${data.nayin.year}\n\n## 节气与星座\n\n**节气**: ${data.term.stage.name}第${data.term.stage.position}天${data.term.today ? ` (今日${data.term.today})` : ''}\n\n**星座**: ${data.constellation.name}\n\n**月相**: ${data.phase.name}\n\n## 宜忌\n\n${data.taboo.day.recommends ? `**宜**: ${data.taboo.day.recommends}\n\n` : ''}${data.taboo.day.avoids ? `**忌**: ${data.taboo.day.avoids}\n\n` : ''}## 时辰吉凶\n\n${data.taboo.hours
-            .slice(0, 12)
-            .map((h) => `### ${h.hour}\n\n${h.recommends ? `**宜**: ${h.recommends}\n\n` : ''}${h.avoids ? `**忌**: ${h.avoids}` : ''}`)
-            .join('\n\n')}\n\n## 节日\n\n${data.festival.solar || data.festival.lunar ? data.festival.both_desc : '无'}\n\n${data.legal_holiday ? `### 法定节假日\n\n**${data.legal_holiday.name}** ${data.legal_holiday.is_work ? '(补班)' : '(休息)'}` : ''}\n\n## 运势\n\n**今日运势**: ${data.fortune.today_luck}\n\n**事业**: ${data.fortune.career}\n\n**财运**: ${data.fortune.money}\n\n**感情**: ${data.fortune.love}\n\n---\n\n*今年已过 ${data.stats.percents_formatted.year} | 本月已过 ${data.stats.percents_formatted.month}*`
-          break
+      case 'markdown':
+        return `# 📅 ${data.solar.full} ${data.solar.week_desc}\n\n## 农历信息\n\n**${data.lunar.desc_short}** (${data.lunar.is_leap_month ? '闰月' : '平月'})\n\n**干支**: ${data.sixty_cycle.year.name} ${data.sixty_cycle.month.name} ${data.sixty_cycle.day.name}\n\n**生肖**: ${data.zodiac.year}年 ${data.zodiac.month}月 ${data.zodiac.day}日\n\n**纳音**: ${data.nayin.year}\n\n## 节气与星座\n\n**节气**: ${data.term.stage.name}第${data.term.stage.position}天${data.term.today ? ` (今日${data.term.today})` : ''}\n\n**星座**: ${data.constellation.name}\n\n**月相**: ${data.phase.name}\n\n## 宜忌\n\n${data.taboo.day.recommends ? `**宜**: ${data.taboo.day.recommends}\n\n` : ''}${data.taboo.day.avoids ? `**忌**: ${data.taboo.day.avoids}\n\n` : ''}## 时辰吉凶\n\n${data.taboo.hours
+          .slice(0, 12)
+          .map(
+            (h) =>
+              `### ${h.hour}\n\n${h.recommends ? `**宜**: ${h.recommends}\n\n` : ''}${h.avoids ? `**忌**: ${h.avoids}` : ''}`,
+          )
+          .join(
+            '\n\n',
+          )}\n\n## 节日\n\n${data.festival.solar || data.festival.lunar ? data.festival.both_desc : '无'}\n\n${data.legal_holiday ? `### 法定节假日\n\n**${data.legal_holiday.name}** ${data.legal_holiday.is_work ? '(补班)' : '(休息)'}` : ''}\n\n## 运势\n\n**今日运势**: ${data.fortune.today_luck}\n\n**事业**: ${data.fortune.career}\n\n**财运**: ${data.fortune.money}\n\n**感情**: ${data.fortune.love}\n\n---\n\n*今年已过 ${data.stats.percents_formatted.year} | 本月已过 ${data.stats.percents_formatted.month}*`
+        break
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(data)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(data)
+        break
     }
   }
 }

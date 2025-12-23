@@ -1,7 +1,7 @@
 import { Common } from '../../common.ts'
 import questionsData from './awesome-js.json' with { type: 'json' }
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../../types.ts'
 
 interface JavaScriptQuestion {
   id: number
@@ -13,42 +13,35 @@ interface JavaScriptQuestion {
 }
 
 class ServiceAwesomeJs {
-  handle(): RouterMiddleware<'/awesome-js'> {
-    return async (ctx) => {
-      const request = ctx.request
-      const id = await Common.getParam('id', request)
+  async handle(ctx: AppContext) {
+    const id = await Common.getParam('id', ctx)
 
-      let result: JavaScriptQuestion
+    let result: JavaScriptQuestion
 
-      if (id) {
-        const questionId = Number.parseInt(id)
-        const question = questionsData.find((q) => q.id === questionId)
+    if (id) {
+      const questionId = Number.parseInt(id)
+      const question = questionsData.find((q) => q.id === questionId)
 
-        if (!question) {
-          ctx.response.status = 404
-          ctx.response.body = Common.buildJson(null, 404, `未找到 ID 为 ${questionId} 的问题`)
-          return
-        }
-
-        result = question
-      } else {
-        result = Common.randomItem(questionsData)
+      if (!question) {
+        ctx.set.status = 404
+        return Common.buildJson(null, 404, `未找到 ID 为 ${questionId} 的问题`)
       }
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = this.formatQuestionText(result)
-          break
+      result = question
+    } else {
+      result = Common.randomItem(questionsData)
+    }
 
-        case 'markdown':
-          ctx.response.body = this.formatQuestionMarkdown(result)
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return this.formatQuestionText(result)
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(result)
-          break
-      }
+      case 'markdown':
+        return this.formatQuestionMarkdown(result)
+
+      case 'json':
+      default:
+        return Common.buildJson(result)
     }
   }
 

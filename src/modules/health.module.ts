@@ -1,6 +1,6 @@
 import { Common } from '../common.ts'
 
-import type { RouterMiddleware } from '@oak/oak'
+import type { AppContext } from '../types.ts'
 
 interface HealthParams {
   height: number
@@ -92,67 +92,58 @@ interface HealthResult {
 }
 
 class ServiceHealth {
-  handle(): RouterMiddleware<'/health'> {
-    return async (ctx) => {
-      const height = await Common.getParam('height', ctx.request)
-      const weight = await Common.getParam('weight', ctx.request)
-      const gender = await Common.getParam('gender', ctx.request)
-      const age = await Common.getParam('age', ctx.request)
+  async handle(ctx: AppContext) {
+    const height = await Common.getParam('height', ctx)
+    const weight = await Common.getParam('weight', ctx)
+    const gender = await Common.getParam('gender', ctx)
+    const age = await Common.getParam('age', ctx)
 
-      if (!height || !weight || !gender || !age) {
-        Common.requireArguments(['height', 'weight', 'gender', 'age'], ctx.response)
-        return
-      }
+    if (!height || !weight || !gender || !age) {
+      return Common.requireArguments(['height', 'weight', 'gender', 'age'])
+    }
 
-      const heightNum = Number.parseFloat(height)
-      const weightNum = Number.parseFloat(weight)
-      const ageNum = Number.parseInt(age)
+    const heightNum = Number.parseFloat(height)
+    const weightNum = Number.parseFloat(weight)
+    const ageNum = Number.parseInt(age)
 
-      if (Number.isNaN(heightNum) || Number.isNaN(weightNum) || Number.isNaN(ageNum)) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, '参数格式错误：height 和 weight 必须是数字，age 必须是整数')
-        return
-      }
+    if (Number.isNaN(heightNum) || Number.isNaN(weightNum) || Number.isNaN(ageNum)) {
+      ctx.set.status = 400
+      return Common.buildJson(null, 400, '参数格式错误：height 和 weight 必须是数字，age 必须是整数')
+    }
 
-      if (gender !== 'male' && gender !== 'female') {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(null, 400, '参数 gender 必须是 "male" 或 "female"')
-        return
-      }
+    if (gender !== 'male' && gender !== 'female') {
+      ctx.set.status = 400
+      return Common.buildJson(null, 400, '参数 gender 必须是 "male" 或 "female"')
+    }
 
-      if (heightNum < 50 || heightNum > 300 || weightNum < 10 || weightNum > 300 || ageNum < 1 || ageNum > 150) {
-        ctx.response.status = 400
-        ctx.response.body = Common.buildJson(
-          null,
-          400,
-          '参数超出合理范围：身高 (50-300cm)，体重 (10-300kg)，年龄 (1-150岁)',
-        )
-        return
-      }
+    if (heightNum < 50 || heightNum > 300 || weightNum < 10 || weightNum > 300 || ageNum < 1 || ageNum > 150) {
+      ctx.set.status = 400
+      return Common.buildJson(
+        null,
+        400,
+        '参数超出合理范围：身高 (50-300cm)，体重 (10-300kg)，年龄 (1-150岁)',
+      )
+    }
 
-      const params: HealthParams = {
-        height: heightNum,
-        weight: weightNum,
-        gender,
-        age: ageNum,
-      }
+    const params: HealthParams = {
+      height: heightNum,
+      weight: weightNum,
+      gender,
+      age: ageNum,
+    }
 
-      const result = this.calculateHealth(params)
+    const result = this.calculateHealth(params)
 
-      switch (ctx.state.encoding) {
-        case 'text':
-          ctx.response.body = this.formatAsText(result)
-          break
+    switch (ctx.encoding) {
+      case 'text':
+        return this.formatAsText(result)
 
-        case 'markdown':
-          ctx.response.body = this.formatAsMarkdown(result)
-          break
+      case 'markdown':
+        return this.formatAsMarkdown(result)
 
-        case 'json':
-        default:
-          ctx.response.body = Common.buildJson(result)
-          break
-      }
+      case 'json':
+      default:
+        return Common.buildJson(result)
     }
   }
 
