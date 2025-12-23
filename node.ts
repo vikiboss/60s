@@ -5,7 +5,9 @@ import { middlewares } from './src/middlewares.ts'
 import { appRouter, rootRouter } from './src/router.ts'
 import { config } from './src/config.ts'
 
-new Elysia({ adapter: node() })
+new Elysia({
+  adapter: node(),
+})
   .use(middlewares)
   .use(rootRouter)
   .use(appRouter)

@@ -45,83 +45,10 @@ import { serviceKuan } from './modules/kuan.module.ts'
 import { serviceLyric } from './modules/lyric.module.ts'
 import { serviceMoyu } from './modules/moyu.module.ts'
 import { serviceFuelPrice } from './modules/fuel-price/fuel-price.module.ts'
-import { GoldPriceService } from './modules/gold-price.module.ts'
+import { serviceGoldPrice } from './modules/gold-price.module.ts'
 import { serviceQuark } from './modules/quark.module.ts'
 import { serviceWhois } from './modules/whois.module.ts'
 import { config } from './config.ts'
-
-const serviceGoldPrice = new GoldPriceService()
-
-// Endpoint 列表
-const ENDPOINTS = [
-  '/v2/60s',
-  '/v2/60s/rss',
-  '/v2/answer',
-  '/v2/baike',
-  '/v2/bili',
-  '/v2/bing',
-  '/v2/changya',
-  '/v2/chemical',
-  '/v2/douyin',
-  '/v2/duanzi',
-  '/v2/epic',
-  '/v2/exchange-rate',
-  '/v2/fabing',
-  '/v2/hitokoto',
-  '/v2/ip',
-  '/v2/kfc',
-  '/v2/luck',
-  '/v2/today-in-history',
-  '/v2/toutiao',
-  '/v2/weibo',
-  '/v2/zhihu',
-  '/v2/lunar',
-  '/v2/ai-news',
-  '/v2/awesome-js',
-  '/v2/qrcode',
-  '/v2/dad-joke',
-  '/v2/rednote',
-  '/v2/dongchedi',
-  '/v2/moyu',
-  '/v2/quark',
-  '/v2/health',
-  '/v2/password',
-  '/v2/password/check',
-  '/v2/maoyan/all/movie',
-  '/v2/maoyan/realtime/movie',
-  '/v2/maoyan/realtime/tv',
-  '/v2/maoyan/realtime/web',
-  '/v2/hacker-news/new',
-  '/v2/hacker-news/top',
-  '/v2/hacker-news/best',
-  '/v2/baidu/hot',
-  '/v2/baidu/teleplay',
-  '/v2/baidu/tieba',
-  '/v2/weather/realtime',
-  '/v2/weather/forecast',
-  '/v2/ncm-rank/list',
-  '/v2/ncm-rank/:id',
-  '/v2/color/random',
-  '/v2/color/palette',
-  '/v2/lyric',
-  '/v2/fuel-price',
-  '/v2/gold-price',
-  '/v2/og',
-  '/v2/hash',
-  '/v2/fanyi',
-  '/v2/fanyi/langs',
-  '/v2/whois',
-  '/v2/beta/kuan',
-  '/v2/beta/qq/profile',
-]
-
-// 根路由
-export const rootRouter = new Elysia({ name: 'root-router' })
-  .get('/', () => ({ ...Common.getApiInfo(), endpoints: ENDPOINTS }))
-  .get('/favicon.ico', ({ redirect }) => redirect('https://avatar.viki.moe', 302))
-  .get('/health', () => 'ok')
-  .get('/endpoints', () => ENDPOINTS)
-  .get('*', () => ({ ...Common.getApiInfo(), endpoints: ENDPOINTS }))
 
 // 应用路由 (v2 前缀)
 export const appRouter = new Elysia({ name: 'app-router', prefix: '/v2' })
@@ -208,3 +135,14 @@ export const appRouter = new Elysia({ name: 'app-router', prefix: '/v2' })
   .get('/weather', (ctx) => serviceWeather.handle(ctx))
   .get('/ncm-rank', (ctx) => serviceNcm.handleRank(ctx))
   .get('/color', (ctx) => serviceColor.handle(ctx))
+
+// Endpoint 列表
+const ENDPOINTS = appRouter.routes.map((e) => e.path)
+
+// 根路由
+export const rootRouter = new Elysia({ name: 'root-router' })
+  // .get('/', () => ({ ...Common.getApiInfo(), endpoints: ENDPOINTS }))
+  .get('/favicon.ico', ({ redirect }) => redirect('https://avatar.viki.moe'))
+  .get('/health', () => 'ok')
+  .get('/endpoints', () => ENDPOINTS)
+  // .get('*', () => ({ ...Common.getApiInfo(), endpoints: ENDPOINTS }))

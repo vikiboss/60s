@@ -287,3 +287,6 @@ ${recycleRows}`
     }
   }
 }
+
+
+export const serviceGoldPrice = new GoldPriceService()
