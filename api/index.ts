@@ -1,1 +1,3 @@
-export { app as default } from '../src/app.ts'
+import { app } from '../src/app.ts'
+
+export default { fetch: app.fetch }
