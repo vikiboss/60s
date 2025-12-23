@@ -2,7 +2,6 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "bunVersion": "1.x",
-  "installCommand": "bun install --frozen-lockfile",
   "rewrites": [
     {
       "source": "/(.*)",
