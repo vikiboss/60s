@@ -44,40 +44,40 @@ interface WhoisData {
   /** 域名 */
   domain: string
   /** Unicode 域名（如有中文域名） */
-  unicode_domain?: string
+  unicode_domain: string
   /** Punycode 域名 */
-  punycode_domain?: string
+  punycode_domain: string
   /** 域名状态列表 */
   status: string[]
   /** 注册商 */
-  registrar?: string
+  registrar: string
   /** 注册人信息 */
-  registrant?: {
-    name?: string
-    organization?: string
-    email?: string
-    country?: string
+  registrant: {
+    name: string
+    organization: string
+    email: string
+    country: string
   }
   /** DNS 服务器列表 */
   nameservers: string[]
   /** DNSSEC 状态 */
   dnssec: boolean | string
   /** 注册时间（格式化） */
-  created?: string
+  created: string
   /** 更新时间（格式化） */
-  updated?: string
+  updated: string
   /** 过期时间（格式化） */
-  expires?: string
+  expires: string
   /** 注册时间戳（毫秒） */
-  created_at?: number
+  created_at: number
   /** 更新时间戳（毫秒） */
-  updated_at?: number
+  updated_at: number
   /** 过期时间戳（毫秒） */
-  expires_at?: number
+  expires_at: number
   /** 注册时长（毫秒，从注册到现在） */
-  duration?: number
+  duration: number
   /** 注册时长描述 */
-  duration_desc?: string
+  duration_desc: string
 }
 
 interface CacheEntry<T> {
@@ -293,13 +293,13 @@ class ServiceWhois {
     if (!domain.includes('xn--')) return domain
 
     try {
-      // 利用 URL API 的自动转换
       const parts = domain.split('.')
       return parts
         .map((part) => {
-          if (!part.startsWith('xn--')) return part
+          if (!part.toLowerCase().startsWith('xn--')) return part
           try {
-            return new URL(`http://${part}.test`).hostname.replace('.test', '')
+            // 手动解码 Punycode
+            return this.decodePunycode(part.slice(4))
           } catch {
             return part
           }
@@ -308,6 +308,87 @@ class ServiceWhois {
     } catch {
       return domain
     }
+  }
+
+  /**
+   * Punycode 解码（RFC 3492）
+   */
+  private decodePunycode(input: string): string {
+    const base = 36
+    const tMin = 1
+    const tMax = 26
+    const skew = 38
+    const damp = 700
+    const initialBias = 72
+    const initialN = 128
+    const delimiter = '-'
+
+    let output: number[] = []
+    let bias = initialBias
+    let n = initialN
+
+    // 找到最后一个分隔符
+    let basicLength = input.lastIndexOf(delimiter)
+    if (basicLength < 0) basicLength = 0
+
+    // 处理基本字符
+    for (let i = 0; i < basicLength; i++) {
+      output.push(input.charCodeAt(i))
+    }
+
+    // 解码非基本字符
+    let i = 0
+    let inputIndex = basicLength > 0 ? basicLength + 1 : 0
+
+    while (inputIndex < input.length) {
+      const oldI = i
+      let w = 1
+
+      for (let k = base; ; k += base) {
+        if (inputIndex >= input.length) throw new Error('Invalid input')
+
+        const c = input.charCodeAt(inputIndex++)
+        let digit: number
+
+        if (c >= 48 && c <= 57) {
+          digit = c - 22 // 0-9 -> 26-35
+        } else if (c >= 65 && c <= 90) {
+          digit = c - 65 // A-Z -> 0-25
+        } else if (c >= 97 && c <= 122) {
+          digit = c - 97 // a-z -> 0-25
+        } else {
+          throw new Error('Invalid character')
+        }
+
+        i += digit * w
+
+        const t = k <= bias ? tMin : k >= bias + tMax ? tMax : k - bias
+
+        if (digit < t) break
+
+        w *= base - t
+      }
+
+      const outLen = output.length + 1
+
+      // 更新 bias
+      let delta = oldI === 0 ? Math.floor(i / damp) : Math.floor((i - oldI) / 2)
+      delta += Math.floor(delta / outLen)
+      let k = 0
+      while (delta > ((base - tMin) * tMax) / 2) {
+        delta = Math.floor(delta / (base - tMin))
+        k += base
+      }
+      bias = k + Math.floor(((base - tMin + 1) * delta) / (delta + skew))
+
+      n += Math.floor(i / outLen)
+      i = i % outLen
+
+      output.splice(i, 0, n)
+      i++
+    }
+
+    return String.fromCodePoint(...output)
   }
 
   /**
@@ -337,11 +418,16 @@ class ServiceWhois {
    * 从 RDAP 响应中提取联系人信息（优化遍历）
    */
   private extractContact(entities?: RDAPEntity[]): WhoisData['registrant'] {
+    const result: WhoisData['registrant'] = {
+      name: '',
+      organization: '',
+      email: '',
+      country: '',
+    }
+
     const registrant = entities?.find((e) => e.roles?.includes('registrant'))
     const vcard = registrant?.vcardArray?.[1]
-    if (!vcard) return undefined
-
-    const result: NonNullable<WhoisData['registrant']> = {}
+    if (!vcard) return result
 
     for (const prop of vcard) {
       if (!Array.isArray(prop)) continue
@@ -349,18 +435,18 @@ class ServiceWhois {
 
       switch (propName) {
         case 'fn':
-          if (typeof value === 'string') result.name = value
+          if (typeof value === 'string') result.name = value.trim()
           break
         case 'org':
-          if (typeof value === 'string') result.organization = value
+          if (typeof value === 'string') result.organization = value.trim()
           break
         case 'adr':
-          if (Array.isArray(value) && value[6]) result.country = value[6]
+          if (Array.isArray(value) && value[6]) result.country = String(value[6]).trim()
           break
       }
     }
 
-    return Object.keys(result).length > 0 ? result : undefined
+    return result
   }
 
   /**
@@ -450,40 +536,38 @@ class ServiceWhois {
     const registrantEmail = findField(WHOIS_FIELD_MAP.registrantEmail)
     const registrantCountry = findField(WHOIS_FIELD_MAP.registrantCountry)
 
+    const createdTimestamp = createdDate.timestamp || 0
+    const updatedTimestamp = updatedDate.timestamp || 0
+    const expiresTimestamp = expiresDate.timestamp || 0
+    const duration = createdTimestamp ? Date.now() - createdTimestamp : 0
+
+    // 处理 Unicode/Punycode 转换
+    const lowerDomain = domain.toLowerCase()
+    const unicodeDomain = this.toUnicode(lowerDomain)
+    const isPunycode = lowerDomain.includes('xn--')
+
     const result: WhoisData = {
-      domain: domain.toUpperCase(),
+      domain: isPunycode ? unicodeDomain.toUpperCase() : domain.toUpperCase(),
+      unicode_domain: isPunycode ? unicodeDomain : '',
+      punycode_domain: isPunycode ? lowerDomain : '',
       status,
-      registrar: findField(WHOIS_FIELD_MAP.registrar),
+      registrar: findField(WHOIS_FIELD_MAP.registrar) || '',
+      registrant: {
+        name: registrantName || '',
+        organization: registrantOrg || '',
+        email: registrantEmail || '',
+        country: registrantCountry || '',
+      },
       nameservers,
       dnssec: findField(WHOIS_FIELD_MAP.dnssec) || 'unsigned',
-    }
-
-    // 添加注册人信息
-    if (registrantName || registrantOrg || registrantEmail || registrantCountry) {
-      result.registrant = {
-        ...(registrantName && { name: registrantName }),
-        ...(registrantOrg && { organization: registrantOrg }),
-        ...(registrantEmail && { email: registrantEmail }),
-        ...(registrantCountry && { country: registrantCountry }),
-      }
-    }
-
-    // 添加日期和注册时长
-    if (createdDate.formatted) {
-      result.created = createdDate.formatted
-      result.created_at = createdDate.timestamp
-      if (createdDate.timestamp) {
-        result.duration = Date.now() - createdDate.timestamp
-        result.duration_desc = this.formatDuration(result.duration)
-      }
-    }
-    if (updatedDate.formatted) {
-      result.updated = updatedDate.formatted
-      result.updated_at = updatedDate.timestamp
-    }
-    if (expiresDate.formatted) {
-      result.expires = expiresDate.formatted
-      result.expires_at = expiresDate.timestamp
+      created: createdDate.formatted || '',
+      created_at: createdTimestamp,
+      updated: updatedDate.formatted || '',
+      updated_at: updatedTimestamp,
+      expires: expiresDate.formatted || '',
+      expires_at: expiresTimestamp,
+      duration,
+      duration_desc: duration ? this.formatDuration(duration) : '',
     }
 
     return result
@@ -560,36 +644,29 @@ class ServiceWhois {
     const unicodeDomain = data.unicodeName || this.toUnicode(data.ldhName)
     const isPunycode = data.ldhName !== unicodeDomain
 
+    // 计算时间戳和注册时长
+    const createdTimestamp = createdAt ? new Date(createdAt).getTime() : 0
+    const updatedTimestamp = updatedAt ? new Date(updatedAt).getTime() : 0
+    const expiresTimestamp = expiresAt ? new Date(expiresAt).getTime() : 0
+    const duration = createdTimestamp ? Date.now() - createdTimestamp : 0
+
     const result: WhoisData = {
       domain: data.ldhName,
+      unicode_domain: isPunycode ? unicodeDomain : '',
+      punycode_domain: isPunycode ? data.ldhName : '',
       status: data.status || [],
-      registrar: this.extractRegistrar(data.entities),
+      registrar: this.extractRegistrar(data.entities) || '',
       registrant: this.extractContact(data.entities),
       nameservers: data.nameservers?.map((ns) => ns.ldhName.toLowerCase()) || [],
       dnssec: data.secureDNS?.delegationSigned ?? false,
-    }
-
-    // 添加 Unicode/Punycode 信息
-    if (isPunycode) {
-      result.unicode_domain = unicodeDomain
-      result.punycode_domain = data.ldhName
-    }
-
-    // 格式化日期并计算注册时长
-    if (createdAt) {
-      const timestamp = new Date(createdAt).getTime()
-      result.created = Common.localeTime(createdAt)
-      result.created_at = timestamp
-      result.duration = Date.now() - timestamp
-      result.duration_desc = this.formatDuration(result.duration)
-    }
-    if (updatedAt) {
-      result.updated = Common.localeTime(updatedAt)
-      result.updated_at = new Date(updatedAt).getTime()
-    }
-    if (expiresAt) {
-      result.expires = Common.localeTime(expiresAt)
-      result.expires_at = new Date(expiresAt).getTime()
+      created: createdAt ? Common.localeTime(createdAt) : '',
+      created_at: createdTimestamp,
+      updated: updatedAt ? Common.localeTime(updatedAt) : '',
+      updated_at: updatedTimestamp,
+      expires: expiresAt ? Common.localeTime(expiresAt) : '',
+      expires_at: expiresTimestamp,
+      duration,
+      duration_desc: duration ? this.formatDuration(duration) : '',
     }
 
     return result
@@ -646,13 +723,22 @@ class ServiceWhois {
     try {
       const rawResult = await this.fetchWhoisRaw(rootDomain)
 
-      // 合并数据，RDAP 优先
-      result.registrar ??= rawResult.registrar
-      result.created ??= rawResult.created
-      result.created_at ??= rawResult.created_at
-      result.expires ??= rawResult.expires
-      result.expires_at ??= rawResult.expires_at
-      result.registrant ??= rawResult.registrant
+      // 合并数据，RDAP 优先，空值才补充
+      if (!result.registrar) result.registrar = rawResult.registrar
+      if (!result.created) {
+        result.created = rawResult.created
+        result.created_at = rawResult.created_at
+        result.duration = rawResult.duration
+        result.duration_desc = rawResult.duration_desc
+      }
+      if (!result.expires) {
+        result.expires = rawResult.expires
+        result.expires_at = rawResult.expires_at
+      }
+      if (!result.registrant.name) result.registrant.name = rawResult.registrant.name
+      if (!result.registrant.organization) result.registrant.organization = rawResult.registrant.organization
+      if (!result.registrant.email) result.registrant.email = rawResult.registrant.email
+      if (!result.registrant.country) result.registrant.country = rawResult.registrant.country
 
       if (result.nameservers.length === 0) {
         result.nameservers = rawResult.nameservers
@@ -708,16 +794,16 @@ class ServiceWhois {
       `域名: ${data.unicode_domain || data.domain}`,
       data.punycode_domain && `Punycode: ${data.punycode_domain}`,
       `状态: ${data.status.join(', ') || '未知'}`,
-      data.registrar && `注册商: ${data.registrar}`,
-      data.registrant?.organization && `注册人: ${data.registrant.organization}`,
-      data.registrant?.email && `邮箱: ${data.registrant.email}`,
-      data.registrant?.country && `国家: ${data.registrant.country}`,
-      data.nameservers.length && `DNS服务器: ${data.nameservers.join(', ')}`,
+      `注册商: ${data.registrar || '未知'}`,
+      `注册人: ${data.registrant.organization || data.registrant.name || '未知'}`,
+      data.registrant.email && `邮箱: ${data.registrant.email}`,
+      data.registrant.country && `国家: ${data.registrant.country}`,
+      `DNS服务器: ${data.nameservers.join(', ') || '未知'}`,
       `DNSSEC: ${this.formatDnssec(data.dnssec)}`,
-      data.created && `注册时间: ${data.created}`,
-      data.duration !== undefined && `注册时长: ${this.formatDuration(data.duration)}`,
-      data.updated && `更新时间: ${data.updated}`,
-      data.expires && `过期时间: ${data.expires}`,
+      `注册时间: ${data.created || '未知'}`,
+      data.duration_desc && `注册时长: ${data.duration_desc}`,
+      `更新时间: ${data.updated || '未知'}`,
+      `过期时间: ${data.expires || '未知'}`,
     ]
       .filter(Boolean)
       .join('\n')
@@ -731,15 +817,15 @@ class ServiceWhois {
 
     const rows = [
       `| **状态** | ${data.status.join(', ') || '未知'} |`,
-      data.registrar && `| **注册商** | ${data.registrar} |`,
-      data.registrant?.organization && `| **注册人** | ${data.registrant.organization} |`,
-      data.registrant?.email && `| **邮箱** | ${data.registrant.email} |`,
-      data.registrant?.country && `| **国家** | ${data.registrant.country} |`,
+      `| **注册商** | ${data.registrar || '未知'} |`,
+      `| **注册人** | ${data.registrant.organization || data.registrant.name || '未知'} |`,
+      data.registrant.email && `| **邮箱** | ${data.registrant.email} |`,
+      data.registrant.country && `| **国家** | ${data.registrant.country} |`,
       `| **DNSSEC** | ${this.formatDnssec(data.dnssec, true)} |`,
-      data.created && `| **注册时间** | ${data.created} |`,
-      data.duration !== undefined && `| **注册时长** | ${this.formatDuration(data.duration)} |`,
-      data.updated && `| **更新时间** | ${data.updated} |`,
-      data.expires && `| **过期时间** | ${data.expires} |`,
+      `| **注册时间** | ${data.created || '未知'} |`,
+      data.duration_desc && `| **注册时长** | ${data.duration_desc} |`,
+      `| **更新时间** | ${data.updated || '未知'} |`,
+      `| **过期时间** | ${data.expires || '未知'} |`,
     ].filter(Boolean)
 
     let md = `# 🔍 WHOIS 查询\n\n## ${title}\n\n| 字段 | 值 |\n|------|------|\n${rows.join('\n')}`
