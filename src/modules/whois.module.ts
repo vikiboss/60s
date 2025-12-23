@@ -1,5 +1,5 @@
 import { Common } from '../common.ts'
-import whois from 'whois-raw'
+import * as whois from 'whois'
 
 import type { RouterMiddleware } from '@oak/oak'
 
@@ -224,21 +224,6 @@ const SECOND_LEVEL_TLDS = new Set([
   'muni.il',
   'idf.il',
 ])
-
-// WHOIS 字段映射 - 用于快速查找
-const WHOIS_FIELD_MAP = {
-  registrar: ['registrar', 'registrar name', 'sponsoring registrar', 'registrar organization'],
-  registrantName: ['registrant name', 'registrant'],
-  registrantOrg: ['registrant organization', 'registrant org'],
-  registrantEmail: ['registrant email', 'registrant contact email'],
-  registrantCountry: ['registrant country', 'registrant country/economy'],
-  created: ['creation date', 'created', 'registration time', 'registered', 'created on'],
-  updated: ['updated date', 'updated', 'last updated', 'modified'],
-  expires: ['registry expiry date', 'expiration date', 'expiry date', 'expires', 'expiration time'],
-  dnssec: ['dnssec', 'dnssec status'],
-  status: ['domain status', 'status'],
-  nameserver: ['name server', 'dns', 'nserver'],
-} as const
 
 class ServiceWhois {
   // 简单的 LRU 缓存
@@ -466,7 +451,35 @@ class ServiceWhois {
   }
 
   /**
-   * 解析原始 WHOIS 数据（优化版 - 单次遍历）
+   * 使用 whois 包获取域名信息
+   */
+  private fetchWhoisRaw(domain: string): Promise<WhoisData> {
+    return new Promise((resolve, reject) => {
+      const options = { follow: CONFIG.WHOIS_FOLLOW, timeout: CONFIG.WHOIS_TIMEOUT }
+
+      whois.lookup(domain, options, (err, data) => {
+        if (err) {
+          return reject(new Error(`WHOIS 查询失败: ${err.message}`))
+        }
+
+        // data 可能是 string 或 WhoisResult[]
+        const rawText = typeof data === 'string' ? data : data?.map((r) => r.data).join('\n') || ''
+
+        if (!rawText || /No match for|NOT FOUND|No Data Found/i.test(rawText)) {
+          return reject(new Error(`域名 ${domain} 未找到或未注册`))
+        }
+
+        try {
+          resolve(this.parseRawWhois(rawText, domain))
+        } catch (e: any) {
+          reject(new Error(`WHOIS 数据解析失败: ${e.message}`))
+        }
+      })
+    })
+  }
+
+  /**
+   * 解析原始 WHOIS 文本数据
    */
   private parseRawWhois(raw: string, domain: string): WhoisData {
     const lines = raw.split('\n')
@@ -484,7 +497,7 @@ class ServiceWhois {
       if (!key || !value) continue
 
       // 提取状态（可能有多个）
-      if (WHOIS_FIELD_MAP.status.includes(key as any)) {
+      if (key === 'domain status' || key === 'status') {
         const statusValue = value.split(/\s+/)[0]
         if (statusValue && !status.includes(statusValue)) {
           status.push(statusValue)
@@ -493,7 +506,7 @@ class ServiceWhois {
       }
 
       // 提取 DNS 服务器（可能有多个）
-      if (WHOIS_FIELD_MAP.nameserver.includes(key as any)) {
+      if (key === 'name server' || key === 'dns' || key === 'nserver') {
         const ns = value.toLowerCase()
         if (!nameservers.includes(ns)) {
           nameservers.push(ns)
@@ -508,7 +521,7 @@ class ServiceWhois {
     }
 
     // 辅助函数：查找字段值
-    const findField = (keys: readonly string[]): string | undefined => {
+    const findField = (keys: string[]): string | undefined => {
       for (const key of keys) {
         if (fieldData[key]) return fieldData[key]
       }
@@ -527,14 +540,18 @@ class ServiceWhois {
       return { formatted: raw }
     }
 
-    const createdDate = parseDate(findField(WHOIS_FIELD_MAP.created))
-    const updatedDate = parseDate(findField(WHOIS_FIELD_MAP.updated))
-    const expiresDate = parseDate(findField(WHOIS_FIELD_MAP.expires))
+    const createdDate = parseDate(
+      findField(['creation date', 'created', 'registration time', 'registered', 'created on']),
+    )
+    const updatedDate = parseDate(findField(['updated date', 'updated', 'last updated', 'modified']))
+    const expiresDate = parseDate(
+      findField(['registry expiry date', 'expiration date', 'expiry date', 'expires', 'expiration time']),
+    )
 
-    const registrantName = findField(WHOIS_FIELD_MAP.registrantName)
-    const registrantOrg = findField(WHOIS_FIELD_MAP.registrantOrg)
-    const registrantEmail = findField(WHOIS_FIELD_MAP.registrantEmail)
-    const registrantCountry = findField(WHOIS_FIELD_MAP.registrantCountry)
+    const registrantName = findField(['registrant name', 'registrant'])
+    const registrantOrg = findField(['registrant organization', 'registrant org'])
+    const registrantEmail = findField(['registrant email', 'registrant contact email'])
+    const registrantCountry = findField(['registrant country', 'registrant country/economy'])
 
     const createdTimestamp = createdDate.timestamp || 0
     const updatedTimestamp = updatedDate.timestamp || 0
@@ -551,7 +568,7 @@ class ServiceWhois {
       unicode_domain: isPunycode ? unicodeDomain : '',
       punycode_domain: isPunycode ? lowerDomain : '',
       status,
-      registrar: findField(WHOIS_FIELD_MAP.registrar) || '',
+      registrar: findField(['registrar', 'registrar name', 'sponsoring registrar', 'registrar organization']) || '',
       registrant: {
         name: registrantName || '',
         organization: registrantOrg || '',
@@ -559,7 +576,7 @@ class ServiceWhois {
         country: registrantCountry || '',
       },
       nameservers,
-      dnssec: findField(WHOIS_FIELD_MAP.dnssec) || 'unsigned',
+      dnssec: findField(['dnssec', 'dnssec status']) || 'unsigned',
       created: createdDate.formatted || '',
       created_at: createdTimestamp,
       updated: updatedDate.formatted || '',
@@ -571,31 +588,6 @@ class ServiceWhois {
     }
 
     return result
-  }
-
-  /**
-   * 使用 whois-raw 获取域名信息
-   */
-  private fetchWhoisRaw(domain: string): Promise<WhoisData> {
-    return new Promise((resolve, reject) => {
-      const options = { follow: CONFIG.WHOIS_FOLLOW, timeout: CONFIG.WHOIS_TIMEOUT }
-
-      whois.lookup(domain, options, (err: Error | null, data: string) => {
-        if (err) {
-          return reject(new Error(`WHOIS 查询失败: ${err.message}`))
-        }
-
-        if (!data || /No match for|NOT FOUND|No Data Found/i.test(data)) {
-          return reject(new Error(`域名 ${domain} 未找到或未注册`))
-        }
-
-        try {
-          resolve(this.parseRawWhois(data, domain))
-        } catch (e: any) {
-          reject(new Error(`WHOIS 数据解析失败: ${e.message}`))
-        }
-      })
-    })
   }
 
   /**
