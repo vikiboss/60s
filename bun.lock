@@ -1,5 +1,6 @@
 {
   "lockfileVersion": 1,
+  "configVersion": 0,
   "workspaces": {
     "": {
       "name": "60s-api",
@@ -10,7 +11,7 @@
         "dayjs": "^1.11.19",
         "filesize": "^11.0.13",
         "fontkit": "^2.0.4",
-        "tyme4ts": "^1.3.9",
+        "tyme4ts": "^1.4.0",
         "whois-raw": "^0.1.10",
         "yaqrcode": "^0.2.1",
       },
@@ -372,7 +373,7 @@
 
     "tslib": ["tslib@2.8.1", "", {}, "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w=="],
 
-    "tyme4ts": ["tyme4ts@1.3.9", "", {}, "sha512-zbozh+jm4PcE84yZCUBfY1TFtebMluOQ5c/RH9W/0hUQK9oFqJCvjE+YX5utV/vrVuB8vE3pDZ08h1/FR2JRbA=="],
+    "tyme4ts": ["tyme4ts@1.4.0", "", {}, "sha512-XwshARdV9C/9RGPFUPp68GX0cgnI1YoIQp8CS5yD3ix9MuAdfNXCZWLi7/A44kS7lriThN3DVX7NnXPs1JFVzA=="],
 
     "typescript": ["typescript@5.9.3", "", { "bin": { "tsc": "bin/tsc", "tsserver": "bin/tsserver" } }, "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw=="],
 
