@@ -98,6 +98,7 @@ class Service60s {
     if (config.debug) {
       data = await response.text()
       console.log('[debug] Fetched 60s data for date:', date)
+      console.log(`[debug] data: ${data}`)
       data = JSON.parse(data)
     } else {
       data = await response.json()
