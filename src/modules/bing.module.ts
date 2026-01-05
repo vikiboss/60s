@@ -66,7 +66,14 @@ class ServiceBing {
       return cache
     }
 
-    const options = { headers: { 'User-Agent': Common.chromeUA } }
+    const options = {
+      headers: {
+        'User-Agent': Common.chromeUA,
+        'X-Real-IP': '157.255.219.143',
+        'X-Forwarded-For': '157.255.219.143',
+      },
+    }
+
     const rawContent = await fetch('https://global.bing.com/?setmkt=zh-cn', options).then((e) => e.text())
 
     const rawJson = /var\s*_model\s*=\s*([^;]+);/.exec(rawContent)?.[1] || '{}'

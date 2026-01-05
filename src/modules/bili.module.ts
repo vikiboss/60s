@@ -31,7 +31,13 @@ class ServiceBili {
   }
 
   async #fetch() {
-    const options = { headers: { 'User-Agent': Common.chromeUA } }
+    const options = {
+      headers: {
+        'User-Agent': Common.chromeUA,
+        'X-Real-IP': '157.255.219.143',
+        'X-Forwarded-For': '157.255.219.143',
+      },
+    }
 
     try {
       const api = 'https://api.bilibili.com/x/web-interface/wbi/search/square?limit=50'

@@ -97,7 +97,7 @@ class Service60s {
 
     if (config.debug) {
       data = await response.text()
-      console.log(`[debug] data: ${data}`)
+      Common.debug(`60s data text: ${data}`)
       data = JSON.parse(data)
     } else {
       data = await response.json()
