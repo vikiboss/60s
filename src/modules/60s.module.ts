@@ -2,6 +2,7 @@ import { Common, dayjs, TZ_SHANGHAI } from '../common.ts'
 import { SolarDay } from 'tyme4ts'
 
 import type { RouterMiddleware } from '@oak/oak'
+import { config } from '../config.ts'
 
 const WEEK_DAYS = ['日', '一', '二', '三', '四', '五', '六']
 
@@ -92,7 +93,16 @@ class Service60s {
 
     if (!response || !response.ok) return null
 
-    const data = await response.json()
+    let data: any
+
+    if (config.debug) {
+      data = await response.text()
+      console.log('[debug] Fetched 60s data for date:', date)
+      data = JSON.parse(data)
+    } else {
+      data = await response.json()
+    }
+
     if (!data?.news?.length) return null
 
     const now = dayjs().tz(TZ_SHANGHAI)
