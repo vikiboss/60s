@@ -8,8 +8,8 @@ export function debug(): Middleware {
     const ip = serviceIP.getClientIP(ctx.request.headers) || ctx.request.ip || '-'
     const date = new Date().toLocaleString('zh-CN')
 
-    console.log(`[${date}] [${ip}] => UA: ${ua}`)
-    console.log(`[${date}] [${ip}] => URL: ${ctx.request.url.href}`)
+    console.log(`[${date}] [${ip}] UA: ${ua}`)
+    console.log(`[${date}] [${ip}] URL: ${ctx.request.url.href}`)
 
     await next()
   }
