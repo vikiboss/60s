@@ -223,7 +223,9 @@ export class Common {
           Common.debug(`Successful URL: ${url}`)
           return response
         }
-      } catch {}
+      } catch {
+        Common.debug(`Failed URL: ${url}`)
+      }
     }
 
     return null
