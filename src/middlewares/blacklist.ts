@@ -11,6 +11,8 @@ export function blacklist(): Middleware {
     const ua = ctx.request.headers.get('User-Agent') || '-'
     const url = ctx.request.url
 
+    Common.debug(`[BLACKLIST] blacklist IP list: ${list.join(', ')}`)
+
     if (ip && list.includes(ip)) {
       ctx.response.status = 403
       ctx.response.body = Common.buildJson(
