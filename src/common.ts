@@ -194,12 +194,19 @@ export class Common {
   static async tryRepoUrl(options: { repo: string; path: string; branch?: string; alternatives?: string[] }) {
     const { repo, path, branch = 'main', alternatives = [] } = options
 
-    const urls = [
-      `https://raw.githubusercontent.com/${repo}/refs/heads/${branch}/${path}`,
-      `https://cdn.jsdelivr.net/gh/${repo}/${path}`,
-      `https://cdn.jsdmirror.com/gh/${repo}/${path}`,
-      ...alternatives,
-    ]
+    const urls = config.overseas_first
+      ? [
+          `https://raw.githubusercontent.com/${repo}/refs/heads/${branch}/${path}`,
+          `https://cdn.jsdelivr.net/gh/${repo}/${path}`,
+          ...alternatives,
+          `https://cdn.jsdmirror.com/gh/${repo}/${path}`,
+        ]
+      : [
+          `https://cdn.jsdmirror.com/gh/${repo}/${path}`,
+          `https://raw.githubusercontent.com/${repo}/refs/heads/${branch}/${path}`,
+          `https://cdn.jsdelivr.net/gh/${repo}/${path}`,
+          ...alternatives,
+        ]
 
     for (const url of urls) {
       try {

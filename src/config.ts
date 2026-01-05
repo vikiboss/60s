@@ -5,6 +5,7 @@ export const config = {
   author: 'Viki <hi@viki.moe>',
   github: 'https://github.com/vikiboss/60s',
   debug: !!process.env.DEBUG,
+  overseas_first: !!process.env.OVERSEAS_FIRST,
   encodingParamName: process.env.ENCODING_PARAM_NAME || 'encoding',
 }
 
