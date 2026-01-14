@@ -36,7 +36,7 @@ curl "https://60s.viki.moe/v2/60s?encoding=image-proxy" --output "$(date +%Y-%m-
 
 **📊 数据特性**
 
-- **数据源**: 微信公众号，详情参考 [这里](https://github.com/vikiboss/60s-static-host/blob/main/src/config/constants.ts#L1-L5)
+- **数据源**: 微信公众号，详情参考 [这里](https://github.com/vikiboss/60s-static-host/blob/main/src/constants.ts#L4-L12)
 - **更新频率**: 每半小时自动尝试更新，正常情况最晚上午 10 点会更新
 - **数据处理**: [vikiboss/60s-static-host](https://github.com/vikiboss/60s-static-host) 仓库定时抓取
 - **响应速度**: 毫秒级缓存响应，全球 CDN 加速
