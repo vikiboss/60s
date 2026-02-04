@@ -51,7 +51,7 @@ class ServiceChangYa {
     ]
 
     const randomId = Common.randomItem(seedIdList)
-    const url = `https://m.api.singduck.cn/user-piece/${randomId}`
+    const url = `https://m.api.singduck.cn/user-piece/cont_${randomId}`
     const data = await (await fetch(url)).text()
 
     if (!data) throw new Error('fetch data error')
