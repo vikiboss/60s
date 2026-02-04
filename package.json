@@ -1,8 +1,8 @@
 {
   "name": "60s-api",
   "type": "module",
-  "version": "2.45.0",
-  "updateTime": "2025/11/03 08:02:37",
+  "version": "2.45.1",
+  "updateTime": "2026/02/04 22:21:14",
   "packageManager": "pnpm@10.26.2",
   "prettier": {
     "printWidth": 120,
