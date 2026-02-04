@@ -80,7 +80,7 @@ class ServiceChangYa {
             url: audioUrl ? decodeURIComponent(audioUrl) : '',
             duration: item.audioDuration,
             like_count: item.likeCount,
-            link: `https://m.api.singduck.cn/user-piece/${item.ugcId}`,
+            link: `https://m.api.singduck.cn/user-piece/cont_${item.ugcId}`,
             publish: Common.localeTime(new Date(item.publishTime)),
             publish_at: new Date(item.publishTime).getTime(),
           },
