@@ -96,18 +96,19 @@ ${rows.join('\n')}`
   }
 
   async #fetch(eventId: string): Promise<OlympicsMedalsResponse> {
-    const url = `https://www.olympics.com/${eventId}/competition/api/CHI/medals`
+    const url = `https://proxy.viki.moe/${eventId}/competition/api/CHI/medals?proxy-host=www.olympics.com`
 
     const response = await fetch(url, {
       headers: {
         'User-Agent': Common.chromeUA,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
         Referer: `https://www.olympics.com/`,
       },
     })
 
     if (!response.ok) {
-      throw new Error(`获取奖牌榜数据失败: ${response.status} ${response.statusText}`)
+      const data = await response.text()
+      throw new Error(`获取奖牌榜数据失败: ${response.status} ${response.statusText} - ${data}`)
     }
 
     const apiData: ApiResponse = await response.json()
