@@ -47,7 +47,9 @@ class ServiceWeibo {
     return (((data?.cards?.[0]?.card_group || []) as Item[]).filter((e) => !e.pic.includes('stick')) || []).map(
       (e) => ({
         title: e.desc,
-        hot_value: 0,
+        hot_value: typeof e.desc_extr === 'number'
+          ? e.desc_extr
+          : parseInt(String(e.desc_extr).replace(/\D/g, '')) || 0,
         link: `https://s.weibo.com/weibo?q=${encodeURIComponent(e.desc)}`,
       }),
     )
