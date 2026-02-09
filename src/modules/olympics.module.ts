@@ -59,10 +59,10 @@ export class OlympicsService {
         case 'text': {
           const lines = data.list.map((item, index) => {
             const rank = index + 1
-            return `${rank}. ${item.country} - 🥇${item.gold} 🥈${item.silver} 🥉${item.bronze} (总计: ${item.total})`
+            return `${rank}. ${item.country} 🥇${item.gold} 🥈${item.silver} 🥉${item.bronze} 共 ${item.total}`
           })
 
-          ctx.response.body = `奥运会奖牌榜 (${data.event_name})
+          ctx.response.body = `奥运奖牌榜 (${data.event_name})
 更新时间: ${data.updated}
 
 ${lines.join('\n')}`
