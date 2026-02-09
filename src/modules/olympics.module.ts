@@ -101,10 +101,8 @@ ${rows.join('\n')}`
     const response = await fetch(url, {
       headers: {
         'User-Agent': Common.chromeUA,
-        Accept: 'application/json',
-        'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8',
-        Referer: `https://www.olympics.com/${eventId}/medals`,
-        Origin: 'https://www.olympics.com',
+        'Content-Type': 'application/json',
+        Referer: `https://www.olympics.com/`,
       },
     })
 
