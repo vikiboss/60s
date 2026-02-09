@@ -48,6 +48,7 @@ import { serviceFuelPrice } from './modules/fuel-price/fuel-price.module.ts'
 import { GoldPriceService } from './modules/gold-price.module.ts'
 import { serviceQuark } from './modules/quark.module.ts'
 import { serviceWhois } from './modules/whois.module.ts'
+import { olympicsService } from './modules/olympics.module.ts'
 
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
 
@@ -135,6 +136,7 @@ appRouter.get('/color/palette', serviceColor.handlePalette())
 appRouter.all('/lyric', serviceLyric.handle())
 appRouter.all('/fuel-price', serviceFuelPrice.handle())
 appRouter.get('/gold-price', serviceGoldPrice.handle())
+appRouter.get('/olympics', olympicsService.handle())
 
 // === 以下为支持 body 解析参数的接口 ===
 appRouter.all('/og', serviceOG.handle())
