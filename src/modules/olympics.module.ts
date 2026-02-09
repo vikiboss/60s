@@ -62,7 +62,7 @@ export class OlympicsService {
             return `${rank}. ${item.country} 🥇${item.gold} 🥈${item.silver} 🥉${item.bronze} 共 ${item.total}`
           })
 
-          ctx.response.body = `奥运奖牌榜 (${data.event_name})
+          ctx.response.body = `${data.event_name}
 更新时间: ${data.updated}
 
 ${lines.join('\n')}`
@@ -77,7 +77,7 @@ ${lines.join('\n')}`
 
           ctx.response.body = `# 奥运会奖牌榜
 
-**赛事**: ${data.event_name}
+**奥运赛事**: ${data.event_name}
 **更新时间**: ${data.updated}
 
 | 排名 | 国家/地区 | 🥇 金牌 | 🥈 银牌 | 🥉 铜牌 | 总计 |
