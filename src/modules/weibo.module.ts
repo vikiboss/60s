@@ -4,7 +4,7 @@ import type { RouterMiddleware } from '@oak/oak'
 
 class ServiceWeibo {
   COOKIE =
-    'SUB=_2AkMflEwGf8NxqwFRmvsXxG7ia4h2wwrEieKpyL3dJRM3HRl-yT9yqk4mtRB6NBRi6maz6YaTyfIClrCyCUrm0-7nB1R9; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WhR9EPgz3BDPWy-YHwFuiIb; MLOGIN=0; _T_WM=29824971760; XSRF-TOKEN=3e7411; WEIBOCN_FROM=1110006030; mweibo_short_token=0f127e0728; M_WEIBOCN_PARAMS=fid%3D106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot%26uicode%3D10000011'
+    'WEIBOCN_FROM=1110006030; SUB=_2AkMe1h3tf8NxqwFRmvsXxG7ia4h2wwrEieKoiuw2JRM3HRl-yT9kqnc9tRB6NVYzAmxCM1izZSWe9-xcPQmmL_NGEnIl; SUBP=0033WrSXqPxfM72-Ws9jqgMF55529P9D9WhR9EPgz3BDPWy-YHwFuiIb; MLOGIN=0; _T_WM=38152265571; XSRF-TOKEN=86baeb; M_WEIBOCN_PARAMS=luicode%3D10000011%26lfid%3D102803%26launchid%3D10000360-page_H5%26fid%3D106003type%253D25%2526t%253D3%2526disable_hot%253D1%2526filter_type%253Drealtimehot%26uicode%3D10000011'
 
   handle(): RouterMiddleware<'/weibo'> {
     return async (ctx) => {
@@ -13,7 +13,7 @@ class ServiceWeibo {
       switch (ctx.state.encoding) {
         case 'text':
           ctx.response.body = `微博实时热搜\n\n${data
-            .map((e, i) => `${i + 1}. ${e.title}`)
+            .map((e, i) => `${i + 1}. ${e.title} (${e.hot_value})`)
             .slice(0, 20)
             .join('\n')}`
           break
@@ -21,7 +21,7 @@ class ServiceWeibo {
         case 'markdown':
           ctx.response.body = `# 微博实时热搜\n\n${data
             .slice(0, 20)
-            .map((e, i) => `${i + 1}. [${e.title}](${e.link})`)
+            .map((e, i) => `${i + 1}. [${e.title}](${e.link}) (${e.hot_value})`)
             .join('\n')}`
           break
 
@@ -36,6 +36,7 @@ class ServiceWeibo {
   async #fetch() {
     const api =
       'https://m.weibo.cn/api/container/getIndex?containerid=106003type%3D25%26t%3D3%26disable_hot%3D1%26filter_type%3Drealtimehot'
+
     const { data = {} } = await (
       await fetch(api, {
         headers: {
@@ -44,15 +45,19 @@ class ServiceWeibo {
         },
       })
     ).json()
-    return (((data?.cards?.[0]?.card_group || []) as Item[]).filter((e) => !e.pic.includes('stick')) || []).map(
-      (e) => ({
-        title: e.desc,
-        hot_value: typeof e.desc_extr === 'number'
-          ? e.desc_extr
-          : parseInt(String(e.desc_extr).replace(/\D/g, '')) || 0,
-        link: `https://s.weibo.com/weibo?q=${encodeURIComponent(e.desc)}`,
-      }),
-    )
+
+    const list = (data?.cards?.[0]?.card_group || []) as Item[]
+    const hot_value_regex = /(?<value>\d+)/i
+
+    return list
+      .filter((e) => /img_search_\d+/.test(e.pic)) // img_search_1 这样的才是热搜榜单，其他都是推广
+      .map((e) => {
+        return {
+          title: e.desc,
+          hot_value: +(hot_value_regex.exec(String(e.desc_extr || ''))?.groups?.value || 0),
+          link: `https://s.weibo.com/weibo?q=${encodeURIComponent(e.desc)}`,
+        }
+      })
   }
 }
 
