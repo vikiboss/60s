@@ -9,6 +9,7 @@ const DEFAULT_EVENT = {
 }
 
 interface MedalCount {
+  type: 'Men' | 'Women' | 'Total'
   gold: number
   silver: number
   bronze: number
@@ -123,7 +124,7 @@ ${rows.join('\n')}`
     // 处理并排序奖牌数据
     const list: CountryMedal[] = apiData.medalStandings.medalsTable
       .map((entry) => {
-        const medals = entry.medalsNumber[0] || {
+        const medals = entry.medalsNumber.find((m) => m.type === 'Total') || {
           gold: 0,
           silver: 0,
           bronze: 0,
