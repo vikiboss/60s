@@ -4,13 +4,13 @@
 
 <a href="https://hellogithub.com/repository/vikiboss/60s" target="_blank" ref="noreferrer noopener" ><img src="https://api.hellogithub.com/v1/widgets/recommend.svg?rid=8e9af473df2244f59d84b79915298fcc&claim_uid=wXMelR56paDoO2x&theme=dark" alt="Featured｜HelloGitHub" style="width: 250px; height: 54px;" width="250" height="54" /></a>
 
-> 一系列 **高质量、开源、可靠、全球 CDN 加速** 的开放 API 集合，让你用最简单的方式获取最准确的数据。
+一系列 **高质量、开源、可靠、全球 CDN 加速** 的开放 API 集合，让你用最简单的方式获取最准确的数据。
 
 构建于现代技术栈 [Deno](https://deno.com/)，托管在 [Deno Deploy](https://deno.com/deploy)，同时支持 [Docker](https://docker.com)、[Cloudflare Workers](https://www.cloudflare.com/zh-cn/developer-platform/products/workers/)、[Bun](https://bun.sh/) 和 [Node.js](https://nodejs.org/) 等多种部署方式。
 
 ## 🎯 项目起源
 
-本项目最早源于 [这篇文章](https://blog.viki.moe/60s) 中提到的想法。随着项目的发展，逐渐演变成一个多功能的开放 API 平台，旨在为开发者提供便捷的数据获取方式。
+本项目最早源于 [这篇博客文章](https://blog.viki.moe/60s) 中提到的想法。随着项目的发展，逐渐演变成一个多功能的开放 API 平台，旨在为开发者提供便捷的数据获取方式。
 
 ## 🌍 读懂世界 · 每天 60 秒读懂世界
 
@@ -50,17 +50,21 @@ curl "https://60s.viki.moe/v2/60s?encoding=image-proxy" --output "$(date +%Y-%m-
 - 📧 邮件订阅日报生成
 - 🔔 桌面通知提醒
 
-## 🎯 设计理念
+## 🤖 Agent Skills
+
+本项目支持配合各种 AI 大模型以 Agent Skills 的方式使用，你可以在 [skills.sh](https://skills.sh/?q=vikiboss/60s-skills) 查看相关 skills，更多详情可参考 [vikiboss/60s-skills](https://github.com/vikiboss/60s-skills) 源码仓库，欢迎贡献。
+
+## 🎯 API 设计理念
 
 - **权威数据源** - 优先选择官方、权威的数据来源，确保信息准确性
 - **毫秒级响应** - 部分接口采取智能缓存策略，用户无感的高速响应体验
 - **开发者友好** - 统一的 API 设计，简洁的参数结构，完善的文档支持
 
----
-
 ## 📚 完整 API 列表与文档
 
 完整 API 文档托管在 [Apifox](https://docs.60s-api.viki.moe)，持续更新中，欢迎贡献。
+
+---
 
 ## 🚀 快速开始
 
