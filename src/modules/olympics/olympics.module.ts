@@ -82,7 +82,7 @@ ${rows.join('\n')}`
 
   async #fetchOngoing(): Promise<OlympicsMedalsResponse> {
     const response = await fetch(
-      `https://proxy.viki.moe/wmr-owg2026/competition/api/CHI/medals?proxt-host=www.olympics.com`,
+      `https://proxy.viki.moe/wmr-owg2026/competition/api/CHI/medals?proxy-host=www.olympics.com`,
       {
         headers: {
           'User-Agent': Common.chromeUA,
