@@ -1,4 +1,4 @@
-import { Common } from '../common.ts'
+import { Common, dayjs, TZ_SHANGHAI } from '../common.ts'
 import { load } from 'cheerio'
 
 import type { RouterMiddleware } from '@oak/oak'
@@ -78,7 +78,7 @@ class ServiceAINews {
 
   parseHTML(html: string, requestDate: string, all = false): AINewsItem {
     const $ = load(html)
-    const news: NewsItem[] = []
+    const rawNews: NewsItem[] = []
 
     $('.news-date').each((_, dateEl) => {
       const $dateEl = $(dateEl)
@@ -104,18 +104,20 @@ class ServiceAINews {
         const source = $content.find('.news-time').text().replace('来源：', '').trim()
 
         if (title) {
-          news.push({
+          rawNews.push({
             title,
             detail: detail || '',
             link: link.startsWith('http') ? link : `https://ai-bot.cn${link}`,
             source,
-            date: this.normalizeDateText(dateText, requestDate),
+            date: this.#normalizeDateText(dateText, requestDate),
           })
         }
       })
     })
 
     let filteredNews: NewsItem[] = []
+
+    const news = this.#correctDate(rawNews)
 
     if (all) {
       filteredNews = news
@@ -130,13 +132,30 @@ class ServiceAINews {
     }
   }
 
+  #correctDate(items: NewsItem[]): NewsItem[] {
+    const lastTitleIn2025 = 'Kimi 完成 5 亿美元新融资'
+    const lastTitleIdx2025 = items.findIndex((item) => item.title === lastTitleIn2025)
+
+    // 根据 HTML 页面结构和解析顺序，最新的在前面
+    return items.map((item, idx) => {
+      if (idx >= lastTitleIdx2025) {
+        return {
+          ...item,
+          date: item.date?.replace(/\d{4}-/, '2025-') || item.date,
+        }
+      }
+
+      return item
+    })
+  }
+
   /**
    * 标准化日期文本，将 "8月4·周一" 格式转换为 "2024-08-04" 格式
    * @param dateText - 原始日期文本，如 "8月4·周一"
    * @param requestDate - 请求的日期，用于获取年份，格式如 "2024-08-04"
    * @returns 标准化的日期字符串，格式为 "YYYY-MM-DD"
    */
-  private normalizeDateText(dateText: string, requestDate: string): string {
+  #normalizeDateText(dateText: string, requestDate: string): string {
     if (!dateText) return requestDate
 
     // 提取月日信息，支持 "8月4·周一" 或 "8月4日·周一" 格式
