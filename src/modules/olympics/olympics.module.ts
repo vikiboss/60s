@@ -5,7 +5,8 @@ import { Common, dayjs, TZ_SHANGHAI } from '../../common.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
-// 默认赛事 ID（2026 米兰冬奥会）
+// 默认赛事 ID（2026
+const ONGOING_EVENT_CODE = 'wmr-owg2026'
 const ONGOING_EVENT = {
   event_id: 'milano-cortina-2026',
   event_name: '2026年米兰科尔蒂纳冬奥会',
@@ -19,7 +20,7 @@ export class OlympicsService {
       // 获取赛事 ID 参数，默认使用当前赛事
       const eventId = ctx.request.url.searchParams.get('id')
       const isOngoing = !eventId || eventId === ONGOING_EVENT.event_id
-      const data = isOngoing ? await this.#fetchOngoing() : await this.#fetchHistoryEvent(eventId)
+      const data = isOngoing ? await this.#fetchOngoing(ONGOING_EVENT_CODE) : await this.#fetchHistoryEvent(eventId)
 
       const encoding = ctx.state.encoding as string | undefined
 
@@ -80,23 +81,27 @@ ${rows.join('\n')}`
     }
   }
 
-  async #fetchOngoing(): Promise<OlympicsMedalsResponse> {
-    const response = await fetch(
-      `https://proxy.viki.moe/wmr-owg2026/competition/api/CHI/medals?proxy-host=www.olympics.com`,
-      {
-        headers: {
-          'User-Agent': Common.chromeUA,
-          Referer: 'https://www.olympics.com/zh/olympic-games/milano-cortina-2026/medals',
-        },
-        redirect: 'manual',
+  async #fetchOngoing(code: string): Promise<OlympicsMedalsResponse> {
+    const url = `https://proxy.viki.moe/${code}/competition/api/CHI/medals?proxy-host=www.olympics.com`
+
+    const response = await fetch(url, {
+      headers: {
+        referer: 'https://www.olympics.com/',
+        'User-Agent':
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36',
       },
-    )
+      redirect: 'manual',
+    })
 
     if (!response.ok) {
       throw new Error(`获取奖牌榜数据失败: ${response.status} ${response.statusText}`)
     }
 
     const apiData: ApiResponse = await response.json()
+
+    if (!apiData.medalStandings?.medalsTable) {
+      throw new Error('奖牌榜数据格式错误')
+    }
 
     // 处理并排序奖牌数据
     const list: CountryMedal[] = apiData.medalStandings.medalsTable
