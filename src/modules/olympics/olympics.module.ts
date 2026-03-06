@@ -81,7 +81,16 @@ ${rows.join('\n')}`
   }
 
   async #fetchOngoing(): Promise<OlympicsMedalsResponse> {
-    const response = await fetch(`https://www.olympics.com/wmr-owg2026/competition/api/CHI/medals`)
+    const response = await fetch(
+      `https://proxy.viki.moe/wmr-owg2026/competition/api/CHI/medals?proxt-host=www.olympics.com`,
+      {
+        headers: {
+          'User-Agent': Common.chromeUA,
+          Referer: 'https://www.olympics.com/zh/olympic-games/milano-cortina-2026/medals',
+        },
+        redirect: 'manual',
+      },
+    )
 
     if (!response.ok) {
       throw new Error(`获取奖牌榜数据失败: ${response.status} ${response.statusText}`)
