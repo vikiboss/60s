@@ -137,7 +137,7 @@ ${rows.join('\n')}`
     }
   }
 
-  async #fetchHistoryEvent(id: string) {
+  async #fetchHistoryEvent(id: string): Promise<OlympicsMedalsResponse> {
     const re = await fetch('https://bff-api.olympics.com/bff/api/session/exchange', {
       method: 'POST',
       headers: {
@@ -171,10 +171,10 @@ ${rows.join('\n')}`
       throw new Error(`暂无 ID 为 ${id} 的奥运赛事数据`)
     }
 
-    const eventData = await response.json()
+    const eventData: EventInfoApiResponse = await response.json()
 
-    const eventId = eventData.data.id as string
-    const eventSlug = eventData.data.slug as string
+    const eventId = eventData.data.id
+    const eventSlug = eventData.data.slug
 
     const medalsResponse = await fetch(
       `https://bff-api.olympics.com/bff/api/usdm/v1/competitions/${eventId}/awards/noc?languageCode=ZH`,
@@ -209,6 +209,8 @@ ${rows.join('\n')}`
     return {
       event_id: eventSlug,
       event_name: events.find((e) => e.slug === eventSlug)?.title || eventData.data.title || '-',
+      start_date: eventData.data.startDate,
+      end_date: eventData.data.finishDate,
       updated: now.format('YYYY-MM-DD HH:mm:ss'),
       updated_at: now.valueOf(),
       list,
@@ -281,6 +283,47 @@ export interface BffApiResponse {
     silver: number
     total: number
   }>
+  this: string
+  links: Array<{
+    href: string
+    method: string
+    rel: string
+  }>
+}
+
+export interface EventInfoApiResponse {
+  data: {
+    categories: string[]
+    closingVenue: {
+      id: string
+      region: string
+      title: string
+    }
+    country: string
+    disciplines: Array<{
+      competitionId: string
+      externalIds: string[]
+      id: string
+      sportDisciplineId: string
+      title: string
+      slug: string
+    }>
+    externalIds: string[]
+    finishDate: string
+    information: string
+    logo: string
+    openingVenue: {
+      id: string
+      region: string
+      title: string
+    }
+    region: string
+    slug: string
+    sources: string[]
+    startDate: string
+    title: string
+    id: string
+  }
   this: string
   links: Array<{
     href: string
