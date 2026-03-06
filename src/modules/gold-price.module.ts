@@ -77,12 +77,12 @@ const UNIT_MAP: Record<string, string> = {
 
 export class GoldPriceService {
   async #fetchMetals(): Promise<MetalPrice[]> {
-    const response = await fetch(`http://res.huangjinjiage.com.cn/panjia1.js?t=${Date.now()}`, {
+    const response = await fetch(`http://res.huangjinjiage.com.cn/panjia2.js?t=${Date.now()}`, {
       headers: { 'User-Agent': Common.chromeUA },
     })
 
     const text = await response.text()
-    const match = /panjia\s*=\s*"(?<listStr>[^"]+)"/.exec(text)
+    const match = /panjia2\s*=\s*"(?<listStr>[^"]+)"/.exec(text)
     if (!match) throw new Error('金价数据解析失败')
 
     const list = match.groups?.listStr?.split(',') || []
