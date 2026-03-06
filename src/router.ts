@@ -48,7 +48,7 @@ import { serviceFuelPrice } from './modules/fuel-price/fuel-price.module.ts'
 import { GoldPriceService } from './modules/gold-price.module.ts'
 import { serviceQuark } from './modules/quark.module.ts'
 import { serviceWhois } from './modules/whois.module.ts'
-import { olympicsService } from './modules/olympics.module.ts'
+import { olympicsService } from './modules/olympics/olympics.module.ts'
 import { serviceDoubanWeekly } from './modules/douban-weekly.module.ts'
 
 // import { serviceSlackingCalendar } from './modules/slacking-calendar/slacking-calendar.module.ts'
@@ -138,6 +138,7 @@ appRouter.all('/lyric', serviceLyric.handle())
 appRouter.all('/fuel-price', serviceFuelPrice.handle())
 appRouter.get('/gold-price', serviceGoldPrice.handle())
 appRouter.get('/olympics', olympicsService.handle())
+appRouter.get('/olympics/events', olympicsService.handleEventList())
 
 appRouter.get('/douban/weekly/movie', serviceDoubanWeekly.handle('movie'))
 appRouter.get('/douban/weekly/tv_chinese', serviceDoubanWeekly.handle('tv_chinese'))
