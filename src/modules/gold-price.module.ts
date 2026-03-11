@@ -52,15 +52,15 @@ interface GoldPriceData {
 }
 
 const METAL_CONFIGS = [
-  { name: '今日金价', start: 1 },
-  { name: '黄金价格', start: 1 },
-  { name: '黄金_9999', start: 17 },
-  { name: '黄金_T+D', start: 21 },
-  { name: '伦敦金(现货黄金)', start: 57 },
-  { name: '纽约黄金(美国)', start: 33 },
-  { name: '白银价格', start: 5 },
-  { name: '铂金价格', start: 9 },
-  { name: '钯金价格', start: 13 },
+  { name: '今日金价', start: 12 },
+  { name: '黄金价格', start: 12 },
+  { name: '黄金_9999', start: 28 },
+  { name: '黄金_T+D', start: 32 },
+  { name: '伦敦金(现货黄金)', start: 36 },
+  { name: '纽约黄金(美国)', start: 61 },
+  { name: '白银价格', start: 16 },
+  { name: '铂金价格', start: 20 },
+  { name: '钯金价格', start: 24 },
 ] as const
 
 const UNIT_MAP: Record<string, string> = {
