@@ -1,7 +1,7 @@
 {
   "name": "60s-api",
   "type": "module",
-  "version": "2.49.3",
+  "version": "2.49.4",
   "updateTime": "2026/03/06 12:38:56",
   "packageManager": "pnpm@10.29.2",
   "prettier": {
