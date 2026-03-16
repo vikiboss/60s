@@ -257,7 +257,7 @@ class ServiceLyric {
   // 预编译的正则表达式: 避免每次调用都重新编译
   static readonly #PATTERNS = {
     chineseLabel: /^[\u4e00-\u9fa5/]{1,10}[：:\s]/,
-    colonSeparator: /[：:\s]/,
+    colonSeparator: /[：:]/,
     englishLabel:
       /^(Written|Composed|Lyrics|Music|Arranged|Arrangement|Producer|Co-Producer|Executive Producer|Artist|Album|Lyricist|Composer|Vocal|Vocals|Bvox|Backing Vocals|Chorus|Choir|Guitar|E\.Guitar|A\.Guitar|Classical Guitar|Bass|Drums|Keyboards|Piano|Grand Piano|Whistle|Harmonica|Accordion|Strings|Violin|Viola|Cello|Double Bass|Brass|Saxophone|Trumpet|Trombone|Flute|Piccolo|Clarinet|Oboe|Bassoon|Engineer|Sound Engineer|Studio|Recording Studio|Assistant|Mastering|Recording|Mixing|Mix|Rhodes|Mellotron|Synthesizer|Synth|Production|Executive|Director|Sound|Background|Percussion|Programming|Coordinator|Organizer|Thanks|Special Thanks|Acknowledgment|OP|SP|Label|Publisher|Release|Distributor)(?:\s+by)?[：:\s/]/i,
     instrumentAbbrev:
@@ -280,7 +280,10 @@ class ServiceLyric {
     if (!trimmed) return false
 
     // 中文标签检测: 支持单字和组合词 (如 "词:" "弦乐监棚:" "出品发行:")
-    if (ServiceLyric.#PATTERNS.chineseLabel.test(trimmed)) {
+    const hasChineseLabel = ServiceLyric.#PATTERNS.chineseLabel.test(trimmed)
+    const hasColonSeparator = ServiceLyric.#PATTERNS.colonSeparator.test(trimmed)
+
+    if (hasChineseLabel && hasColonSeparator) {
       const beforeColon = trimmed.split(ServiceLyric.#PATTERNS.colonSeparator)[0]
       // 使用 Set 的 O(1) 查找优化性能
       for (const keyword of ServiceLyric.#CHINESE_KEYWORDS) {
