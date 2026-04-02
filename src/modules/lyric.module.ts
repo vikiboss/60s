@@ -13,7 +13,9 @@ class ServiceLyric {
 
       const clean = ctx.request.url.searchParams.get('clean') !== 'false'
 
-      const data = await this.#fetchLyric(query, clean)
+      const data = await this.#fetchLyric(query, clean).catch((err) => {
+        throw new Error(`搜索歌曲 ID 失败: ${err instanceof Error ? err.message : String(err)}`)
+      })
 
       if (!data) {
         ctx.response.status = 404
@@ -41,18 +43,52 @@ class ServiceLyric {
   async #fetchLyric(query: string, clean = false) {
     const options = { headers: { 'User-Agent': Common.chromeUA, Referer: 'https://y.qq.com/' } }
 
+    // async function fetchSongInfo(songName) {
+    //   const api = `https://c.y.qq.com/splcloud/fcgi-bin/smartbox_new.fcg?key=${encodeURIComponent(songName)}`
+    //   const data = (await (await fetch(api, options)).json()) as QQMusicSearchRes2
+    //   return data?.data?.song?.itemlist?.[0] ?? null
+    // }
+
     // 第一步: 搜索歌曲获取 songmid
-    const searchApi = `https://c.y.qq.com/soso/fcgi-bin/client_search_cp?format=json&p=1&n=1&w=${encodeURIComponent(query)}`
-    const searchRes = await fetch(searchApi, options)
-    const searchData = (await searchRes.json()) as QQMusicSearchRes
+    // const searchApi = `https://c.y.qq.com/soso/fcgi-bin/client_search_cp?format=json&p=1&n=1&w=${encodeURIComponent(query)}`
+    // const searchRes = await fetch(searchApi, options)
+    // const searchData = (await searchRes.json()) as QQMusicSearchRes
 
-    if (!searchData?.data?.song?.list?.length) return null
+    // console.log('搜索结果:', searchData) // 调试输出搜索结果结构
 
-    const song = searchData.data.song.list[0]
-    const songmid = song.songmid
-    const title = song.songname
+    // if (!searchData?.data?.song?.list?.length) return null
+
+    // const song = searchData.data.song.list[0]
+    // const songmid = song.songmid
+    // const title = song.songname
+    // const artists = song.singer.map((s) => s.name)
+    // const album = song.albumname
+
+    const songs = await fetch('https://u.y.qq.com/cgi-bin/musicu.fcg', {
+      headers: { 'Content-Type': 'application/json;charset=utf-8', ...options.headers },
+      method: 'POST',
+      body: JSON.stringify({
+        req: {
+          method: 'DoSearchForQQMusicDesktop',
+          module: 'music.search.SearchCgiService',
+          param: {
+            query,
+            num_per_page: 1,
+            page_num: 1,
+            search_type: 0,
+          },
+        },
+      }),
+    }).then((res) => res.json())
+
+    const song = songs?.req?.data?.body?.song?.list?.[0]
+
+    if (!song) return null
+
+    const songmid = song.mid
+    const title = song.name
     const artists = song.singer.map((s) => s.name)
-    const album = song.albumname
+    const album = song.album.name
 
     // 第二步: 获取歌词
     const lyricApi = `https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg?format=json&nobase64=1&type=1&songmid=${songmid}`
@@ -368,6 +404,54 @@ interface QQMusicSearchRes {
       totalnum: number
     }
   }
+}
+
+export interface QQMusicSearchRes2 {
+  code: number
+  data: {
+    album: {
+      count: number
+      itemlist: any[]
+      name: string
+      order: number
+      type: number
+    }
+    mv: {
+      count: number
+      itemlist: Array<{
+        docid: string
+        id: string
+        mid: string
+        name: string
+        singer: string
+        vid: string
+      }>
+      name: string
+      order: number
+      type: number
+    }
+    singer: {
+      count: number
+      itemlist: any[]
+      name: string
+      order: number
+      type: number
+    }
+    song: {
+      count: number
+      itemlist: Array<{
+        docid: string
+        id: string
+        mid: string
+        name: string
+        singer: string
+      }>
+      name: string
+      order: number
+      type: number
+    }
+  }
+  subcode: number
 }
 
 interface QQMusicLyricRes {
