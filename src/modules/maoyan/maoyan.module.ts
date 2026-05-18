@@ -1,5 +1,5 @@
 import { Common, dayjs } from '../../common.ts'
-import { fetchBoxOffice } from './encode.ts'
+import { fetchBoxOfficeByType } from './encode.ts'
 
 import type { RouterMiddleware } from '@oak/oak'
 
@@ -36,7 +36,9 @@ class ServiceMaoyan {
           ctx.response.body = `# 🎬 全球电影票房总榜\n\n| 排名 | 电影名称 | 上映年份 | 票房 |\n|------|----------|----------|------|\n${data.list
             .slice(0, 20)
             .map((e) => `| ${e.rank} | ${e.movie_name} | ${e.release_year} | ${e.box_office_desc} |`)
-            .join('\n')}\n\n${data.tip ? `> ${data.tip}\n\n` : ''}*更新时间: ${data.update_time}*\n\n*数据来源: 猫眼专业版*`
+            .join(
+              '\n',
+            )}\n\n${data.tip ? `> ${data.tip}\n\n` : ''}*更新时间: ${data.update_time}*\n\n*数据来源: 猫眼专业版*`
           break
 
         case 'json':
@@ -49,33 +51,45 @@ class ServiceMaoyan {
 
   handleRealtime(type: 'movie' | 'tv' | 'web'): RouterMiddleware<'/maoyan/movie'> {
     return async (ctx) => {
-      const data = await fetchBoxOffice()
+      const date = ctx.request.url.searchParams.get('date') || ''
+      const data = await fetchBoxOfficeByType(type, date)
 
       switch (ctx.state.encoding) {
         case 'text': {
           switch (type) {
             case 'movie':
             default: {
-              ctx.response.body = `今日实时票房排行 (${dayjs().format('M/D HH:mm')})\n\n${data.movie.list
-                .map((e, idx) => `${idx + 1}. ${e.movie_name} - ${e.box_office_desc}/${e.release_info}`)
-                .slice(0, 20)
-                .join('\n')}\n\n数据来源：猫眼专业版`
+              ctx.response.body =
+                data && data.movie
+                  ? `今日实时票房排行 (${dayjs().format('M/D HH:mm')})\n\n${data.movie.list
+                      .map((e, idx) => `${idx + 1}. ${e.movie_name} - ${e.box_office_desc}/${e.release_info}`)
+                      .slice(0, 20)
+                      .join('\n')}\n\n数据来源：猫眼专业版`
+                  : '数据异常'
               break
             }
 
             case 'tv': {
-              ctx.response.body = `今日实时电视收视排行 (${dayjs().format('M/D HH:mm')})\n\n${data.tv.list
-                .map((e, idx) => `${idx + 1}. ${e.programme_name} - ${e.channel_name}/${e.market_rate.toFixed(2)}%`)
-                .slice(0, 20)
-                .join('\n')}\n\n数据来源：猫眼专业版`
+              ctx.response.body =
+                data && data.tv
+                  ? `今日实时电视收视排行 (${dayjs().format('M/D HH:mm')})\n\n${data.tv.list
+                      .map(
+                        (e, idx) => `${idx + 1}. ${e.programme_name} - ${e.channel_name}/${e.market_rate.toFixed(2)}%`,
+                      )
+                      .slice(0, 20)
+                      .join('\n')}\n\n数据来源：猫眼专业版`
+                  : '数据异常'
               break
             }
 
             case 'web': {
-              ctx.response.body = `今日实时网播热度排行 (${dayjs().format('M/D HH:mm')})\n\n${data.web.list
-                .map((e, idx) => `${idx + 1}. ${e.series_name} - ${e.curr_heat_desc}/${e.release_info}`)
-                .slice(0, 20)
-                .join('\n')}\n\n数据来源：猫眼专业版`
+              ctx.response.body =
+                data && data.web
+                  ? `今日实时网播热度排行 (${dayjs().format('M/D HH:mm')})\n\n${data.web.list
+                      .map((e, idx) => `${idx + 1}. ${e.series_name} - ${e.curr_heat_desc}/${e.release_info}`)
+                      .slice(0, 20)
+                      .join('\n')}\n\n数据来源：猫眼专业版`
+                  : '数据异常'
               break
             }
           }
@@ -87,26 +101,38 @@ class ServiceMaoyan {
           switch (type) {
             case 'movie':
             default: {
-              ctx.response.body = `# 🎬 今日实时票房排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 电影名称 | 实时票房 | 上映信息 |\n|------|----------|----------|----------|\n${data.movie.list
-                .slice(0, 20)
-                .map((e, idx) => `| ${idx + 1} | ${e.movie_name} | ${e.box_office_desc} | ${e.release_info} |`)
-                .join('\n')}\n\n*数据来源: 猫眼专业版*`
+              ctx.response.body =
+                data && data.movie
+                  ? `# 🎬 今日实时票房排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 电影名称 | 实时票房 | 上映信息 |\n|------|----------|----------|----------|\n${data.movie.list
+                      .slice(0, 20)
+                      .map((e, idx) => `| ${idx + 1} | ${e.movie_name} | ${e.box_office_desc} | ${e.release_info} |`)
+                      .join('\n')}\n\n*数据来源: 猫眼专业版*`
+                  : '数据异常'
               break
             }
 
             case 'tv': {
-              ctx.response.body = `# 📺 今日实时电视收视排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 节目名称 | 频道 | 收视率 |\n|------|----------|------|--------|\n${data.tv.list
-                .slice(0, 20)
-                .map((e, idx) => `| ${idx + 1} | ${e.programme_name} | ${e.channel_name} | ${e.market_rate.toFixed(2)}% |`)
-                .join('\n')}\n\n*数据来源: 猫眼专业版*`
+              ctx.response.body =
+                data && data.tv
+                  ? `# 📺 今日实时电视收视排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 节目名称 | 频道 | 收视率 |\n|------|----------|------|--------|\n${data.tv.list
+                      .slice(0, 20)
+                      .map(
+                        (e, idx) =>
+                          `| ${idx + 1} | ${e.programme_name} | ${e.channel_name} | ${e.market_rate.toFixed(2)}% |`,
+                      )
+                      .join('\n')}\n\n*数据来源: 猫眼专业版*`
+                  : '数据异常'
               break
             }
 
             case 'web': {
-              ctx.response.body = `# 🌐 今日实时网播热度排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 剧集名称 | 当前热度 | 上映信息 |\n|------|----------|----------|----------|\n${data.web.list
-                .slice(0, 20)
-                .map((e, idx) => `| ${idx + 1} | ${e.series_name} | ${e.curr_heat_desc} | ${e.release_info} |`)
-                .join('\n')}\n\n*数据来源: 猫眼专业版*`
+              ctx.response.body =
+                data && data.web
+                  ? `# 🌐 今日实时网播热度排行\n\n*更新时间: ${dayjs().format('M/D HH:mm')}*\n\n| 排名 | 剧集名称 | 当前热度 | 上映信息 |\n|------|----------|----------|----------|\n${data.web.list
+                      .slice(0, 20)
+                      .map((e, idx) => `| ${idx + 1} | ${e.series_name} | ${e.curr_heat_desc} | ${e.release_info} |`)
+                      .join('\n')}\n\n*数据来源: 猫眼专业版*`
+                  : '数据异常'
               break
             }
           }
@@ -116,7 +142,7 @@ class ServiceMaoyan {
 
         case 'json':
         default: {
-          ctx.response.body = Common.buildJson(data[type] ?? {})
+          ctx.response.body = data ? Common.buildJson(data[type] ?? {}) : { message: '数据异常' }
           break
         }
       }
