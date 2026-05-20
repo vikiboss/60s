@@ -10,8 +10,14 @@ const utils = {
   base64: (str: string) => Buffer.from(str, 'utf-8').toString('base64'),
 }
 
-const getMygsig = (path: string, qs: string) => {
-  const sortedStr = Object.entries({ path, ...utils.parseQueryString(qs) })
+const getMygsig = (path: string, qs: string, body?: Record<string, any>) => {
+  const payload = {
+    ...utils.parseQueryString(qs),
+    ...(body ? { myg_body_data: body } : {}),
+    path,
+  }
+
+  const sortedStr = Object.entries(payload)
     .toSorted((a, b) => a[0].toLowerCase().localeCompare(b[0].toLowerCase()))
     .map(([_, v]) => (typeof v === 'object' ? JSON.stringify(v) : v))
     .join('_')
@@ -20,11 +26,11 @@ const getMygsig = (path: string, qs: string) => {
 
   return JSON.stringify({
     m1: '0.0.3',
-    // m2: 0,
-    // m3: '0.0.67_tool',
+    m2: 0,
+    m3: '0.0.67_tool',
     ms1: utils.md5(`581409236#${sortedStr}$${ts}`),
     ts,
-    // ts1: 1779089002846, // window.MyH5Guard.ts
+    ts1: ts - Math.random() * 3_000,
   })
 }
 
@@ -52,9 +58,9 @@ export const fetchBoxOfficeByType = async (type: 'movie' | 'tv' | 'web', date?: 
   }
 
   const PATH_MAP: Record<'movie' | 'tv' | 'web', string> = {
-    movie: '/dashboard-ajax/movie',
-    tv: '/dashboard/getTVData',
-    web: '/dashboard/webHeatData',
+    movie: '/i/api/dashboard-ajax/movie',
+    tv: '/i/api/dashboard/getTVData',
+    web: '/i/api/dashboard/webHeatData',
   }
 
   const url = `https://piaofang.maoyan.com${PATH_MAP[type]}?${params}`
