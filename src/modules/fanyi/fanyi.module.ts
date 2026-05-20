@@ -90,7 +90,11 @@ class ServiceFanyi {
 
   async initLangs() {
     const api = 'https://api-overmind.youdao.com/openapi/get/luna/dict/luna-front/prod/langType'
-    const { data = {} } = (await (await fetch(api)).json().catch(() => ({}))) || {}
+
+    const { data = {} } = await fetch(api)
+      .then((e) => e.json())
+      .catch(() => ({}))
+
     const langs = [...(data?.value?.textTranslate?.common || []), ...(data?.value?.textTranslate?.specify || [])]
 
     for (const lang of langs) {
