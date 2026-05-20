@@ -1,5 +1,6 @@
 import crypto from 'node:crypto'
 import { Common } from '../../common.ts'
+import langData from './langs.json' with { type: 'json' }
 
 import type { RouterMiddleware } from '@oak/oak'
 
@@ -89,15 +90,27 @@ class ServiceFanyi {
 
   async initLangs() {
     const api = 'https://api-overmind.youdao.com/openapi/get/luna/dict/luna-front/prod/langType'
-    const { data = {} } = (await (await fetch(api)).json()) || {}
+    const { data = {} } = (await (await fetch(api)).json()).catch(() => ({})) || {}
     const langs = [...(data?.value?.textTranslate?.common || []), ...(data?.value?.textTranslate?.specify || [])]
 
     for (const lang of langs) {
       this.langMap.set(lang.code, lang)
     }
 
-    // const date = new Date().toLocaleString('zh-CN')
-    // console.log(`[${date}] [fanyi] 语言列表初始化完成，共 ${this.langMap.size} 种语言`)
+    if (this.langMap.size <= 0) {
+      const date = new Date().toLocaleString('zh-CN')
+
+      const langs = [
+        ...(langData.data.value.textTranslate.common || []),
+        ...(langData.data.value.textTranslate.specify || []),
+      ]
+
+      for (const lang of langs) {
+        this.langMap.set(lang.code, lang)
+      }
+
+      console.error(`[${date}] [fanyi] 语言列表初始化失败，回退到内置语言列表，共 ${langs.length} 种语言`)
+    }
   }
 
   async #fetch(text: string, from: string, to: string) {
