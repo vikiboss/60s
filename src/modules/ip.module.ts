@@ -92,22 +92,68 @@ class ServiceIP {
           break
 
         case 'markdown': {
-          const api = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip}`
-          const { data = {} } = (await (await fetch(api)).json()) || {}
+          const data = await this.fetchIpInfo(ip)
           ctx.response.body = `# 🌐 IP 地址查询\n\n## ${ip}\n\n${data.continent ? `**洲**: ${data.continent}\n\n` : ''}${data.country ? `**国家**: ${data.country}\n\n` : ''}${data.prov ? `**省份**: ${data.prov}\n\n` : ''}${data.city ? `**城市**: ${data.city}\n\n` : ''}${data.district ? `**区县**: ${data.district}\n\n` : ''}${data.isp ? `**运营商**: ${data.isp}` : ''}`
           break
         }
 
         case 'json':
         default: {
-          const api = `https://qifu-api.baidubce.com/ip/geo/v1/district?ip=${ip}`
-          const { data = {} } = (await (await fetch(api)).json()) || {}
-          ctx.response.body = Common.buildJson({ ip, ...data })
+          const data = await this.fetchIpInfo(ip)
+          ctx.response.body = Common.buildJson(data)
           break
         }
       }
     }
   }
+
+  async fetchIpInfo(ip: string): Promise<IpInfo> {
+    // https://qifu-api.baidubce.com/ip/geo/v1/district?ip=
+    // 上述接口已失效，使用 ip.sb 接口简单 fallback 对齐，防止接口异常
+    const data = await (await fetch('https://api.ip.sb/geoip')).json().catch(() => {})
+
+    return {
+      ip,
+      continent: data?.continent_code || '',
+      country: data?.country || '',
+      zipcode: '',
+      timezone: data?.timezone || '',
+      accuracy: '',
+      owner: '',
+      isp: data?.isp || '',
+      source: 'ip.sb',
+      areacode: '',
+      adcode: '',
+      asnumber: String(data?.asn || ''),
+      lat: data?.latitude || '',
+      lng: data?.longitude || '',
+      radius: '',
+      prov: '',
+      city: '',
+      district: '',
+    }
+  }
+}
+
+interface IpInfo {
+  ip: string // '222.79.47.25'
+  continent: string // '亚洲'
+  country: string // '中国'
+  zipcode: string // '350007'
+  timezone: string // 'UTC+8'
+  accuracy: string // '区县'
+  owner: string // '中国电信'
+  isp: string // '中国电信'
+  source: string // '数据挖掘'
+  areacode: string // 'CN'
+  adcode: string // '350104'
+  asnumber: string // '4134'
+  lat: string // '26.016978'
+  lng: string // '119.323547'
+  radius: string // '13.7621'
+  prov: string // '福建省'
+  city: string // '福州市'
+  district: string // '仓山区'
 }
 
 export const serviceIP = new ServiceIP()
