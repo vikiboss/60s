@@ -9,4 +9,4 @@ export const config = {
   encodingParamName: process.env.ENCODING_PARAM_NAME || 'encoding',
 }
 
-export const COMMON_MSG = `获取成功。当前部署平台 Deno Deploy Classic 预计将于 7 月 20 日 终止服务，公共 API 服务后续迁移到其他平台后，额度、兼容性等方面可能会受影响。建议尽快迁移至私有部署，以确保服务持续可用。开源地址 ${config.github}，反馈群 ${config.group}。`
+export const COMMON_MSG = `获取成功。当前部署平台 Deno Deploy Classic 预计将于 7 月 20 日 终止服务，公共 API 服务后续计划迁移到 Cloudflare Workers，额度、兼容性等方面可能会受影响。有能力建议自行私有部署，以确保服务持续稳定可用。开源地址 ${config.github}，反馈群 ${config.group}。`
