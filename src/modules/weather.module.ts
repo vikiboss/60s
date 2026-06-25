@@ -359,7 +359,7 @@ class ServiceWeather {
   }
 
   private async searchCity(location: string, city: string, province: string): Promise<CityInfo> {
-    const cleanLocation = location.replace(/市|省|区|县/g, '')
+    const cleanLocation = location.trim()
     const encodedLocation = encodeURIComponent(cleanLocation)
 
     const url = `https://i.news.qq.com/city/like?source=pc&city=${encodedLocation}`
