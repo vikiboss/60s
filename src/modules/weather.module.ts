@@ -148,7 +148,10 @@ class ServiceWeather {
     return async (ctx) => {
       try {
         const location = (await Common.getParam('query', ctx.request)) || '北京'
-        const cityInfo = await this.getCityInfo(location)
+
+        const city = (await Common.getParam('city', ctx.request)) || ''
+        const province = (await Common.getParam('province', ctx.request)) || ''
+        const cityInfo = await this.getCityInfo(location, city, province)
 
         const [weatherData, airData] = await Promise.all([
           this.fetchCurrentWeather(cityInfo),
@@ -260,7 +263,10 @@ class ServiceWeather {
       try {
         const location = (await Common.getParam('query', ctx.request)) || '北京'
         const days = Number.parseInt((await Common.getParam('days', ctx.request)) || '7')
-        const cityInfo = await this.getCityInfo(location)
+
+        const city = (await Common.getParam('city', ctx.request)) || ''
+        const province = (await Common.getParam('province', ctx.request)) || ''
+        const cityInfo = await this.getCityInfo(location, city, province)
 
         const weatherData = await this.fetchCurrentWeather(cityInfo)
 
@@ -340,18 +346,19 @@ class ServiceWeather {
     }
   }
 
-  private async getCityInfo(location: string): Promise<CityInfo> {
-    const cacheKey = location.toLowerCase()
+  private async getCityInfo(location: string, city: string, province: string): Promise<CityInfo> {
+    const cacheKey = location.toLowerCase() + city.toLocaleLowerCase() + province.toLocaleLowerCase()
+
     if (this.cityCache.has(cacheKey)) {
       return this.cityCache.get(cacheKey)!
     }
 
-    const cityInfo = await this.searchCity(location)
+    const cityInfo = await this.searchCity(location, city, province)
     this.cityCache.set(cacheKey, cityInfo)
     return cityInfo
   }
 
-  private async searchCity(location: string): Promise<CityInfo> {
+  private async searchCity(location: string, city: string, province: string): Promise<CityInfo> {
     const cleanLocation = location.replace(/市|省|区|县/g, '')
     const encodedLocation = encodeURIComponent(cleanLocation)
 
@@ -383,14 +390,19 @@ class ServiceWeather {
       throw new Error(`未找到城市: ${location}。请检查城市名称拼写是否正确`)
     }
 
-    const [code, locationStr] = Object.entries(data.data)[0] as [string, string]
+    const list = Object.entries(data.data)
+
+    const [code, locationStr] = (list.find(
+      ([_, str]) => (province && str.includes(province)) || (city && str.includes(city)),
+    ) || list[0]) as [string, string]
+
     const locationParts = locationStr.split(',').map((part) => part.trim())
-    const [province, city, county] = locationParts
+    const [p, c, county] = locationParts
 
     return {
       name: cleanLocation,
-      province: province + (province.endsWith('省') || province.endsWith('市') ? '' : '省'),
-      city: city + (city.endsWith('市') ? '' : '市'),
+      province: p + (p.endsWith('省') || p.endsWith('市') ? '' : '省'),
+      city: c + (c.endsWith('市') ? '' : '市'),
       county: county || undefined,
       code,
     }
@@ -600,28 +612,38 @@ class ServiceWeather {
 
     // Current weather
     const w = result.weather
-    sections.push(`## 当前天气\n\n**${w.condition}** ${w.temperature}°C\n\n- 💧 **湿度**: ${w.humidity}%\n- 🌬️ **风向风力**: ${w.wind_direction} ${w.wind_power}\n- 🌡️ **气压**: ${w.pressure}hPa\n- 🌧️ **降水量**: ${w.precipitation}mm\n\n*更新时间: ${w.updated}*`)
+    sections.push(
+      `## 当前天气\n\n**${w.condition}** ${w.temperature}°C\n\n- 💧 **湿度**: ${w.humidity}%\n- 🌬️ **风向风力**: ${w.wind_direction} ${w.wind_power}\n- 🌡️ **气压**: ${w.pressure}hPa\n- 🌧️ **降水量**: ${w.precipitation}mm\n\n*更新时间: ${w.updated}*`,
+    )
 
     // Air quality
     if (result.air_quality) {
       const aq = result.air_quality
       const aqiEmoji = aq.aqi <= 50 ? '😊' : aq.aqi <= 100 ? '😐' : aq.aqi <= 150 ? '😟' : aq.aqi <= 200 ? '😷' : '🤢'
-      sections.push(`## 空气质量 ${aqiEmoji}\n\n**${aq.quality}** AQI: **${aq.aqi}** (全国排名 ${aq.rank}/${aq.total_cities})\n\n| 指标 | 数值 |\n|------|------|\n| PM2.5 | ${aq.pm25} μg/m³ |\n| PM10 | ${aq.pm10} μg/m³ |\n| NO₂ | ${aq.no2} μg/m³ |\n| SO₂ | ${aq.so2} μg/m³ |\n| O₃ | ${aq.o3} μg/m³ |\n| CO | ${aq.co} mg/m³ |\n\n*更新时间: ${aq.updated}*`)
+      sections.push(
+        `## 空气质量 ${aqiEmoji}\n\n**${aq.quality}** AQI: **${aq.aqi}** (全国排名 ${aq.rank}/${aq.total_cities})\n\n| 指标 | 数值 |\n|------|------|\n| PM2.5 | ${aq.pm25} μg/m³ |\n| PM10 | ${aq.pm10} μg/m³ |\n| NO₂ | ${aq.no2} μg/m³ |\n| SO₂ | ${aq.so2} μg/m³ |\n| O₃ | ${aq.o3} μg/m³ |\n| CO | ${aq.co} mg/m³ |\n\n*更新时间: ${aq.updated}*`,
+      )
     }
 
     // Sunrise/sunset
     if (result.sunrise) {
-      sections.push(`## 日出日落 🌅\n\n- 🌄 **日出**: ${result.sunrise.sunrise_desc}\n- 🌆 **日落**: ${result.sunrise.sunset_desc}`)
+      sections.push(
+        `## 日出日落 🌅\n\n- 🌄 **日出**: ${result.sunrise.sunrise_desc}\n- 🌆 **日落**: ${result.sunrise.sunset_desc}`,
+      )
     }
 
     // Life indices
     if (result.life_indices && result.life_indices.length > 0) {
-      sections.push(`## 生活指数\n\n${result.life_indices.map((idx: any) => `### ${idx.name}\n\n**${idx.level}**\n\n${idx.description}`).join('\n\n')}`)
+      sections.push(
+        `## 生活指数\n\n${result.life_indices.map((idx: any) => `### ${idx.name}\n\n**${idx.level}**\n\n${idx.description}`).join('\n\n')}`,
+      )
     }
 
     // Alerts
     if (result.alerts && result.alerts.length > 0) {
-      sections.push(`## ⚠️ 预警信息\n\n${result.alerts.map((alert: any) => `### ${alert.type} ${alert.level}\n\n**地区**: ${alert.province} ${alert.city} ${alert.county}\n\n${alert.detail}\n\n*发布时间: ${alert.updated}*`).join('\n\n---\n\n')}`)
+      sections.push(
+        `## ⚠️ 预警信息\n\n${result.alerts.map((alert: any) => `### ${alert.type} ${alert.level}\n\n**地区**: ${alert.province} ${alert.city} ${alert.county}\n\n${alert.detail}\n\n*发布时间: ${alert.updated}*`).join('\n\n---\n\n')}`,
+      )
     }
 
     return sections.join('\n\n')
@@ -635,20 +657,34 @@ class ServiceWeather {
 
     // Hourly forecast
     if (result.hourly_forecast && result.hourly_forecast.length > 0) {
-      sections.push(`## 逐小时预报\n\n| 时间 | 天气 | 温度 | 风向风力 |\n|------|------|------|----------|\n${result.hourly_forecast.slice(0, 12).map((hour: any) => `| ${hour.datetime.split(' ')[1].slice(0, 5)} | ${hour.condition} | ${hour.temperature}°C | ${hour.wind_direction}${hour.wind_power} |`).join('\n')}`)
+      sections.push(
+        `## 逐小时预报\n\n| 时间 | 天气 | 温度 | 风向风力 |\n|------|------|------|----------|\n${result.hourly_forecast
+          .slice(0, 12)
+          .map(
+            (hour: any) =>
+              `| ${hour.datetime.split(' ')[1].slice(0, 5)} | ${hour.condition} | ${hour.temperature}°C | ${hour.wind_direction}${hour.wind_power} |`,
+          )
+          .join('\n')}`,
+      )
     }
 
     // Daily forecast
     if (result.daily_forecast && result.daily_forecast.length > 0) {
-      sections.push(`## 未来${result.daily_forecast.length}天预报\n\n${result.daily_forecast.map((day: any) => {
-        const aqiEmoji = day.aqi <= 50 ? '😊' : day.aqi <= 100 ? '😐' : day.aqi <= 150 ? '😟' : '😷'
-        return `### ${day.date}\n\n**白天**: ${day.day_condition} | **夜间**: ${day.night_condition}\n\n🌡️ **${day.min_temperature}°C ~ ${day.max_temperature}°C**\n\n- 💨 **白天风力**: ${day.day_wind_direction}${day.day_wind_power}\n- 🌙 **夜间风力**: ${day.night_wind_direction}${day.night_wind_power}\n- ${aqiEmoji} **空气质量**: ${day.air_quality} (AQI ${day.aqi})`
-      }).join('\n\n---\n\n')}`)
+      sections.push(
+        `## 未来${result.daily_forecast.length}天预报\n\n${result.daily_forecast
+          .map((day: any) => {
+            const aqiEmoji = day.aqi <= 50 ? '😊' : day.aqi <= 100 ? '😐' : day.aqi <= 150 ? '😟' : '😷'
+            return `### ${day.date}\n\n**白天**: ${day.day_condition} | **夜间**: ${day.night_condition}\n\n🌡️ **${day.min_temperature}°C ~ ${day.max_temperature}°C**\n\n- 💨 **白天风力**: ${day.day_wind_direction}${day.day_wind_power}\n- 🌙 **夜间风力**: ${day.night_wind_direction}${day.night_wind_power}\n- ${aqiEmoji} **空气质量**: ${day.air_quality} (AQI ${day.aqi})`
+          })
+          .join('\n\n---\n\n')}`,
+      )
     }
 
     // Sunrise/sunset table
     if (result.sunrise_sunset && result.sunrise_sunset.length > 0) {
-      sections.push(`## 日出日落时间\n\n| 日出 🌄 | 日落 🌆 |\n|---------|----------|\n${result.sunrise_sunset.map((day: any) => `| ${day.sunrise_desc} | ${day.sunset_desc} |`).join('\n')}`)
+      sections.push(
+        `## 日出日落时间\n\n| 日出 🌄 | 日落 🌆 |\n|---------|----------|\n${result.sunrise_sunset.map((day: any) => `| ${day.sunrise_desc} | ${day.sunset_desc} |`).join('\n')}`,
+      )
     }
 
     return sections.join('\n\n')
