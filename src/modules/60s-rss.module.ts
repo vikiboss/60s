@@ -120,7 +120,7 @@ class Service60sRss {
         const footerHtml = `<hr/><p>图片版本可以复制并分享给你的好朋友。访问 <a href="https://60s-static.viki.moe?date=${item.date}" target="_blank">项目页面</a> 获取更多信息。本 RSS 订阅由开源项目 <a href="https://github.com/vikiboss/60s" target="_blank">vikiboss/60s</a> 提供数据支持。</p>`
 
         const description = `<![CDATA[
-<p>早上好，今天是 ${this.#escapeXml(dayjs(item.date).tz(TZ_SHANGHAI).format('YYYY年M月D日'))}，${this.#escapeXml(dayOfWeek)}，农历${this.#escapeXml(lunarDate)}。</p>
+<p>早上好，今天是 ${this.#escapeXml(dayjs(item.date).tz(TZ_SHANGHAI).format('YYYY 年 M 月 D 日'))}，${this.#escapeXml(dayOfWeek)}，农历${this.#escapeXml(lunarDate)}。</p>
 ${newsHtml}
 ${tipHtml}
 ${imageHtml}
