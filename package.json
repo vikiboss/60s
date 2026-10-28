@@ -3,7 +3,7 @@
   "type": "module",
   "version": "2.54.0",
   "updateTime": "2026/06/25 12:30:36",
-  "packageManager": "pnpm@10.29.2",
+  "packageManager": "pnpm@12.15.0",
   "prettier": {
     "printWidth": 120,
     "semi": false,
@@ -14,21 +14,21 @@
     "@oak/oak": "npm:@jsr/oak__oak@^17.2.0",
     "cheerio": "^1.2.0",
     "chinese-days": "^1.5.9",
-    "dayjs": "^1.11.21",
-    "filesize": "^11.0.17",
+    "dayjs": "^1.11.23",
+    "filesize": "^11.0.29",
     "fontkit": "^2.0.4",
-    "tyme4ts": "^1.5.2",
+    "tyme4ts": "^1.5.4",
     "whois-raw": "^0.1.10",
     "yaqrcode": "^0.2.1"
   },
   "devDependencies": {
-    "@types/bun": "^1.3.14",
+    "@types/bun": "^1.4.4",
     "@types/fontkit": "^2.0.9",
-    "@types/node": "^22.20.0",
+    "@types/node": "^22.20.5",
     "bumpp": "^11.1.0",
-    "prettier": "^3.8.4",
+    "prettier": "^3.9.10",
     "typescript": "^6.0.3",
-    "wrangler": "^4.104.0"
+    "wrangler": "^4.153.0"
   },
   "scripts": {
     "dev:no-watch": "DEV=1 PORT=4398 node --disable-warning=ExperimentalWarning node.ts",
